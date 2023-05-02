@@ -10,7 +10,9 @@ echo "$DEPLOYMENT_NUMBER" > "$DIR/deployment_number"
 PROJECT_NAME="$(cat "$DIR/infrastructure/variables.tf" | grep 'project_name' -A 2 | grep 'default' | cut -d '=' -f 2 | cut -d '"' -f 2)"
 
 pushd "$DIR/backend/"
-  npm run build
+  rm -rf build
+  mkdir build
+  cp src/* build*/
   pushd build
     zip -r rest_api.zip ./
     aws s3 cp ./rest_api.zip "s3://$PROJECT_NAME-backend/$DEPLOYMENT_NUMBER/"

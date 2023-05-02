@@ -5,7 +5,7 @@ resource "aws_lambda_function" "rest_api" {
   s3_key    = "${var.deployment_number}/rest_api.zip"
 
   handler = "index.handler"
-  runtime = "nodejs14.x"
+  runtime = "python3.10"
 
   role = aws_iam_role.lambda_rest_api.arn
 }
