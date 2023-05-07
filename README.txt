@@ -8,6 +8,6 @@ update app remotely: "zappa update"
 -------
 Frontend Instructions:
 
-cd youtube-cutter-frontend
+cd frontend
 npm install
 npm run dev
