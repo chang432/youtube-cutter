@@ -5,6 +5,12 @@
         "profile_name": "default",
         "project_name": "youtube-cutter",
         "runtime": "python3.9",
-        "s3_bucket": "youtube-cutter"
+        "s3_bucket": "youtube-cutter",
+        "exclude": [
+            "node_modules",
+            "public",
+            "src",
+            "static"
+        ]
     }
 }

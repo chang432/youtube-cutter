@@ -1,5 +1,6 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
+import drakeIceSpice from "./assets/Ice-Spice-Drake.jpeg"
 import viteLogo from "/vite.svg";
 import "./App.css";
 
@@ -13,6 +14,7 @@ function App() {
                     Youtube Cutter MP3 Slicer Time Segmenter Downloader To MP3
                     Converter 4K Type Beat Video Song Audio Drake Ice Spice
                 </a>
+                <img src={drakeIceSpice} />
             </div>
             <div className=" flex flex-col justify-center h-screen items-center">
                 <input
