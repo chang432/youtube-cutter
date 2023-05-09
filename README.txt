@@ -12,4 +12,12 @@ cd frontend
 npm install
 npm run dev
 
-./build.sh (in root dir, this builds frontend files and adds s3 static files references as well as uploads the static files to s3) 
+-------
+"./deploy" 
+The above command (in root dir) will:
+- build react files
+- replace static file refs with s3 urls
+- replace localhost urls with web url
+- upload static files to s3
+- update lambda
+- re-configure built files to use local refs
