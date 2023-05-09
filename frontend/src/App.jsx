@@ -1,29 +1,52 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
-import drakeIceSpice from "./assets/Ice-Spice-Drake.jpeg"
+import drakeIceSpice from "./assets/Ice-Spice-Drake.jpeg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
-    const [count, setCount] = useState(0);
+    const [iceSpiceMode, setIceSpiceMode] = useState(false);
 
     return (
-        <div className=" max-w-screen-2xl mx-auto">
-            <div className="navbar bg-primary text-primary-content rounded-2xl">
-                <a className="btn btn-ghost text-xl ">
-                    Youtube Cutter MP3 Slicer Time Segmenter Downloader To MP3
-                    Converter 4K Type Beat Video Song Audio Drake Ice Spice
-                </a>
-                <img src={drakeIceSpice} />
+        <div className="  mx-auto ">
+            <div className="navbar bg-secondary text-primary-content drop-shadow-2xl">
+                <div className="flex-1">
+                    <a className="btn btn-ghost text-xl ">Youtube Downloader</a>
+                </div>
+                <div
+                    onClick={() => {
+                        setIceSpiceMode(!iceSpiceMode);
+                    }}
+                    className=" btn btn-sm mx-5"
+                >
+                    Ice Spice Mode
+                </div>
             </div>
+
             <div className=" flex flex-col justify-center h-screen items-center">
+                <div
+                    className={`w-full h-screen bg-cover bg-center bg-primary-focus `}
+                    style={{
+                        backgroundImage: `url(${
+                            iceSpiceMode ? drakeIceSpice : null
+                        })`,
+                    }}
+                >
+                    <div className="w-full h-full flex  justify-center items-center backdrop-brightness-50 backdrop-blur-sm ">
+                        <input
+                            type="text"
+                            placeholder="Paste Youtube link here"
+                            className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
+                        />
+                    </div>
+                </div>
+                {/* <img className=" bg-cover blur-lg" src={drakeIceSpice} />
                 <input
                     type="text"
                     placeholder="Paste Youtube link here"
                     className="input input-bordered input-secondary w-full max-w-2xl input-lg "
-                />
+                /> */}
             </div>
-            <p className=" text-6xl">Testing</p>
         </div>
     );
 }
