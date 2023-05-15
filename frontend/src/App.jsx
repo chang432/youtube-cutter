@@ -9,6 +9,7 @@ function App() {
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
     const [count, setCount] = useState(0);
     const [getMessage, setGetMessage] = useState({})
+    const [audioSrc, setAudioSrc] = useState("");
 
     useEffect(()=>{
         axios.get('http://127.0.0.1:5000/flask/hello').then(response => {
@@ -18,6 +19,20 @@ function App() {
         console.log(error)
         })
     }, [])
+
+    function handleClick() {
+        axios({
+          url: "http://127.0.0.1:5000/post",
+          method: "post",
+          responseType: "blob",
+        })
+          .then((res) => {
+            setAudioSrc(URL.createObjectURL(res.data));
+          })
+          .catch((error) => {
+            console.log("axios error:", error);
+          });
+      }
 
     return (
         <div className="  mx-auto ">
@@ -60,7 +75,10 @@ function App() {
                 /> */}
             </div>
             <p className=" text-6xl">Testing</p>
-            <p>React + Flask Tutorial</p>
+            <button onClick={handleClick}>BUTTON</button>
+            <div>
+                <audio id="audio" controls src={audioSrc} />
+            </div>
             <div>{getMessage.status === 200 ? 
             <h3>{getMessage.data.message}</h3>
             :

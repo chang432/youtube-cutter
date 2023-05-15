@@ -1,11 +1,12 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, send_file
 from flask_s3 import FlaskS3
 from flask_restful import Api
 from api.HelloApiHandler import HelloApiHandler
+from flask_cors import CORS, cross_origin
 import yt_dlp
 
 app = Flask(__name__, template_folder='frontend/dist', static_folder='frontend/dist/assets')
-# CORS(app)
+CORS(app)
 app.config['FLASKS3_BUCKET_NAME'] = 'youtube-cutter-static-files'
 s3 = FlaskS3(app)
 api = Api(app)
@@ -35,11 +36,10 @@ def youtube_download(vid):
 
 api.add_resource(HelloApiHandler, '/flask/hello')
 
+@app.route("/post", methods=["POST"])
+def testpost():
+    return send_file("lilwaifu.mp3", mimetype="audio/mp3")
+
 @app.route('/')
 def serve():
     return render_template('index.html')
-
-# # This code will only be executed when running the development server
-# if __name__ == '__main__':
-#     print("hello cors")
-#     app.run(debug=True)
