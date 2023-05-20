@@ -1,6 +1,7 @@
 Development Environment Instructions
 
 pip install -r requirements.txt
+brew install ffmpeg
 
 to test app locally: "flask run"
 update app remotely: "zappa update" 
