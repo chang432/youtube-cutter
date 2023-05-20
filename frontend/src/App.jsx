@@ -23,6 +23,29 @@ function App() {
             });
     }, []);
 
+    const sendPostRequest = async () => {
+        try {
+            const response = await fetch("https://httpbin.org/post", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ data: ytURL }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed");
+            }
+
+            // Handle the response if needed
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            // Handle any errors that occur during the request
+            console.error(error);
+        }
+    };
+
     return (
         <div className="  mx-auto ">
             <div className="navbar bg-secondary text-primary-content drop-shadow-2xl">
@@ -58,7 +81,7 @@ function App() {
                             />
                             <button
                                 className=" btn btn-lg btn-primary"
-                                onClick={() => setLoadYT(true)}
+                                onClick={() => sendPostRequest()}
                             >
                                 Trim
                             </button>
