@@ -7,8 +7,12 @@ import axios from 'axios'
 
 function App() {
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
-    const [count, setCount] = useState(0);
     const [getMessage, setGetMessage] = useState({})
+    const [audioSrc, setAudioSrc] = useState("");
+    const [cutAudioSrc, setCutAudioSrc] = useState("");
+    const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
 
     useEffect(()=>{
         axios.get('http://127.0.0.1:5000/flask/hello').then(response => {
@@ -18,6 +22,81 @@ function App() {
         console.log(error)
         })
     }, [])
+
+    function handleFullVideoClick() {
+        console.log("Displaying full video")
+        axios({
+            url: "http://127.0.0.1:5000/handle_full",
+            method: "post",
+            responseType: "text",
+            data: {
+                yt_id: fullDownloadYoutubeId,
+            }
+        })
+        .then((res) => {
+            setAudioSrc(res.data);
+        })
+        .catch((error) => {
+            console.log("axios error:", error);
+        });
+    }
+
+    const handleFullVideoTextChange = (event) => {
+        setFullDownloadYoutubeId(event.target.value);
+    };
+
+    const handleStartTimeTextChange = (event) => {
+        setStartTime(event.target.value);
+    };
+
+    const handleEndTimeTextChange = (event) => {
+        setEndTime(event.target.value);
+    };
+
+    function handleCutVideoClick() {
+        console.log("downloading cut video")
+        axios({
+            url: "http://127.0.0.1:5000/handle_cut",
+            method: "post",
+            responseType: "text",
+            data: {
+                yt_id: fullDownloadYoutubeId,
+                start_time: startTime,
+                end_time: endTime
+            }
+        })
+        .then((res) => {
+            // Display
+            setCutAudioSrc(res.data);
+
+            // Download video
+            // const link = document.createElement('a');
+            // link.href = res.data;
+            // link.download = "test.mp3";
+            // link.click();
+        })
+        .catch((error) => {
+            console.log("axios error:", error);
+        });
+    }
+
+    function handleTestClick() {
+        console.log("Testing")
+        axios({
+            url: "http://127.0.0.1:5000/test",
+            method: "post",
+            responseType: "text",
+            data: {
+                yt_id: "F35291LbOMM",
+            }
+        })
+        .then((res) => {
+            console.log("test complete")
+        })
+        .catch((error) => {
+            console.log("axios error:", error);
+        });
+    }
 
     return (
         <div className="  mx-auto ">
@@ -60,6 +139,64 @@ function App() {
                 /> */}
             </div>
             <p className=" text-6xl">Testing</p>
+            <div>
+                <div>
+                    <button onClick={handleFullVideoClick}>DISPLAY</button>
+                </div>
+                <label>
+                    YouTube ID:
+                    <input 
+                        type="text" 
+                        value={fullDownloadYoutubeId}
+                        onChange={handleFullVideoTextChange}
+                        style={{
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            padding: '8px',
+                        }}
+                    />
+                </label>
+            </div>
+            <div>
+                <audio id="audio" controls src={audioSrc} />
+            </div>
+            <div>
+                <button onClick={handleCutVideoClick}>CUT</button>
+            </div>
+            <div>
+                <label>
+                    START TIME:
+                    <input 
+                        type="text" 
+                        value={startTime}
+                        onChange={handleStartTimeTextChange}
+                        style={{
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            padding: '8px',
+                        }}
+                    />
+                </label>
+                <label>
+                    END TIME:
+                    <input 
+                        type="text" 
+                        value={endTime}
+                        onChange={handleEndTimeTextChange}
+                        style={{
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            padding: '8px',
+                        }}
+                    />
+                </label>
+            </div>
+            <div>
+                <audio id="cut_audio" controls src={cutAudioSrc} />
+            </div>
+            <div>
+                <button onClick={handleTestClick}>TEST</button>
+            </div>
             <p>React + Flask Tutorial</p>
             <div>{getMessage.status === 200 ? 
             <h3>{getMessage.data.message}</h3>
