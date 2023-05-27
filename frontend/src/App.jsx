@@ -28,13 +28,16 @@ function App() {
         axios({
             url: "http://127.0.0.1:5000/handle_full",
             method: "post",
-            responseType: "text",
+            responseType: "json",
             data: {
                 yt_id: fullDownloadYoutubeId,
             }
         })
         .then((res) => {
-            setAudioSrc(res.data);
+            // console.log("return post: " + res.data)
+            const location = res.data;
+            console.log(location)
+            setAudioSrc(location.url);
         })
         .catch((error) => {
             console.log("axios error:", error);
@@ -58,7 +61,7 @@ function App() {
         axios({
             url: "http://127.0.0.1:5000/handle_cut",
             method: "post",
-            responseType: "text",
+            responseType: "json",
             data: {
                 yt_id: fullDownloadYoutubeId,
                 start_time: startTime,
@@ -67,7 +70,8 @@ function App() {
         })
         .then((res) => {
             // Display
-            setCutAudioSrc(res.data);
+            console.log("return post: " + res.data)
+            setCutAudioSrc(res.data.url);
 
             // Download video
             // const link = document.createElement('a');
