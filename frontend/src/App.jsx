@@ -7,44 +7,104 @@ import Waveform from "./components/Waveform";
 
 function App() {
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
-    const [ytURL, setYtURL] = useState("");
-    const [loadYT, setLoadYT] = useState(false);
-    const [getMessage, setGetMessage] = useState({});
+    const [getMessage, setGetMessage] = useState({})
+    const [audioSrc, setAudioSrc] = useState("");
+    const [cutAudioSrc, setCutAudioSrc] = useState("");
+    const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
+    const [displayCutterUI, setDisplayCutterUI] = useState(false);
+    const [displayCutterAudioPlayer, setDisplayCutterAudioPlayer] = useState(false);
 
-    useEffect(() => {
-        axios
-            .get("http://127.0.0.1:5000/flask/hello")
-            .then((response) => {
-                console.log("SUCCESS", response);
-                setGetMessage(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, []);
+    useEffect(()=>{
+        axios.get('http://127.0.0.1:5000/flask/hello').then(response => {
+        console.log("SUCCESS", response)
+        setGetMessage(response)
+        }).catch(error => {
+        console.log(error)
+        })
+    }, [])
 
-    const sendPostRequest = async () => {
-        try {
-            const response = await fetch("https://httpbin.org/post", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ data: ytURL }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Request failed");
+    function handleFullVideoClick() {
+        console.log("Displaying full video")
+        axios({
+            url: "http://127.0.0.1:5000/handle_full",
+            method: "post",
+            responseType: "json",
+            data: {
+                yt_id: fullDownloadYoutubeId,
             }
+        })
+        .then((res) => {
+            // console.log("return post: " + res.data)
+            setDisplayCutterUI(true)
+            const location = res.data;
+            console.log(location)
+            setAudioSrc(location.url);
+        })
+        .catch((error) => {
+            console.log("axios error:", error);
+        });
+    }
 
-            // Handle the response if needed
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            // Handle any errors that occur during the request
-            console.error(error);
-        }
+    const handleFullVideoTextChange = (event) => {
+        setFullDownloadYoutubeId(event.target.value);
     };
+
+    const handleStartTimeTextChange = (event) => {
+        setStartTime(event.target.value);
+    };
+
+    const handleEndTimeTextChange = (event) => {
+        setEndTime(event.target.value);
+    };
+
+    function handleCutVideoClick() {
+        console.log("downloading cut video")
+        axios({
+            url: "http://127.0.0.1:5000/handle_cut",
+            method: "post",
+            responseType: "json",
+            data: {
+                yt_id: fullDownloadYoutubeId,
+                start_time: startTime,
+                end_time: endTime
+            }
+        })
+        .then((res) => {
+            // Display
+            console.log("return post: " + res.data)
+            setCutAudioSrc(res.data.url);
+            setDisplayCutterAudioPlayer(true)
+
+            // Download video
+            // const link = document.createElement('a');
+            // link.href = res.data;
+            // link.download = "test.mp3";
+            // link.click();
+        })
+        .catch((error) => {
+            console.log("axios error:", error);
+        });
+    }
+
+    function handleTestClick() {
+        console.log("Testing")
+        axios({
+            url: "http://127.0.0.1:5000/test",
+            method: "post",
+            responseType: "text",
+            data: {
+                yt_id: "F35291LbOMM",
+            }
+        })
+        .then((res) => {
+            console.log("test complete")
+        })
+        .catch((error) => {
+            console.log("axios error:", error);
+        });
+    }
 
     return (
         <div className="  mx-auto ">
@@ -72,23 +132,39 @@ function App() {
                     }}
                 >
                     <div className="w-full h-full flex flex-col  justify-center items-center backdrop-brightness-50 backdrop-blur-sm ">
-                        <div className=" flex flex-row items-center space-x-3 w-full max-w-2xl mb-5">
-                            <input
-                                type="text"
-                                placeholder="Paste Youtube link here"
-                                className="input input-bordered input-secondary input-lg grow"
-                                onChange={(e) => setYtURL(e.target.value)}
-                            />
-                            <button
-                                className=" btn btn-lg btn-primary"
-                                onClick={() => sendPostRequest()}
-                            >
-                                Trim
-                            </button>
+                        <input
+                            type="text"
+                            value={fullDownloadYoutubeId}
+                            onChange={handleFullVideoTextChange}
+                            placeholder="Paste Youtube link here"
+                            className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
+                        />
+                        <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
+                        <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
+                        <div className="mt-5" hidden={!displayCutterUI}>
+                            <label>
+                                START TIME:
+                                <input 
+                                    type="text" 
+                                    value={startTime}
+                                    onChange={handleStartTimeTextChange}
+                                    className= "input input-bordered input-primary p-8 "
+                                />
+                            </label>
+                            <label>
+                                END TIME:
+                                <input 
+                                    type="text" 
+                                    value={endTime}
+                                    onChange={handleEndTimeTextChange}
+                                    className= "input input-bordered input-primary p-8 "
+                                />
+                            </label>
                         </div>
-                        <div className=" flex flex-row items-center space-x-3 w-full max-w-2xl mb-5"></div>
-                        <Waveform />
-                        {/* {loadYT && <YoutubePlayer ytURL={ytURL} />} */}
+                        {displayCutterUI && 
+                        <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>}
+                        {displayCutterAudioPlayer &&
+                        <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
                     </div>
                 </div>
                 {/* <img className=" bg-cover blur-lg" src={drakeIceSpice} />
@@ -97,15 +173,6 @@ function App() {
                     placeholder="Paste Youtube link here"
                     className="input input-bordered input-secondary w-full max-w-2xl input-lg "
                 /> */}
-            </div>
-            <p className=" text-6xl">Testing</p>
-            <p>React + Flask Tutorial</p>
-            <div>
-                {getMessage.status === 200 ? (
-                    <h3>{getMessage.data.message}</h3>
-                ) : (
-                    <h3>LOADING</h3>
-                )}
             </div>
         </div>
     );

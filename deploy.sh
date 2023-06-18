@@ -1,4 +1,10 @@
 #!/bin/bash
+# run from root dir
+
+sed '/from flask_cors import CORS/d' app.py > prod_app.py
+sed -i '' '/CORS(app)/d' prod_app.py
+mv app.py dev_app.py
+mv prod_app.py app.py
 
 cd frontend
 
@@ -21,3 +27,7 @@ find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec se
 find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/https:\/\/olcscf80xa.execute-api.us-east-1.amazonaws.com\/dev/http:\/\/127.0.0.1:5000/g' {} +
 
 cd ..
+
+mv dev_app.py app.py
+
+zappa tail dev
