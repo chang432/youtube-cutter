@@ -149,11 +149,6 @@ function App() {
                                     value={startTime}
                                     onChange={handleStartTimeTextChange}
                                     className= "input input-bordered input-primary p-8 "
-                                    // style={{
-                                    //     border: '1px solid #ccc',
-                                    //     borderRadius: '4px',
-                                    //     padding: '8px',
-                                    // }}
                                 />
                             </label>
                             <label>
@@ -163,11 +158,6 @@ function App() {
                                     value={endTime}
                                     onChange={handleEndTimeTextChange}
                                     className= "input input-bordered input-primary p-8 "
-                                    // style={{
-                                    //     border: '1px solid #ccc',
-                                    //     borderRadius: '4px',
-                                    //     padding: '8px',
-                                    // }}
                                 />
                             </label>
                         </div>
