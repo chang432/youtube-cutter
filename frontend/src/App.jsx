@@ -13,6 +13,8 @@ function App() {
     const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
+    const [displayCutterUI, setDisplayCutterUI] = useState(false);
+    const [displayCutterAudioPlayer, setDisplayCutterAudioPlayer] = useState(false);
 
     useEffect(()=>{
         axios.get('http://127.0.0.1:5000/flask/hello').then(response => {
@@ -35,6 +37,7 @@ function App() {
         })
         .then((res) => {
             // console.log("return post: " + res.data)
+            setDisplayCutterUI(true)
             const location = res.data;
             console.log(location)
             setAudioSrc(location.url);
@@ -72,6 +75,7 @@ function App() {
             // Display
             console.log("return post: " + res.data)
             setCutAudioSrc(res.data.url);
+            setDisplayCutterAudioPlayer(true)
 
             // Download video
             // const link = document.createElement('a');
@@ -127,12 +131,50 @@ function App() {
                         })`,
                     }}
                 >
-                    <div className="w-full h-full flex  justify-center items-center backdrop-brightness-50 backdrop-blur-sm ">
+                    <div className="w-full h-full flex flex-col  justify-center items-center backdrop-brightness-50 backdrop-blur-sm ">
                         <input
                             type="text"
+                            value={fullDownloadYoutubeId}
+                            onChange={handleFullVideoTextChange}
                             placeholder="Paste Youtube link here"
                             className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
                         />
+                        <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
+                        <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
+                        <div className="mt-5" hidden={!displayCutterUI}>
+                            <label>
+                                START TIME:
+                                <input 
+                                    type="text" 
+                                    value={startTime}
+                                    onChange={handleStartTimeTextChange}
+                                    className= "input input-bordered input-primary p-8 "
+                                    // style={{
+                                    //     border: '1px solid #ccc',
+                                    //     borderRadius: '4px',
+                                    //     padding: '8px',
+                                    // }}
+                                />
+                            </label>
+                            <label>
+                                END TIME:
+                                <input 
+                                    type="text" 
+                                    value={endTime}
+                                    onChange={handleEndTimeTextChange}
+                                    className= "input input-bordered input-primary p-8 "
+                                    // style={{
+                                    //     border: '1px solid #ccc',
+                                    //     borderRadius: '4px',
+                                    //     padding: '8px',
+                                    // }}
+                                />
+                            </label>
+                        </div>
+                        {displayCutterUI && 
+                        <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>}
+                        {displayCutterAudioPlayer &&
+                        <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
                     </div>
                 </div>
                 {/* <img className=" bg-cover blur-lg" src={drakeIceSpice} />
@@ -142,70 +184,6 @@ function App() {
                     className="input input-bordered input-secondary w-full max-w-2xl input-lg "
                 /> */}
             </div>
-            <p className=" text-6xl">Testing</p>
-            <div>
-                <div>
-                    <button onClick={handleFullVideoClick}>DISPLAY</button>
-                </div>
-                <label>
-                    YouTube ID:
-                    <input 
-                        type="text" 
-                        value={fullDownloadYoutubeId}
-                        onChange={handleFullVideoTextChange}
-                        style={{
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            padding: '8px',
-                        }}
-                    />
-                </label>
-            </div>
-            <div>
-                <audio id="audio" controls src={audioSrc} />
-            </div>
-            <div>
-                <button onClick={handleCutVideoClick}>CUT</button>
-            </div>
-            <div>
-                <label>
-                    START TIME:
-                    <input 
-                        type="text" 
-                        value={startTime}
-                        onChange={handleStartTimeTextChange}
-                        style={{
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            padding: '8px',
-                        }}
-                    />
-                </label>
-                <label>
-                    END TIME:
-                    <input 
-                        type="text" 
-                        value={endTime}
-                        onChange={handleEndTimeTextChange}
-                        style={{
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            padding: '8px',
-                        }}
-                    />
-                </label>
-            </div>
-            <div>
-                <audio id="cut_audio" controls src={cutAudioSrc} />
-            </div>
-            <div>
-                <button onClick={handleTestClick}>TEST</button>
-            </div>
-            <p>React + Flask Tutorial</p>
-            <div>{getMessage.status === 200 ? 
-            <h3>{getMessage.data.message}</h3>
-            :
-            <h3>LOADING</h3>}</div>
         </div>
     );
 }
