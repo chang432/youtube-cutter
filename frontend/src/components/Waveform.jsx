@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import WaveSurfer from "wavesurfer.js";
 // import "wavesurfer.js/dist/wavesurfer.css";
-import beat from "../assets/beat.mp3";
+// import beat from "../assets/beat.mp3";
 
-const Waveform = () => {
+const Waveform = ({audioSrc}) => {
     const waveformRef = useRef(null);
     const handleButtonClick = () => {
         const waveform = WaveSurfer.create({
@@ -12,14 +12,14 @@ const Waveform = () => {
             progressColor: "purple",
         });
 
-        waveform.load(beat);
+        waveform.load(audioSrc);
     };
 
     return (
         <div>
-            <button onClick={handleButtonClick} className=" btn">
+            {/* <button onClick={handleButtonClick} className=" btn">
                 Generate Waveform
-            </button>
+            </button> */}
             <div ref={waveformRef} />
         </div>
     );

@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import reactLogo from "./assets/react.svg";
 import drakeIceSpice from "./assets/Ice-Spice-Drake.jpeg";
 import axios from "axios";
-import YoutubePlayer from "./components/YoutubePlayer";
-import Waveform from "./components/Waveform";
+import WaveSurfer from "wavesurfer.js";
 
 function App() {
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
@@ -15,6 +14,7 @@ function App() {
     const [endTime, setEndTime] = useState('');
     const [displayCutterUI, setDisplayCutterUI] = useState(false);
     const [displayCutterAudioPlayer, setDisplayCutterAudioPlayer] = useState(false);
+    const waveSurferRef = useRef(null);
 
     useEffect(()=>{
         axios.get('http://127.0.0.1:5000/flask/hello').then(response => {
@@ -24,6 +24,32 @@ function App() {
         console.log(error)
         })
     }, [])
+
+    useEffect(() => {
+    if (audioSrc) {
+      // Instantiate WaveSurfer
+      console.log(waveSurferRef.current)
+      const wavesurfer = WaveSurfer.create({
+        container: waveSurferRef.current,
+        waveColor: "violet",
+        progressColor: "purple",
+        // ...other WaveSurfer options
+      });
+
+      // Load audio source
+      wavesurfer.load(audioSrc);
+    }
+    }, [audioSrc]);
+
+    // const handleButtonClick = (url) => {
+    //     const waveform = WaveSurfer.create({
+    //         container: waveformRef.current,
+    //         waveColor: "violet",
+    //         progressColor: "purple",
+    //     });
+
+    //     waveform.load(url);
+    // };
 
     function handleFullVideoClick() {
         console.log("Displaying full video")
@@ -37,10 +63,10 @@ function App() {
         })
         .then((res) => {
             // console.log("return post: " + res.data)
-            setDisplayCutterUI(true)
             const location = res.data;
             console.log(location)
             setAudioSrc(location.url);
+            setDisplayCutterUI(true)
         })
         .catch((error) => {
             console.log("axios error:", error);
@@ -141,6 +167,7 @@ function App() {
                         />
                         <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
                         <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
+                        {/* {displayCutterUI && <Waveform audioSrc={audioSrc}></Waveform>} */}
                         <div className="mt-5" hidden={!displayCutterUI}>
                             <label>
                                 START TIME:
@@ -174,6 +201,7 @@ function App() {
                     className="input input-bordered input-secondary w-full max-w-2xl input-lg "
                 /> */}
             </div>
+            {displayCutterUI && <div ref={waveSurferRef} />}
         </div>
     );
 }
