@@ -14,7 +14,7 @@ class CutDownloadHandler(Resource):
     end_time = data.get('end_time')
     
     s3_client = boto3.client('s3')
-    bucket_name = "https://youtube-cutter-static-files.s3.amazonaws.com"
+    bucket_name = "youtube-cutter-static-files.s3.amazonaws.com"
 
     # downloaded full file from s3 (previously uploaded)
     full_file = yt_id + ".mp3"
