@@ -138,61 +138,45 @@ function App() {
                 <div className="flex-1">
                     <a className="btn btn-ghost text-xl ">Youtube Downloader</a>
                 </div>
-                <div
-                    onClick={() => {
-                        setIceSpiceMode(!iceSpiceMode);
-                    }}
-                    className=" btn btn-sm mx-5"
-                >
-                    Ice Spice Mode
-                </div>
             </div>
 
             <div className=" flex flex-col justify-center h-screen items-center">
-                <div
-                    className={`w-full h-screen bg-cover bg-center bg-primary-focus `}
-                    style={{
-                        backgroundImage: `url(${
-                            iceSpiceMode ? drakeIceSpice : null
-                        })`,
-                    }}
-                >
-                    <div className="w-full h-full flex flex-col  justify-center items-center backdrop-brightness-50 backdrop-blur-sm ">
-                        <input
-                            type="text"
-                            value={fullDownloadYoutubeId}
-                            onChange={handleFullVideoTextChange}
-                            placeholder="Paste Youtube link here"
-                            className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
-                        />
-                        <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
-                        <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
-                        {/* {displayCutterUI && <Waveform audioSrc={audioSrc}></Waveform>} */}
-                        <div className="mt-5" hidden={!displayCutterUI}>
-                            <label>
-                                START TIME:
-                                <input 
-                                    type="text" 
-                                    value={startTime}
-                                    onChange={handleStartTimeTextChange}
-                                    className= "input input-bordered input-primary p-8 "
-                                />
-                            </label>
-                            <label>
-                                END TIME:
-                                <input 
-                                    type="text" 
-                                    value={endTime}
-                                    onChange={handleEndTimeTextChange}
-                                    className= "input input-bordered input-primary p-8 "
-                                />
-                            </label>
-                        </div>
-                        {displayCutterUI && 
-                        <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>}
-                        {displayCutterAudioPlayer &&
-                        <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
+                <div className="w-full h-full flex flex-col  justify-center items-center backdrop-brightness-50 backdrop-blur-sm ">
+                    <input
+                        type="text"
+                        value={fullDownloadYoutubeId}
+                        onChange={handleFullVideoTextChange}
+                        placeholder="Paste Youtube link here"
+                        className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
+                    />
+                    <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
+                    {displayCutterUI && <div ref={waveSurferRef} />}
+                    <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
+                    {/* {displayCutterUI && <Waveform audioSrc={audioSrc}></Waveform>} */}
+                    <div className="mt-5" hidden={!displayCutterUI}>
+                        <label>
+                            START TIME:
+                            <input 
+                                type="text" 
+                                value={startTime}
+                                onChange={handleStartTimeTextChange}
+                                className= "input input-bordered input-primary p-8 "
+                            />
+                        </label>
+                        <label>
+                            END TIME:
+                            <input 
+                                type="text" 
+                                value={endTime}
+                                onChange={handleEndTimeTextChange}
+                                className= "input input-bordered input-primary p-8 "
+                            />
+                        </label>
                     </div>
+                    {displayCutterUI && 
+                    <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>}
+                    {displayCutterAudioPlayer &&
+                    <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
                 </div>
                 {/* <img className=" bg-cover blur-lg" src={drakeIceSpice} />
                 <input
@@ -201,7 +185,6 @@ function App() {
                     className="input input-bordered input-secondary w-full max-w-2xl input-lg "
                 /> */}
             </div>
-            {displayCutterUI && <div ref={waveSurferRef} />}
         </div>
     );
 }
