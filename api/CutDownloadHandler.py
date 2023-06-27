@@ -31,8 +31,11 @@ class CutDownloadHandler(Resource):
     # cutting file
     cut_file = f"/tmp/{yt_id}-cut.mp3" if audio_type == "MP3" else f"/tmp/{yt_id}-cut.wav"
     print(f'cutting {file_name} into {cut_file}')
-    ffmpeg_exec = "./binaries/ffmpeg" # local
-    # ffmpeg_exec = "/opt/bin/ffmpeg" # deployment
+    print(f"is deployment?: {os.environ['IS_DEPLOYMENT']}")
+    if os.environ["IS_DEPLOYMENT"] == "FALSE":
+        ffmpeg_exec = "./binaries/ffmpeg" # local
+    else:
+        ffmpeg_exec = "/opt/bin/ffmpeg" # deployment
     ffmpeg_command = f'{ffmpeg_exec} -i {file_name} -ss {start_time} -to {end_time} -y {cut_file}'
 
     try:
