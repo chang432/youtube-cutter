@@ -60,7 +60,10 @@ function App() {
     };
 
     function handleCutVideoClick() {
-        console.log("downloading cut video")
+        var audio_type = document.getElementById("mp3_btn").checked ? "MP3" : "WAV"
+        
+        console.log("downloading cut video in " + audio_type + " form")
+
         axios({
             url: "http://127.0.0.1:5000/handle_cut",
             method: "post",
@@ -68,7 +71,8 @@ function App() {
             data: {
                 yt_id: fullDownloadYoutubeId,
                 start_time: startTime,
-                end_time: endTime
+                end_time: endTime,
+                audio_type: audio_type,
             }
         })
         .then((res) => {
@@ -78,10 +82,10 @@ function App() {
             setDisplayCutterAudioPlayer(true)
 
             // Download video
-            // const link = document.createElement('a');
-            // link.href = res.data;
-            // link.download = "test.mp3";
-            // link.click();
+            const link = document.createElement('a');
+            link.href = res.data.url;
+            link.download = audio_type ? "test.mp3" : "test.wav"
+            link.click();
         })
         .catch((error) => {
             console.log("axios error:", error);
@@ -162,9 +166,16 @@ function App() {
                             </label>
                         </div>
                         {displayCutterUI && 
-                        <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>}
+                        <div> 
+                            <div className="btn-group">
+                                <input id="mp3_btn" type="radio" name="options" data-title="MP3" className="btn" checked />
+                                <input id="wav_btn" type="radio" name="options" data-title="WAV" className="btn" />
+                            </div>
+                            <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>
+                        </div>}
                         {displayCutterAudioPlayer &&
                         <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
+                        
                     </div>
                 </div>
                 {/* <img className=" bg-cover blur-lg" src={drakeIceSpice} />

@@ -12,7 +12,8 @@ class CutDownloadHandler(Resource):
     yt_id = data.get('yt_id')
     start_time = data.get('start_time')
     end_time = data.get('end_time')
-    
+    audio_type = data.get('audio_type')
+
     s3_client = boto3.client('s3')
     bucket_name = "youtube-cutter-static-files.s3.amazonaws.com"
 
@@ -28,7 +29,7 @@ class CutDownloadHandler(Resource):
         print(f"Error occurred while downloading file from S3: {e}")
 
     # cutting file
-    cut_file = f"/tmp/{yt_id}-cut.mp3"
+    cut_file = f"/tmp/{yt_id}-cut.mp3" if audio_type == "MP3" else f"/tmp/{yt_id}-cut.wav"
     print(f'cutting {file_name} into {cut_file}')
     ffmpeg_exec = "./binaries/ffmpeg" # local
     # ffmpeg_exec = "/opt/bin/ffmpeg" # deployment
@@ -43,7 +44,7 @@ class CutDownloadHandler(Resource):
     # uploading cut file to s3
     s3 = boto3.resource('s3')
     bucket_name = 'youtube-cutter-static-files'
-    file_key = f"audio/{yt_id}-cut.mp3"
+    file_key = f"audio/{yt_id}-cut.mp3" if audio_type == "MP3" else f"audio/{yt_id}-cut.wav"
     # metadata = {'title': yt.title}
     s3.meta.client.upload_file(cut_file, bucket_name, file_key, ExtraArgs={'ACL': 'public-read'})
 
