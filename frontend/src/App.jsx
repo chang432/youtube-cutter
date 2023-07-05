@@ -27,12 +27,19 @@ function App() {
 
     function handleFullVideoClick() {
         console.log("Displaying full video")
+        
+        var youtube_id = fullDownloadYoutubeId
+        if (fullDownloadYoutubeId.includes("youtube")) {
+            youtube_id = fullDownloadYoutubeId.substring(fullDownloadYoutubeId.indexOf("watch?v=")+8)
+        }
+        console.log("youtube id is" + youtube_id)
+
         axios({
             url: "http://127.0.0.1:5000/handle_full",
             method: "post",
             responseType: "json",
             data: {
-                yt_id: fullDownloadYoutubeId,
+                yt_id: youtube_id,
             }
         })
         .then((res) => {
