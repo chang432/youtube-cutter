@@ -101,7 +101,7 @@ function App() {
         
         console.log("downloading cut video in " + audio_type + " form")
 
-        youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
+        var youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
 
         axios({
             url: "http://127.0.0.1:5000/handle_cut",
@@ -191,7 +191,14 @@ function App() {
                         </label>
                     </div>
                     {displayCutterUI && 
-                    <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>}
+                    <div> 
+                        <div className="btn-group">
+                            <input id="mp3_btn" type="radio" name="options" data-title="MP3" className="btn" checked />
+                            <input id="wav_btn" type="radio" name="options" data-title="WAV" className="btn" />
+                        </div>
+                        <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>
+                    </div>
+                    }
                     {displayCutterAudioPlayer &&
                     <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
                 </div>
