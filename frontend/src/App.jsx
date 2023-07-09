@@ -158,56 +158,47 @@ function App() {
             </div>
 
             <div className=" flex flex-col justify-center h-screen items-center">
-                <div className="w-full h-full flex flex-col  justify-center items-center backdrop-brightness-50 backdrop-blur-sm ">
-                    <input
-                        type="text"
-                        value={fullDownloadYoutubeId}
-                        onChange={handleFullVideoTextChange}
-                        placeholder="Paste Youtube link here"
-                        className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
-                    />
-                    <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
-                    {displayCutterUI && <div ref={waveSurferRef} />}
-                    <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
-                    {/* {displayCutterUI && <Waveform audioSrc={audioSrc}></Waveform>} */}
-                    <div className="mt-5" hidden={!displayCutterUI}>
-                        <label>
-                            START TIME:
-                            <input 
-                                type="text" 
-                                value={startTime}
-                                onChange={handleStartTimeTextChange}
-                                className= "input input-bordered input-primary p-8 "
-                            />
-                        </label>
-                        <label>
-                            END TIME:
-                            <input 
-                                type="text" 
-                                value={endTime}
-                                onChange={handleEndTimeTextChange}
-                                className= "input input-bordered input-primary p-8 "
-                            />
-                        </label>
-                    </div>
-                    {displayCutterUI && 
-                    <div> 
-                        <div className="btn-group">
-                            <input id="mp3_btn" type="radio" name="options" data-title="MP3" className="btn" checked />
-                            <input id="wav_btn" type="radio" name="options" data-title="WAV" className="btn" />
-                        </div>
-                        <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>
-                    </div>
-                    }
-                    {displayCutterAudioPlayer &&
-                    <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
-                </div>
-                {/* <img className=" bg-cover blur-lg" src={drakeIceSpice} />
                 <input
                     type="text"
+                    value={fullDownloadYoutubeId}
+                    onChange={handleFullVideoTextChange}
                     placeholder="Paste Youtube link here"
-                    className="input input-bordered input-secondary w-full max-w-2xl input-lg "
-                /> */}
+                    className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
+                />
+                <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
+                {displayCutterUI && <div ref={waveSurferRef} style={{ width: '80%', height: '200px' }}/>}
+                <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
+                <div className="mt-5" hidden={!displayCutterUI}>
+                    <label>
+                        START TIME:
+                        <input 
+                            type="text" 
+                            value={startTime}
+                            onChange={handleStartTimeTextChange}
+                            className= "input input-bordered input-primary p-8 "
+                        />
+                    </label>
+                    <label>
+                        END TIME:
+                        <input 
+                            type="text" 
+                            value={endTime}
+                            onChange={handleEndTimeTextChange}
+                            className= "input input-bordered input-primary p-8 "
+                        />
+                    </label>
+                </div>
+                {displayCutterUI && 
+                <div> 
+                    <div className="btn-group">
+                        <input id="mp3_btn" type="radio" name="options" data-title="MP3" className="btn" checked />
+                        <input id="wav_btn" type="radio" name="options" data-title="WAV" className="btn" />
+                    </div>
+                    <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>
+                </div>
+                }
+                {displayCutterAudioPlayer &&
+                <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
             </div>
         </div>
     );
