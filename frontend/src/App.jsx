@@ -25,14 +25,19 @@ function App() {
         })
     }, [])
 
+    function convertYoutubeUrlToId(url) {
+        var youtube_id = url
+        if (url.includes("youtube")) {
+            youtube_id = url.substring(url.indexOf("watch?v=")+8)
+        }
+        console.log("youtube id is: " + youtube_id)
+        return youtube_id
+    }
+
     function handleFullVideoClick() {
         console.log("Displaying full video")
         
-        var youtube_id = fullDownloadYoutubeId
-        if (fullDownloadYoutubeId.includes("youtube")) {
-            youtube_id = fullDownloadYoutubeId.substring(fullDownloadYoutubeId.indexOf("watch?v=")+8)
-        }
-        console.log("youtube id is" + youtube_id)
+        var youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
 
         axios({
             url: "http://127.0.0.1:5000/handle_full",
@@ -71,12 +76,14 @@ function App() {
         
         console.log("downloading cut video in " + audio_type + " form")
 
+        youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
+
         axios({
             url: "http://127.0.0.1:5000/handle_cut",
             method: "post",
             responseType: "json",
             data: {
-                yt_id: fullDownloadYoutubeId,
+                yt_id: youtube_id,
                 start_time: startTime,
                 end_time: endTime,
                 audio_type: audio_type,
