@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import reactLogo from "./assets/react.svg";
 import drakeIceSpice from "./assets/Ice-Spice-Drake.jpeg";
+import ./App.css
 import axios from "axios";
 import WaveSurfer from "wavesurfer.js";
 
@@ -25,19 +26,28 @@ function App() {
         })
     }, [])
 
+    function convertYoutubeUrlToId(url) {
+        var youtube_id = url
+        if (url.includes("youtube")) {
+            youtube_id = url.substring(url.indexOf("watch?v=")+8)
+        }
+        console.log("youtube id is: " + youtube_id)
+        return youtube_id
+    }
+
     useEffect(() => {
     if (audioSrc) {
-      // Instantiate WaveSurfer
-      console.log(waveSurferRef.current)
-      const wavesurfer = WaveSurfer.create({
-        container: waveSurferRef.current,
-        waveColor: "violet",
-        progressColor: "purple",
-        // ...other WaveSurfer options
-      });
+        // Instantiate WaveSurfer
+        console.log(waveSurferRef.current)
+        const wavesurfer = WaveSurfer.create({
+            container: waveSurferRef.current,
+            waveColor: "violet",
+            progressColor: "purple",
+            // ...other WaveSurfer options
+        });
 
-      // Load audio source
-      wavesurfer.load(audioSrc);
+        // Load audio source
+        wavesurfer.load(audioSrc);
     }
     }, [audioSrc]);
 
@@ -53,12 +63,15 @@ function App() {
 
     function handleFullVideoClick() {
         console.log("Displaying full video")
+
+        var youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
+
         axios({
             url: "http://127.0.0.1:5000/handle_full",
             method: "post",
             responseType: "json",
             data: {
-                yt_id: fullDownloadYoutubeId,
+                yt_id: youtube_id,
             }
         })
         .then((res) => {
@@ -86,15 +99,21 @@ function App() {
     };
 
     function handleCutVideoClick() {
-        console.log("downloading cut video")
+        var audio_type = document.getElementById("mp3_btn").checked ? "MP3" : "WAV"
+        
+        console.log("downloading cut video in " + audio_type + " form")
+
+        youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
+
         axios({
             url: "http://127.0.0.1:5000/handle_cut",
             method: "post",
             responseType: "json",
             data: {
-                yt_id: fullDownloadYoutubeId,
+                yt_id: youtube_id,
                 start_time: startTime,
-                end_time: endTime
+                end_time: endTime,
+                audio_type: audio_type,
             }
         })
         .then((res) => {
@@ -104,10 +123,10 @@ function App() {
             setDisplayCutterAudioPlayer(true)
 
             // Download video
-            // const link = document.createElement('a');
-            // link.href = res.data;
-            // link.download = "test.mp3";
-            // link.click();
+            const link = document.createElement('a');
+            link.href = res.data.url;
+            link.download = audio_type ? "test.mp3" : "test.wav"
+            link.click();
         })
         .catch((error) => {
             console.log("axios error:", error);

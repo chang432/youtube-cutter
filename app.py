@@ -5,12 +5,21 @@ from api.HelloApiHandler import HelloApiHandler
 from api.FullDownloadHandler import FullDownloadHandler
 from api.CutDownloadHandler import CutDownloadHandler
 import os
-from flask_cors import CORS
 import boto3
 import subprocess
+import os
+
+# env variable for local or deployment build
+os.environ["IS_DEPLOYMENT"] = "FALSE"
+
+if os.environ["IS_DEPLOYMENT"] == "FALSE": 
+    from flask_cors import CORS
 
 app = Flask(__name__, template_folder='frontend/dist', static_folder='frontend/dist/assets')
-CORS(app)
+
+if os.environ["IS_DEPLOYMENT"] == "FALSE": 
+    CORS(app)
+
 app.config['FLASKS3_BUCKET_NAME'] = 'youtube-cutter-static-files'
 s3 = FlaskS3(app)
 api = Api(app)

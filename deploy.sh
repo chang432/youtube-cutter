@@ -1,8 +1,8 @@
 #!/bin/bash
 # run from root dir
 
-sed '/from flask_cors import CORS/d' app.py > prod_app.py
-sed -i '' '/CORS(app)/d' prod_app.py
+sed 's/os\.environ\["IS_DEPLOYMENT"] = "FALSE"/os\.environ["IS_DEPLOYMENT"] = "TRUE"/' app.py > prod_app.py
+
 mv app.py dev_app.py
 mv prod_app.py app.py
 

@@ -6,9 +6,10 @@ import os
 
 class FullDownloadHandler(Resource):
   def post(self):
+    print("[CUSTOM] STARTING FullDownloadHandler.py")
     data = request.get_json()
     yt_id = data.get('yt_id')
-    print(f"yt_id is {yt_id}")
+    print(f"[CUSTOM] yt_id is {yt_id}")
 
     s3 = boto3.resource('s3')
 
@@ -21,14 +22,14 @@ class FullDownloadHandler(Resource):
     new_file = f"/tmp/{yt_id}.mp3"
     os.rename(out_file, new_file)
 
-    print(f"download complete of {new_file}! Now uploading to s3...")
+    print(f"[CUSTOM] download from youtube complete of {new_file}! Now uploading to s3...")
 
     bucket_name = 'youtube-cutter-static-files'
     file_key = f"audio/{yt_id}.mp3"
-    metadata = {'title': yt.title}
-    s3.meta.client.upload_file(new_file, bucket_name, file_key, ExtraArgs={'ACL': 'public-read', 'Metadata': metadata})
+    s3.meta.client.upload_file(new_file, bucket_name, file_key, ExtraArgs={'ACL': 'public-read'})
 
-    print(f"upload to s3 complete! Now sending s3 url as response...")
+    print(f"[CUSTOM] upload to {bucket_name}/{file_key} complete! Now sending s3 url as response...")
     location = f"https://youtube-cutter-static-files.s3.amazonaws.com/{file_key}"
 
+    print("[CUSTOM] FINISHING FullDownloadHandler.py")
     return {"url": location}
