@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import reactLogo from "./assets/react.svg";
-import drakeIceSpice from "./assets/Ice-Spice-Drake.jpeg";
-import ./App.css
 import axios from "axios";
 import WaveSurfer from "wavesurfer.js";
 
