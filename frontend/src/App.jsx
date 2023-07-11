@@ -49,16 +49,6 @@ function App() {
     }
     }, [audioSrc]);
 
-    // const handleButtonClick = (url) => {
-    //     const waveform = WaveSurfer.create({
-    //         container: waveformRef.current,
-    //         waveColor: "violet",
-    //         progressColor: "purple",
-    //     });
-
-    //     waveform.load(url);
-    // };
-
     function handleFullVideoClick() {
         console.log("Displaying full video")
 

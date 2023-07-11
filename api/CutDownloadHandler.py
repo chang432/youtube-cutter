@@ -38,7 +38,7 @@ class CutDownloadHandler(Resource):
         ffmpeg_exec = "./binaries/ffmpeg" # local
     else:
         ffmpeg_exec = "/opt/bin/ffmpeg" # deployment
-    ffmpeg_command = f'{ffmpeg_exec} -i {file_name} -ss {start_time} -to {end_time} -y {cut_file}'
+    ffmpeg_command = f'{ffmpeg_exec} -i "{file_name}" -ss "{start_time}" -to "{end_time}" -y "{cut_file}"'
 
     try:
         subprocess.check_output(ffmpeg_command, shell=True)
