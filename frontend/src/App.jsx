@@ -14,6 +14,7 @@ function App() {
     const [displayCutterUI, setDisplayCutterUI] = useState(false);
     const [displayCutterAudioPlayer, setDisplayCutterAudioPlayer] = useState(false);
     const waveSurferRef = useRef(null);
+    const [waver, setWaver] = useState(null);
 
     useEffect(()=>{
         axios.get('http://127.0.0.1:5000/flask/hello').then(response => {
@@ -34,20 +35,26 @@ function App() {
     }
 
     useEffect(() => {
-    if (audioSrc) {
-        // Instantiate WaveSurfer
-        console.log(waveSurferRef.current)
-        const wavesurfer = WaveSurfer.create({
-            container: waveSurferRef.current,
-            waveColor: "violet",
-            progressColor: "purple",
-            // ...other WaveSurfer options
-        });
+        if (audioSrc) {
+            // Instantiate WaveSurfer
+            console.log(waveSurferRef.current)
+            const wavesurfer = WaveSurfer.create({
+                container: waveSurferRef.current,
+                waveColor: "violet",
+                progressColor: "purple",
+                // ...other WaveSurfer options
+            });
 
-        // Load audio source
-        wavesurfer.load(audioSrc);
-    }
+            // Load audio source
+            wavesurfer.load(audioSrc);
+
+            setWaver(wavesurfer);
+        }
     }, [audioSrc]);
+
+    function testClick() {
+        waver?.playPause();
+    }
 
     function handleFullVideoClick() {
         console.log("Displaying full video")
@@ -157,6 +164,7 @@ function App() {
                 />
                 <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
                 {displayCutterUI && <div ref={waveSurferRef} style={{ width: '80%', height: '200px' }}/>}
+                {displayCutterUI && <button className="btn mt-5" onClick={testClick}>HIT</button>}
                 <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
                 <div className="mt-5" hidden={!displayCutterUI}>
                     <label>
