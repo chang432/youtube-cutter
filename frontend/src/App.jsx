@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import reactLogo from "./assets/react.svg";
 import axios from "axios";
 import WaveSurfer from "wavesurfer.js";
+import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.js'
 
 function App() {
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
@@ -45,17 +46,27 @@ function App() {
                 // ...other WaveSurfer options
             });
 
+            // Add a region
+            const wsRegions = wavesurfer.registerPlugins([RegionsPlugin.create()])
+            wsRegions.addRegion({
+                start: 5, // Start time in seconds
+                end: 10, // End time in seconds
+                color: 'rgba(255, 0, 0, 0.3)', // Region color
+                drag: true, // Enable dragging the region
+                resize: true // Enable resizing the region
+            });
+
             // Load audio source
             wavesurfer.load(audioSrc);
 
-            wavesurfer.on('interaction', function () {
-                console.log("poop");
+            wavesurfer.on("interaction", function () {
+                setTimeout(() => {
+                    document.getElementById('current-time').innerText = formatSeconds(wavesurfer.getCurrentTime())
+                }, 0);
             });
 
             wavesurfer.on("audioprocess", function () {
-                
-                console.log(wavesurfer.getCurrentTime())
-                document.getElementById('current-time').innerText = wavesurfer.getCurrentTime().toFixed(1)
+                document.getElementById('current-time').innerText = formatSeconds(wavesurfer.getCurrentTime())
             });
 
             setWaver(wavesurfer);
@@ -69,7 +80,7 @@ function App() {
             hours = "0" + hours
         }
 
-        var minutes = (Math.floor(time / 60) - hours*3600).toString()
+        var minutes = (Math.floor(time / 60) - hours*60).toString()
         if (minutes.length == 1) {
             minutes = "0" + minutes
         }
@@ -79,15 +90,14 @@ function App() {
             seconds = "0" + seconds
         }
 
-        console.log(hours + ", " + minutes + ", " + seconds)
+        // console.log(hours + ", " + minutes + ", " + seconds)
         var res = hours + ":" + minutes + ":" + seconds
-        console.log(res)
+        
+        return res
     }
 
     function testClick() {
         waver?.playPause();
-        console.log(waver?.getCurrentTime())
-        formatSeconds(waver?.getCurrentTime())
     }
 
     function handleFullVideoClick() {
@@ -199,7 +209,7 @@ function App() {
                 <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
                 {displayCutterUI && <div ref={waveSurferRef} style={{ width: '80%', height: '20%', border: '1px solid black' }}/>}
                 {displayCutterUI && <button className="btn mt-5" onClick={testClick}>PLAY/PAUSE</button>}
-                {displayCutterUI && <span id="current-time">0.00</span>}
+                {displayCutterUI && <span id="current-time">00:00:00</span>}
                 <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
                 <div className="mt-5" hidden={!displayCutterUI}>
                     <label>
