@@ -48,12 +48,46 @@ function App() {
             // Load audio source
             wavesurfer.load(audioSrc);
 
+            wavesurfer.on('interaction', function () {
+                console.log("poop");
+            });
+
+            wavesurfer.on("audioprocess", function () {
+                
+                console.log(wavesurfer.getCurrentTime())
+                document.getElementById('current-time').innerText = wavesurfer.getCurrentTime().toFixed(1)
+            });
+
             setWaver(wavesurfer);
         }
     }, [audioSrc]);
 
+
+    function formatSeconds(time) {
+        var hours = Math.floor(time / 3600).toString()
+        if (hours.length == 1) {
+            hours = "0" + hours
+        }
+
+        var minutes = (Math.floor(time / 60) - hours*3600).toString()
+        if (minutes.length == 1) {
+            minutes = "0" + minutes
+        }
+
+        var seconds = Math.floor(time % 60).toString()
+        if (seconds.length == 1) {
+            seconds = "0" + seconds
+        }
+
+        console.log(hours + ", " + minutes + ", " + seconds)
+        var res = hours + ":" + minutes + ":" + seconds
+        console.log(res)
+    }
+
     function testClick() {
         waver?.playPause();
+        console.log(waver?.getCurrentTime())
+        formatSeconds(waver?.getCurrentTime())
     }
 
     function handleFullVideoClick() {
@@ -163,14 +197,15 @@ function App() {
                     className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
                 />
                 <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
-                {displayCutterUI && <div ref={waveSurferRef} style={{ width: '80%', height: '200px' }}/>}
-                {displayCutterUI && <button className="btn mt-5" onClick={testClick}>HIT</button>}
+                {displayCutterUI && <div ref={waveSurferRef} style={{ width: '80%', height: '20%', border: '1px solid black' }}/>}
+                {displayCutterUI && <button className="btn mt-5" onClick={testClick}>PLAY/PAUSE</button>}
+                {displayCutterUI && <span id="current-time">0.00</span>}
                 <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
                 <div className="mt-5" hidden={!displayCutterUI}>
                     <label>
                         START TIME:
                         <input 
-                            type="text" 
+                            type="text"
                             value={startTime}
                             onChange={handleStartTimeTextChange}
                             className= "input input-bordered input-primary p-8 "
