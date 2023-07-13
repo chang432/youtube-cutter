@@ -10,8 +10,8 @@ function App() {
     const [audioSrc, setAudioSrc] = useState("");
     const [cutAudioSrc, setCutAudioSrc] = useState("");
     const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState('');
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+    const [startTime, setStartTime] = useState('00:00:00');
+    const [endTime, setEndTime] = useState('00:00:00');
     const [displayCutterUI, setDisplayCutterUI] = useState(false);
     const [displayCutterAudioPlayer, setDisplayCutterAudioPlayer] = useState(false);
     const waveSurferRef = useRef(null);
@@ -22,7 +22,7 @@ function App() {
         console.log("SUCCESS", response)
         setGetMessage(response)
         }).catch(error => {
-        console.log(error)
+            console.log(error)
         })
     }, [])
 
@@ -46,54 +46,92 @@ function App() {
                 // ...other WaveSurfer options
             });
 
-            // Add a region
-            const wsRegions = wavesurfer.registerPlugins([RegionsPlugin.create()])
-            wsRegions.addRegion({
-                start: 5, // Start time in seconds
-                end: 10, // End time in seconds
-                color: 'rgba(255, 0, 0, 0.3)', // Region color
-                drag: true, // Enable dragging the region
-                resize: true // Enable resizing the region
-            });
-
             // Load audio source
             wavesurfer.load(audioSrc);
 
+            // Add a region
+            const wsRegions = wavesurfer.registerPlugins([RegionsPlugin.create()])
+
+            wavesurfer.on("ready", function () {
+                try {
+                    setStartTime(formatSeconds(0));
+                    setEndTime(formatSeconds(wavesurfer.getDuration()));
+                } catch (e) {
+                    console.error(e)
+                }
+
+                wsRegions.addRegion({
+                    start: 0, // Start time in seconds
+                    end: 60, // End time in seconds
+                    color: 'rgba(255, 0, 0, 0.3)', // Region color
+                    drag: true, // Enable dragging the region
+                    resize: true // Enable resizing the region
+                });
+            });
+
+            wsRegions.on("region-updated", function (region) {
+                setStartTime(formatSeconds(region.start))
+                setEndTime(formatSeconds(region.end))
+            })
+
             wavesurfer.on("interaction", function () {
-                setTimeout(() => {
-                    document.getElementById('current-time').innerText = formatSeconds(wavesurfer.getCurrentTime())
-                }, 0);
+                try {
+                    setTimeout(() => {
+                        document.getElementById('current-time').innerText = formatSeconds(wavesurfer.getCurrentTime())
+                    }, 0);
+                } catch (e) {
+                    console.error(e)
+                }
             });
 
             wavesurfer.on("audioprocess", function () {
-                document.getElementById('current-time').innerText = formatSeconds(wavesurfer.getCurrentTime())
+                try {
+                    document.getElementById('current-time').innerText = formatSeconds(wavesurfer.getCurrentTime())
+                } catch (e) {
+                    console.error(e)
+                }
             });
 
             setWaver(wavesurfer);
         }
     }, [audioSrc]);
 
-
     function formatSeconds(time) {
         var hours = Math.floor(time / 3600).toString()
         if (hours.length == 1) {
             hours = "0" + hours
+        }
+        if (hours.length > 2 || hours.length < 1) {
+            throw Error("hours cannot be greater than 99 or empty!")
+        } else if (!/^\d+$/.test(hours)) {
+            throw Error("hours must be an integer!")
         }
 
         var minutes = (Math.floor(time / 60) - hours*60).toString()
         if (minutes.length == 1) {
             minutes = "0" + minutes
         }
+        if (!/^\d+$/.test(minutes)) {
+            throw Error("minutes must be an integer!")
+        } else if (parseInt(minutes) < 0 || parseInt(minutes) > 60) {
+            throw Error("minutes are invalid!")
+        }
 
         var seconds = Math.floor(time % 60).toString()
         if (seconds.length == 1) {
             seconds = "0" + seconds
         }
+        if (!/^\d+$/.test(seconds)) {
+            throw Error("seconds must be an integer!")
+        } else if (parseInt(seconds) < 0 || parseInt(seconds) > 60) {
+            throw Error("seconds are invalid!")
+        }
 
-        // console.log(hours + ", " + minutes + ", " + seconds)
-        var res = hours + ":" + minutes + ":" + seconds
+        return hours + ":" + minutes + ":" + seconds
+    }
+
+    function unformatSeconds(formatted_time) {
         
-        return res
     }
 
     function testClick() {
@@ -210,7 +248,6 @@ function App() {
                 {displayCutterUI && <div ref={waveSurferRef} style={{ width: '80%', height: '20%', border: '1px solid black' }}/>}
                 {displayCutterUI && <button className="btn mt-5" onClick={testClick}>PLAY/PAUSE</button>}
                 {displayCutterUI && <span id="current-time">00:00:00</span>}
-                <audio className="mt-5" id="audio" hidden={!displayCutterUI} controls src={audioSrc} />
                 <div className="mt-5" hidden={!displayCutterUI}>
                     <label>
                         START TIME:
