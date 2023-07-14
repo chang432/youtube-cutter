@@ -16,6 +16,24 @@ function App() {
     const [displayCutterAudioPlayer, setDisplayCutterAudioPlayer] = useState(false);
     const waveSurferRef = useRef(null);
     const [waver, setWaver] = useState(null);
+    const [waverRegion, setWaverRegion] = useState(null);
+    let clickedInsideStartInputBox = false;
+    let clickedInsideEndInputBox = false;
+
+    const startTimeRef = useRef(startTime);
+    useEffect(() => {
+        startTimeRef.current = startTime; 
+    }, [startTime]);
+
+    const endTimeRef = useRef(endTime);
+    useEffect(() => {
+        endTimeRef.current = endTime; 
+    }, [endTime]);
+
+    const waverRegionRef = useRef(waverRegion);
+    useEffect(() => {
+        waverRegionRef.current = waverRegion;
+    }, [waverRegion]);
 
     useEffect(()=>{
         axios.get('http://127.0.0.1:5000/flask/hello').then(response => {
@@ -27,13 +45,63 @@ function App() {
     }, [])
 
     function convertYoutubeUrlToId(url) {
-        var youtube_id = url
+        let youtube_id = url
         if (url.includes("youtube")) {
             youtube_id = url.substring(url.indexOf("watch?v=")+8)
         }
         console.log("youtube id is: " + youtube_id)
         return youtube_id
     }
+
+    useEffect(() => {
+        let inputElement = document.getElementById("startTimeInput");
+
+        inputElement.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                console.log("startTimeInput enter pressed: " + startTimeRef.current + ", " + waverRegionRef.current)
+                waverRegionRef.current.update({start: unformatSeconds(startTimeRef.current)})
+            }
+        });
+
+        inputElement.addEventListener('click', () => {
+            clickedInsideStartInputBox = true;
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!inputElement.contains(event.target) && clickedInsideStartInputBox) {
+                // Execute your code here
+                console.log("startTimeInput outside input box pressed: " + startTimeRef.current + ", " + waverRegionRef.current)
+                waverRegionRef.current.update({start: unformatSeconds(startTimeRef.current)})
+
+                clickedInsideStartInputBox = false
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        let inputElement = document.getElementById("endTimeInput");
+
+        inputElement.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                console.log("endTimeInput enter pressed: " + endTimeRef.current + ", " + waverRegionRef.current)
+                waverRegionRef.current.update({end: unformatSeconds(endTimeRef.current)})
+            }
+        });
+
+        inputElement.addEventListener('click', () => {
+            clickedInsideEndInputBox = true;
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!inputElement.contains(event.target) && clickedInsideEndInputBox) {
+                // Execute your code here
+                console.log("endTimeInput outside input box pressed: " + endTimeRef.current + ", " + waverRegionRef.current)
+                waverRegionRef.current.update({end: unformatSeconds(endTimeRef.current)})
+
+                clickedInsideEndInputBox = false
+            }
+        });
+    }, []);
 
     useEffect(() => {
         if (audioSrc) {
@@ -50,7 +118,7 @@ function App() {
             wavesurfer.load(audioSrc);
 
             // Add a region
-            const wsRegions = wavesurfer.registerPlugins([RegionsPlugin.create()])
+            wavesurfer.registerPlugins([RegionsPlugin.create()])
 
             wavesurfer.on("ready", function () {
                 try {
@@ -60,16 +128,18 @@ function App() {
                     console.error(e)
                 }
 
-                wsRegions.addRegion({
+                const wsRegion = wavesurfer.addRegion({
                     start: 0, // Start time in seconds
                     end: 60, // End time in seconds
                     color: 'rgba(255, 0, 0, 0.3)', // Region color
                     drag: true, // Enable dragging the region
                     resize: true // Enable resizing the region
                 });
+
+                setWaverRegion(wsRegion)
             });
 
-            wsRegions.on("region-updated", function (region) {
+            wavesurfer.on("region-updated", function (region) {
                 setStartTime(formatSeconds(region.start))
                 setEndTime(formatSeconds(region.end))
             })
@@ -96,32 +166,41 @@ function App() {
         }
     }, [audioSrc]);
 
+    function strIsNotNumber(str) {
+        if (/^\d+$/.test(str)) {
+            return false
+        }
+        return true
+    }
+
     function formatSeconds(time) {
-        var hours = Math.floor(time / 3600).toString()
+        // X seconds -> HH:MM:SS
+
+        let hours = Math.floor(time / 3600).toString()
         if (hours.length == 1) {
             hours = "0" + hours
         }
         if (hours.length > 2 || hours.length < 1) {
             throw Error("hours cannot be greater than 99 or empty!")
-        } else if (!/^\d+$/.test(hours)) {
+        } else if (strIsNotNumber(hours)) {
             throw Error("hours must be an integer!")
         }
 
-        var minutes = (Math.floor(time / 60) - hours*60).toString()
+        let minutes = (Math.floor(time / 60) - hours*60).toString()
         if (minutes.length == 1) {
             minutes = "0" + minutes
         }
-        if (!/^\d+$/.test(minutes)) {
+        if (strIsNotNumber(minutes)) {
             throw Error("minutes must be an integer!")
         } else if (parseInt(minutes) < 0 || parseInt(minutes) > 60) {
             throw Error("minutes are invalid!")
         }
 
-        var seconds = Math.floor(time % 60).toString()
+        let seconds = Math.floor(time % 60).toString()
         if (seconds.length == 1) {
             seconds = "0" + seconds
         }
-        if (!/^\d+$/.test(seconds)) {
+        if (strIsNotNumber(seconds)) {
             throw Error("seconds must be an integer!")
         } else if (parseInt(seconds) < 0 || parseInt(seconds) > 60) {
             throw Error("seconds are invalid!")
@@ -131,7 +210,16 @@ function App() {
     }
 
     function unformatSeconds(formatted_time) {
+        // HH:MM:SS -> X seconds
+        let times = formatted_time.split(":")
+        if (strIsNotNumber(times[0]) || strIsNotNumber(times[1]) || strIsNotNumber(times[2])) {
+            throw Error("one of the hours, minutes, or seconds are not formatted correctly")
+        }
         
+        let hours = parseInt(times[0])
+        let minutes = parseInt(times[1])
+        let seconds = parseInt(times[2])
+        return hours*3600 + minutes*60 + seconds
     }
 
     function testClick() {
@@ -141,7 +229,7 @@ function App() {
     function handleFullVideoClick() {
         console.log("Displaying full video")
 
-        var youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
+        let youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
 
         axios({
             url: "http://127.0.0.1:5000/handle_full",
@@ -176,11 +264,11 @@ function App() {
     };
 
     function handleCutVideoClick() {
-        var audio_type = document.getElementById("mp3_btn").checked ? "MP3" : "WAV"
+        let audio_type = document.getElementById("mp3_btn").checked ? "MP3" : "WAV"
         
         console.log("downloading cut video in " + audio_type + " form")
 
-        var youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
+        let youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
 
         axios({
             url: "http://127.0.0.1:5000/handle_cut",
@@ -252,6 +340,7 @@ function App() {
                     <label>
                         START TIME:
                         <input 
+                            id="startTimeInput"
                             type="text"
                             value={startTime}
                             onChange={handleStartTimeTextChange}
@@ -261,6 +350,7 @@ function App() {
                     <label>
                         END TIME:
                         <input 
+                            id="endTimeInput"
                             type="text" 
                             value={endTime}
                             onChange={handleEndTimeTextChange}
