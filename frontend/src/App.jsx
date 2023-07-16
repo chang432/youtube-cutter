@@ -222,8 +222,13 @@ function App() {
         return hours*3600 + minutes*60 + seconds
     }
 
-    function testClick() {
+    function playPauseClick() {
         waver?.playPause();
+    }
+
+    function playLoopClick() {
+        waver?.setCurrentTime(unformatSeconds(startTimeRef.current))
+        waver?.play();
     }
 
     function handleFullVideoClick() {
@@ -335,7 +340,10 @@ function App() {
                 <button className="btn mt-5" style={{ marginBottom: '40px' }} onClick={handleFullVideoClick}>DISPLAY</button>
                 {displayCutterUI && <div className="flex flex-col justify-center items-center w-full"> 
                     <div ref={waveSurferRef} style={{ width: '80%', border: '1px solid black' }}/>
-                    <button className="btn mt-5" onClick={testClick}>PLAY/PAUSE</button>
+                    <div>
+                        <button className="btn mt-5" onClick={playPauseClick}>PLAY/PAUSE</button>
+                        <button className="btn mt-5" onClick={playLoopClick}>PLAY_LOOP</button>
+                    </div>
                     <span id="current-time">00:00:00</span>
                 </div>}
                 <div className="mt-5" hidden={!displayCutterUI}>
