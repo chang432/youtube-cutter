@@ -332,10 +332,12 @@ function App() {
                     placeholder="Paste Youtube link here"
                     className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
                 />
-                <button className="btn mt-5" onClick={handleFullVideoClick}>DISPLAY</button>
-                {displayCutterUI && <div ref={waveSurferRef} style={{ width: '80%', height: '20%', border: '1px solid black' }}/>}
-                {displayCutterUI && <button className="btn mt-5" onClick={testClick}>PLAY/PAUSE</button>}
-                {displayCutterUI && <span id="current-time">00:00:00</span>}
+                <button className="btn mt-5" style={{ marginBottom: '40px' }} onClick={handleFullVideoClick}>DISPLAY</button>
+                {displayCutterUI && <div className="flex flex-col justify-center items-center w-full"> 
+                    <div ref={waveSurferRef} style={{ width: '80%', border: '1px solid black' }}/>
+                    <button className="btn mt-5" onClick={testClick}>PLAY/PAUSE</button>
+                    <span id="current-time">00:00:00</span>
+                </div>}
                 <div className="mt-5" hidden={!displayCutterUI}>
                     <label>
                         START TIME:
