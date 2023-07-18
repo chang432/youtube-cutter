@@ -103,6 +103,22 @@ function App() {
         });
     }, []);
 
+    // The following adjusts the wavesurfer region to match the start and end time exactly because sometimes its slightly off
+    useEffect(() => {
+        if (waverRegion) {
+            let inputElement = document.getElementsByClassName('wavesurfer-region')[0];
+
+            inputElement.addEventListener('mousedown', () => {
+                document.addEventListener('mouseup', handleMouseUp);
+            });
+
+            function handleMouseUp() {
+                waverRegionRef.current.update({start: unformatSeconds(startTimeRef.current), end: unformatSeconds(endTimeRef.current)})
+                document.removeEventListener('mouseup', handleMouseUp);
+            }
+        }
+    }, [waverRegion]);
+
     useEffect(() => {
         if (audioSrc) {
             // Instantiate WaveSurfer
@@ -338,8 +354,8 @@ function App() {
                     className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
                 />
                 <button className="btn mt-5" style={{ marginBottom: '40px' }} onClick={handleFullVideoClick}>DISPLAY</button>
+                <div hidden={!displayCutterUI} id="waveform" ref={waveSurferRef} style={{ width: '80%', border: '1px solid black' }}/>
                 {displayCutterUI && <div className="flex flex-col justify-center items-center w-full"> 
-                    <div ref={waveSurferRef} style={{ width: '80%', border: '1px solid black' }}/>
                     <div>
                         <button className="btn mt-5" onClick={playPauseClick}>PLAY/PAUSE</button>
                         <button className="btn mt-5" onClick={playLoopClick}>PLAY_LOOP</button>
