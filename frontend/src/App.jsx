@@ -318,6 +318,15 @@ function App() {
             link.href = res.data.url;
             link.download = audio_type ? "test.mp3" : "test.wav"
             link.click();
+            
+            return
+        })
+        .then(() => {
+            axios.post('http://127.0.0.1:5000/cleanup', {
+                yt_id: youtube_id
+            }, {
+                responseType: 'json'
+            })
         })
         .catch((error) => {
             console.log("axios error:", error);

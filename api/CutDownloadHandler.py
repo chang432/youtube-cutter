@@ -19,7 +19,7 @@ class CutDownloadHandler(Resource):
     s3_client = boto3.client('s3')
     bucket_name = "youtube-cutter-static-files"
 
-    # downloaded full file from s3 (previously uploaded)
+    # download full file from s3 (previously uploaded)
     full_file = yt_id + ".mp3"
     object_key = f"audio/{full_file}"
     file_name = f"/tmp/{full_file}"
@@ -28,7 +28,12 @@ class CutDownloadHandler(Resource):
         s3_client.download_file(bucket_name, object_key, file_name)
         print(f"[CUSTOM] Full mp3 '{object_key}' downloaded from S3 bucket '{bucket_name}' and saved as '{file_name}'.")
     except Exception as e:
-        print(f"[CUSTOM] Error occurred while downloading file from S3: {e}")
+        print(f"[CUSTOM] Error occurred while downloading full audio from S3: {e}")
+
+    try:
+        s3_client.delete_object(Bucket=bucket_name, Key=object_key)
+    except Exception as e:
+        print(f"[CUSTOM] Error occurred while deleting full audio from S3: {e}")
 
     # cutting file
     cut_file = f"/tmp/{yt_id}-cut.mp3" if audio_type == "MP3" else f"/tmp/{yt_id}-cut.wav"
