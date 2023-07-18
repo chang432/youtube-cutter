@@ -172,6 +172,11 @@ function App() {
 
             wavesurfer.on("audioprocess", function () {
                 try {
+                    // if playhead hits endTime locator, loop around
+                    if (Math.trunc(wavesurfer.getCurrentTime()) == unformatSeconds(endTimeRef.current)) {
+                        wavesurfer.setCurrentTime(unformatSeconds(startTimeRef.current))
+                    }
+                    
                     document.getElementById('current-time').innerText = formatSeconds(wavesurfer.getCurrentTime())
                 } catch (e) {
                     console.error(e)
