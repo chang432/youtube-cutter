@@ -317,16 +317,23 @@ function App() {
             const link = document.createElement('a');
             link.href = res.data.url;
             link.download = audio_type ? "test.mp3" : "test.wav"
-            link.click();
+
+            // Use the onload event to trigger cleanup after download
+            link.onload = () => {
+                axios.post('http://127.0.0.1:5000/cleanup', {
+                    yt_id: youtube_id
+                }, {
+                    responseType: 'json'
+                });
+            };
             
+            link.click();
+
             return
         })
         .then(() => {
-            axios.post('http://127.0.0.1:5000/cleanup', {
-                yt_id: youtube_id
-            }, {
-                responseType: 'json'
-            })
+            setDisplayCutterUI(false);
+            setDisplayCutterAudioPlayer(false);
         })
         .catch((error) => {
             console.log("axios error:", error);
