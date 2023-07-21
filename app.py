@@ -4,6 +4,7 @@ from flask_restful import Api
 from api.HelloApiHandler import HelloApiHandler
 from api.FullDownloadHandler import FullDownloadHandler
 from api.CutDownloadHandler import CutDownloadHandler
+from api.CleanupHandler import CleanupHandler
 import os
 import boto3
 import subprocess
@@ -27,6 +28,7 @@ api = Api(app)
 api.add_resource(HelloApiHandler, '/flask/hello')
 api.add_resource(FullDownloadHandler, '/handle_full')
 api.add_resource(CutDownloadHandler, '/handle_cut')
+api.add_resource(CleanupHandler, '/cleanup')
 
 @app.route("/test", methods=["POST"])
 def handle_test():
