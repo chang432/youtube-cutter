@@ -274,6 +274,7 @@ function App() {
         })
         .catch((error) => {
             console.log("axios error:", error);
+            alert("Server error...try again and if it still persists, please let us know!")
         });
     }
 
@@ -337,6 +338,7 @@ function App() {
         })
         .catch((error) => {
             console.log("axios error:", error);
+            alert("Server error...try again and if it still persists, please let us know!")
         });
     }
 
