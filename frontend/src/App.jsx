@@ -320,13 +320,13 @@ function App() {
             link.download = audio_type ? "test.mp3" : "test.wav"
 
             // Use the onload event to trigger cleanup after download
-            link.onload = () => {
+            link.addEventListener('click', () => {
                 axios.post('http://127.0.0.1:5000/cleanup', {
                     yt_id: youtube_id
                 }, {
                     responseType: 'json'
                 });
-            };
+            });
             
             link.click();
 

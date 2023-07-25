@@ -14,10 +14,12 @@ class CleanupHandler(Resource):
     s3_client = boto3.client('s3')
     bucket_name = "youtube-cutter-static-files"
 
+    full_file = yt_id + ".mp3"
     cut_file_wav = yt_id + "-cut.wav"
     cut_file_mp3 = yt_id + "-cut.mp3"
     
     try:
+        s3_client.delete_object(Bucket=bucket_name, Key="audio/"+full_file)
         s3_client.delete_object(Bucket=bucket_name, Key="audio/"+cut_file_wav)
         s3_client.delete_object(Bucket=bucket_name, Key="audio/"+cut_file_mp3)
     except Exception as e:
