@@ -16,7 +16,7 @@ find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec se
 
 cd ..
 
-python upload_static.py
+python scripts/upload_static.py
 
 zappa update prod
 

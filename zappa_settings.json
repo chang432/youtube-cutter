@@ -12,7 +12,8 @@
             "public",
             "src",
             "static",
-            "binaries"
+            "binaries",
+            "scripts"
         ],
         "timeout_seconds": 300, 
         "memory_size": 1024,
@@ -31,7 +32,8 @@
             "public",
             "src",
             "static",
-            "binaries"
+            "binaries",
+            "scripts"
         ],
         "timeout_seconds": 300, 
         "memory_size": 1024
