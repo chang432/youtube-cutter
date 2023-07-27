@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg";
 import axios from "axios";
 import WaveSurfer from "wavesurfer.js";
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.js'
+import LoadingBar from './components/LoadingBar';
 
 function App() {
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
@@ -12,13 +13,24 @@ function App() {
     const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState('');
     const [startTime, setStartTime] = useState('00:00:00');
     const [endTime, setEndTime] = useState('00:00:00');
+    const [displaySearchUI, setDisplaySearchUI] = useState(true)
     const [displayCutterUI, setDisplayCutterUI] = useState(false);
-    const [displayCutterAudioPlayer, setDisplayCutterAudioPlayer] = useState(false);
     const waveSurferRef = useRef(null);
     const [waver, setWaver] = useState(null);
     const [waverRegion, setWaverRegion] = useState(null);
     let clickedInsideStartInputBox = false;
     let clickedInsideEndInputBox = false;
+
+    const [showLoader, setShowLoader] = useState(false);
+
+    // Simulate loading completion after 3 seconds
+    // useEffect(() => {
+    //     const timeout = setTimeout(() => {
+    //         setShowLoader();
+    //     }, 3000);
+
+    //     return () => clearTimeout(timeout);
+    // }, []);
 
     const startTimeRef = useRef(startTime);
     useEffect(() => {
@@ -254,6 +266,8 @@ function App() {
 
     function handleFullVideoClick() {
         console.log("Displaying full video")
+        setDisplaySearchUI(false)
+        setShowLoader(true)        
 
         let youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId)
 
@@ -269,11 +283,14 @@ function App() {
             // console.log("return post: " + res.data)
             const location = res.data;
             console.log(location)
+            setShowLoader(false)
             setAudioSrc(location.url);
             setDisplayCutterUI(true)
         })
         .catch((error) => {
             console.log("axios error:", error);
+            setShowLoader(false)
+            setDisplaySearchUI(true)
             alert("Server error...try again and if it still persists, please let us know!")
         });
     }
@@ -291,6 +308,9 @@ function App() {
     };
 
     function handleCutVideoClick() {
+        setDisplayCutterUI(false)
+        setShowLoader(true)
+
         let audio_type = document.getElementById("mp3_btn").checked ? "MP3" : "WAV"
         
         console.log("downloading cut video in " + audio_type + " form")
@@ -312,7 +332,6 @@ function App() {
             // Display
             console.log("return post: " + res.data)
             setCutAudioSrc(res.data.url);
-            setDisplayCutterAudioPlayer(true)
 
             // Download video
             const link = document.createElement('a');
@@ -333,30 +352,12 @@ function App() {
             return
         })
         .then(() => {
-            setDisplayCutterUI(false);
-            setDisplayCutterAudioPlayer(false);
+            setShowLoader(false)
+            setDisplaySearchUI(true)
         })
         .catch((error) => {
             console.log("axios error:", error);
             alert("Server error...try again and if it still persists, please let us know!")
-        });
-    }
-
-    function handleTestClick() {
-        console.log("Testing")
-        axios({
-            url: "http://127.0.0.1:5000/test",
-            method: "post",
-            responseType: "text",
-            data: {
-                yt_id: "F35291LbOMM",
-            }
-        })
-        .then((res) => {
-            console.log("test complete")
-        })
-        .catch((error) => {
-            console.log("axios error:", error);
         });
     }
 
@@ -369,14 +370,17 @@ function App() {
             </div>
 
             <div className=" flex flex-col justify-center h-screen items-center">
-                <input
-                    type="text"
-                    value={fullDownloadYoutubeId}
-                    onChange={handleFullVideoTextChange}
-                    placeholder="Paste Youtube link here"
-                    className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
-                />
-                <button className="btn mt-5" style={{ marginBottom: '40px' }} onClick={handleFullVideoClick}>DISPLAY</button>
+                {showLoader && <LoadingBar showLoader={showLoader} />}
+                {displaySearchUI && <div className="flex flex-col justify-center items-center w-full">
+                    <input
+                        type="text"
+                        value={fullDownloadYoutubeId}
+                        onChange={handleFullVideoTextChange}
+                        placeholder="Paste Youtube link here"
+                        className="input input-bordered input-secondary w-full max-w-2xl input-lg  "
+                    />
+                    <button className="btn mt-5" style={{ marginBottom: '40px' }} onClick={handleFullVideoClick}>DISPLAY</button>
+                </div>}
                 <div hidden={!displayCutterUI} id="waveform" ref={waveSurferRef} style={{ width: '80%', border: '1px solid black' }}/>
                 {displayCutterUI && <div className="flex flex-col justify-center items-center w-full"> 
                     <div>
@@ -416,8 +420,6 @@ function App() {
                     <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>
                 </div>
                 }
-                {displayCutterAudioPlayer &&
-                <audio className="mt-5" id="cut_audio" controls src={cutAudioSrc} />}
             </div>
         </div>
     );

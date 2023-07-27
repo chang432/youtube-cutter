@@ -14,7 +14,7 @@ class FullDownloadHandler(Resource):
     s3 = boto3.resource('s3')
 
     url = "https://www.youtube.com/watch?v=" + yt_id
-    yt = YouTube(url, use_oauth=True, allow_oauth_cache=True)
+    yt = YouTube(url, use_oauth=False, allow_oauth_cache=False)
     
     audio = yt.streams.filter(only_audio=True).first()
     out_file = audio.download(output_path="/tmp/")
