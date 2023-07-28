@@ -359,11 +359,13 @@ function App() {
 
             // Use the onload event to trigger cleanup after download
             link.addEventListener('click', () => {
-                axios.post('http://127.0.0.1:5000/cleanup', {
-                    yt_id: youtube_id
-                }, {
-                    responseType: 'json'
-                });
+                setTimeout(() => {
+                    axios.post('http://127.0.0.1:5000/cleanup', {
+                        yt_id: youtube_id
+                    }, {
+                        responseType: 'json'
+                    });
+                }, 3000);
             });
             
             link.click();
