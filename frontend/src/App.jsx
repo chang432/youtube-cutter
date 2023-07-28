@@ -396,7 +396,7 @@ function App() {
                 </div>}
                 {displayCutterUI && <span style={{ paddingBottom: '5px' }} id="current-time">00:00:00</span>}
                 <div hidden={!displayCutterUI} id="waveform" ref={waveSurferRef} style={{ width: '80%' }}/>
-                <div className={`flex flex-col justify-center items-center w-full ${displayCutterUI ? '' : 'hidden'} mt-5`}> 
+                <div className={`flex flex-col justify-center items-center w-full ${displayCutterUI ? '' : 'hidden'} mt-10`}> 
                     <div className="w-4/5 flex flex-row justify-between">
                         <input 
                             id="startTimeInput"
@@ -417,11 +417,11 @@ function App() {
                             className= "input input-bordered rounded-none input-primary p-4 w-1/6"
                         />
                     </div>
-                    <div className="btn-group mt-5">
+                    <div className="btn-group mt-10">
                         <input id="mp3_btn" type="radio" name="options" data-title="MP3" className="btn" checked />
                         <input id="wav_btn" type="radio" name="options" data-title="WAV" className="btn" />
                     </div>
-                    <button className="btn mt-5 rounded-none w-1/4 bg-accent" onClick={handleCutVideoClick}>CUT</button>
+                    <button className="btn mt-10 rounded-none w-1/4 bg-accent" onClick={handleCutVideoClick}>CUT</button>
                 </div>
             </div>
         </div>
