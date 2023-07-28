@@ -375,6 +375,7 @@ function App() {
         .then(() => {
             setShowLoader(false)
             setDisplaySearchUI(true)
+            // waver?.destroy()
         })
         .catch((error) => {
             console.log("axios error:", error);
