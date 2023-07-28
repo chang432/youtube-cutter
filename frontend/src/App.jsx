@@ -18,22 +18,30 @@ function App() {
     const waveSurferRef = useRef(null);
     const [waver, setWaver] = useState(null);
     const [waverRegion, setWaverRegion] = useState(null);
+    const [endDuration, setEndDuration] = useState(0);
     let clickedInsideStartInputBox = false;
     let clickedInsideEndInputBox = false;
 
     const [showLoader, setShowLoader] = useState(false);
 
+    const waverRegionRef = useRef(waverRegion);
     const startTimeRef = useRef(startTime);
+    const endTimeRef = useRef(endTime);
+
     useEffect(() => {
         startTimeRef.current = startTime; 
+        if (startTimeRef.current >= endTimeRef.current) {
+            moveStartOrEndToNotOverlap()
+        }
     }, [startTime]);
 
-    const endTimeRef = useRef(endTime);
     useEffect(() => {
         endTimeRef.current = endTime; 
+        if (startTimeRef.current >= endTimeRef.current) {
+            moveStartOrEndToNotOverlap()
+        }
     }, [endTime]);
 
-    const waverRegionRef = useRef(waverRegion);
     useEffect(() => {
         waverRegionRef.current = waverRegion;
     }, [waverRegion]);
@@ -142,21 +150,24 @@ function App() {
             wavesurfer.registerPlugins([RegionsPlugin.create()])
 
             wavesurfer.on("ready", function () {
+                let end_duration = wavesurfer.getDuration()
+
                 try {
                     setStartTime(formatSeconds(0));
-                    setEndTime(formatSeconds(wavesurfer.getDuration()));
+                    setEndTime(formatSeconds(end_duration/4));
                 } catch (e) {
                     console.error(e)
                 }
 
                 const wsRegion = wavesurfer.addRegion({
                     start: 0, // Start time in seconds
-                    end: 60, // End time in seconds
+                    end: end_duration/4, // End time in seconds
                     color: 'rgba(255, 0, 0, 0.3)', // Region color
                     drag: true, // Enable dragging the region
                     resize: true // Enable resizing the region
                 });
 
+                setEndDuration(end_duration)
                 setWaverRegion(wsRegion)
             });
 
@@ -191,6 +202,20 @@ function App() {
             setWaver(wavesurfer);
         }
     }, [audioSrc]);
+
+    function moveStartOrEndToNotOverlap() {
+        if (waverRegionRef.current) {
+            let endDurationWhole = Math.floor(endDuration)
+            let endTimeSeconds = unformatSeconds(endTimeRef.current)
+            let startTimeSeconds = unformatSeconds(startTimeRef.current)
+            console.log(endTimeSeconds + ", " + endDurationWhole)
+            if (endTimeSeconds < endDurationWhole) {
+                waverRegionRef.current.update({end: startTimeSeconds+1})
+            } else {
+                waverRegionRef.current.update({start: endTimeSeconds-1}) 
+            }
+        }
+    }
 
     function strIsNotNumber(str) {
         if (/^\d+$/.test(str)) {
