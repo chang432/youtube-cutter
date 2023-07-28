@@ -23,15 +23,6 @@ function App() {
 
     const [showLoader, setShowLoader] = useState(false);
 
-    // Simulate loading completion after 3 seconds
-    // useEffect(() => {
-    //     const timeout = setTimeout(() => {
-    //         setShowLoader();
-    //     }, 3000);
-
-    //     return () => clearTimeout(timeout);
-    // }, []);
-
     const startTimeRef = useRef(startTime);
     useEffect(() => {
         startTimeRef.current = startTime; 
@@ -137,9 +128,11 @@ function App() {
             console.log(waveSurferRef.current)
             const wavesurfer = WaveSurfer.create({
                 container: waveSurferRef.current,
-                waveColor: "violet",
-                progressColor: "purple",
-                // ...other WaveSurfer options
+                waveColor: "black",
+                progressColor: "lightblack",
+                barWidth: 2,
+                barGap: 1,
+                barRadius: 2,
             });
 
             // Load audio source
@@ -363,12 +356,6 @@ function App() {
 
     return (
         <div className="  mx-auto ">
-            <div className="navbar bg-secondary text-primary-content drop-shadow-2xl">
-                <div className="flex-1">
-                    <a className="btn btn-ghost text-xl ">Youtube Downloader</a>
-                </div>
-            </div>
-
             <div className=" flex flex-col justify-center h-screen items-center">
                 {showLoader && <LoadingBar showLoader={showLoader} />}
                 {displaySearchUI && <div className="flex flex-col justify-center items-center w-full">
@@ -381,45 +368,35 @@ function App() {
                     />
                     <button className="btn mt-5" style={{ marginBottom: '40px' }} onClick={handleFullVideoClick}>DISPLAY</button>
                 </div>}
-                <div hidden={!displayCutterUI} id="waveform" ref={waveSurferRef} style={{ width: '80%', border: '1px solid black' }}/>
-                {displayCutterUI && <div className="flex flex-col justify-center items-center w-full"> 
-                    <div>
-                        <button className="btn mt-5" onClick={playPauseClick}>PLAY/PAUSE</button>
-                        <button className="btn mt-5" onClick={playLoopClick}>PLAY_LOOP</button>
-                    </div>
-                    <span id="current-time">00:00:00</span>
-                </div>}
-                <div className="mt-5" hidden={!displayCutterUI}>
-                    <label>
-                        START TIME:
+                {displayCutterUI && <span style={{ paddingBottom: '5px' }} id="current-time">00:00:00</span>}
+                <div hidden={!displayCutterUI} id="waveform" ref={waveSurferRef} style={{ width: '80%' }}/>
+                <div className={`flex flex-col justify-center items-center w-full ${displayCutterUI ? '' : 'hidden'} mt-5`}> 
+                    <div className="w-4/5 flex flex-row justify-between">
                         <input 
                             id="startTimeInput"
                             type="text"
                             value={startTime}
                             onChange={handleStartTimeTextChange}
-                            className= "input input-bordered input-primary p-8 "
+                            className= "input input-bordered rounded-none input-primary p-4 w-1/6"
                         />
-                    </label>
-                    <label>
-                        END TIME:
+                        <div>
+                            <button className="btn mr-5 rounded-none bg-secondary" onClick={playPauseClick}>PLAY/PAUSE</button>
+                            <button className="btn ml-5 rounded-none bg-secondary" onClick={playLoopClick}>PLAY_LOOP</button>
+                        </div>
                         <input 
                             id="endTimeInput"
                             type="text" 
                             value={endTime}
                             onChange={handleEndTimeTextChange}
-                            className= "input input-bordered input-primary p-8 "
+                            className= "input input-bordered rounded-none input-primary p-4 w-1/6"
                         />
-                    </label>
-                </div>
-                {displayCutterUI && 
-                <div> 
-                    <div className="btn-group">
+                    </div>
+                    <div className="btn-group mt-5">
                         <input id="mp3_btn" type="radio" name="options" data-title="MP3" className="btn" checked />
                         <input id="wav_btn" type="radio" name="options" data-title="WAV" className="btn" />
                     </div>
-                    <button className="btn mt-5" onClick={handleCutVideoClick}>CUT</button>
+                    <button className="btn mt-5 rounded-none w-1/4 bg-accent" onClick={handleCutVideoClick}>CUT</button>
                 </div>
-                }
             </div>
         </div>
     );
