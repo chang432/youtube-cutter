@@ -6,6 +6,7 @@ import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.js'
 import LoadingBar from './components/LoadingBar';
 
 function App() {
+    const developMode = false;
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
     const [getMessage, setGetMessage] = useState({})
     const [audioSrc, setAudioSrc] = useState("");
@@ -46,15 +47,6 @@ function App() {
         waverRegionRef.current = waverRegion;
     }, [waverRegion]);
 
-    useEffect(()=>{
-        axios.get('http://127.0.0.1:5000/flask/hello').then(response => {
-        console.log("SUCCESS", response)
-        setGetMessage(response)
-        }).catch(error => {
-            console.log(error)
-        })
-    }, [])
-
     function convertYoutubeUrlToId(url) {
         let youtube_id = url
         if (url.includes("youtube")) {
@@ -63,6 +55,15 @@ function App() {
         console.log("youtube id is: " + youtube_id)
         return youtube_id
     }
+
+    useEffect(() => {
+        // developing use for going straight to the cutter ui without having to paste in a youtube url]
+        if (developMode) {
+            setDisplaySearchUI(false)
+            setAudioSrc("https://youtube-cutter-static-files.s3.amazonaws.com/audio/tGTKY1dpo_E.mp3");
+            setDisplayCutterUI(true)
+        }
+    }, []);
 
     useEffect(() => {
         let inputElement = document.getElementById("startTimeInput");
