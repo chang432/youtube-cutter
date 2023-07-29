@@ -24,12 +24,12 @@ class FullDownloadHandler(Resource):
 
     print(f"[CUSTOM] download from youtube complete of {new_file}! Now uploading to s3...")
 
-    bucket_name = 'youtube-cutter-static-files'
+    bucket_name = 'youtube-cutter-static-files-dev'
     file_key = f"audio/{yt_id}.mp3"
     s3.meta.client.upload_file(new_file, bucket_name, file_key, ExtraArgs={'ACL': 'public-read'})
 
     print(f"[CUSTOM] upload to {bucket_name}/{file_key} complete! Now sending s3 url as response...")
-    location = f"https://youtube-cutter-static-files.s3.amazonaws.com/{file_key}"
+    location = f"https://youtube-cutter-static-files-dev.s3.amazonaws.com/{file_key}"
 
     print("[CUSTOM] FINISHING FullDownloadHandler.py")
     return {"url": location}

@@ -17,5 +17,24 @@
         ],
         "timeout_seconds": 300, 
         "memory_size": 1024
+    },
+    "prod": {
+        "app_function": "app.app",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "youtube-cutter",
+        "runtime": "python3.9",
+        "s3_bucket": "youtube-cutter",
+        "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
+        "exclude": [
+            "node_modules",
+            "public",
+            "src",
+            "static",
+            "binaries",
+            "scripts"
+        ],
+        "timeout_seconds": 300, 
+        "memory_size": 1024
     }
 }

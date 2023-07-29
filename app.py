@@ -21,7 +21,7 @@ app = Flask(__name__, template_folder='frontend/dist', static_folder='frontend/d
 if os.environ["IS_DEPLOYMENT"] == "FALSE": 
     CORS(app)
 
-app.config['FLASKS3_BUCKET_NAME'] = 'youtube-cutter-static-files'
+app.config['FLASKS3_BUCKET_NAME'] = 'youtube-cutter-static-files-dev'
 s3 = FlaskS3(app)
 api = Api(app)
 

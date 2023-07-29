@@ -61,10 +61,11 @@ function App() {
     }
 
     useEffect(() => {
+        console.log(import.meta.env.STAGE);
         // developing use for going straight to the cutter ui without having to paste in a youtube url]
         if (developMode) {
             setDisplaySearchUI(false)
-            setAudioSrc("https://youtube-cutter-static-files.s3.amazonaws.com/audio/tGTKY1dpo_E.mp3");
+            setAudioSrc("https://youtube-cutter-static-files-dev.s3.amazonaws.com/audio/tGTKY1dpo_E.mp3");
             setDisplayCutterUI(true)
         }
     }, []);

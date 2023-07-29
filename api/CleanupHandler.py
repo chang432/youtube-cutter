@@ -12,7 +12,7 @@ class CleanupHandler(Resource):
     yt_id = data.get('yt_id')
 
     s3_client = boto3.client('s3')
-    bucket_name = "youtube-cutter-static-files"
+    bucket_name = "youtube-cutter-static-files-dev"
 
     full_file = yt_id + ".mp3"
     cut_file_wav = yt_id + "-cut.wav"

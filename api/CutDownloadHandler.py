@@ -17,7 +17,7 @@ class CutDownloadHandler(Resource):
     audio_type = data.get('audio_type')
 
     s3_client = boto3.client('s3')
-    bucket_name = "youtube-cutter-static-files"
+    bucket_name = "youtube-cutter-static-files-dev"
 
     # download full file from s3 (previously uploaded)
     full_file = yt_id + ".mp3"
@@ -53,13 +53,13 @@ class CutDownloadHandler(Resource):
 
     # uploading cut file to s3
     s3 = boto3.resource('s3')
-    bucket_name = 'youtube-cutter-static-files'
+    bucket_name = 'youtube-cutter-static-files-dev'
     file_key = f"audio/{yt_id}-cut.mp3" if audio_type == "MP3" else f"audio/{yt_id}-cut.wav"
     s3.meta.client.upload_file(cut_file, bucket_name, file_key, ExtraArgs={'ACL': 'public-read'})
 
     print(f"[CUSTOM] upload of cut file {bucket_name}/{file_key} complete! Now sending s3 url as response...")
 
-    location = f"https://youtube-cutter-static-files.s3.amazonaws.com/{file_key}"
+    location = f"https://youtube-cutter-static-files-dev.s3.amazonaws.com/{file_key}"
 
     print("[CUSTOM] FINISHING CutDownloadHandler.py")
     return {"url": location}
