@@ -5,6 +5,9 @@ import WaveSurfer from "wavesurfer.js";
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.js'
 import LoadingBar from './components/LoadingBar';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay, faPause, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+
 function App() {
     const developMode = false;
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
@@ -16,10 +19,11 @@ function App() {
     const [endTime, setEndTime] = useState('00:00:00');
     const [displaySearchUI, setDisplaySearchUI] = useState(true)
     const [displayCutterUI, setDisplayCutterUI] = useState(false);
-    const waveSurferRef = useRef(null);
     const [waver, setWaver] = useState(null);
     const [waverRegion, setWaverRegion] = useState(null);
     const [endDuration, setEndDuration] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const waveSurferRef = useRef(null);
     let clickedInsideStartInputBox = false;
     let clickedInsideEndInputBox = false;
 
@@ -276,11 +280,13 @@ function App() {
     }
 
     function playPauseClick() {
+        setIsPlaying((prevState) => !prevState);
         waver?.playPause();
     }
 
     function playLoopClick() {
-        waver?.setCurrentTime(unformatSeconds(startTimeRef.current))
+        setIsPlaying(true);
+        waver?.setCurrentTime(unformatSeconds(startTimeRef.current));
         waver?.play();
     }
 
@@ -410,8 +416,14 @@ function App() {
                             className= "input input-bordered rounded-none input-primary p-4 w-1/6"
                         />
                         <div>
-                            <button className="btn mr-5 rounded-none bg-secondary" onClick={playPauseClick}>PLAY/PAUSE</button>
-                            <button className="btn ml-5 rounded-none bg-secondary" onClick={playLoopClick}>PLAY_LOOP</button>
+                            <button className="btn mr-5 rounded-none bg-secondary" onClick={playPauseClick}>
+                                {isPlaying ? (
+                                    <FontAwesomeIcon icon={faPause} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faPlay} />
+                                )}
+                            </button>
+                            <button className="btn ml-5 rounded-none bg-secondary" onClick={playLoopClick}><FontAwesomeIcon icon={faRotateLeft} /></button>
                         </div>
                         <input 
                             id="endTimeInput"
