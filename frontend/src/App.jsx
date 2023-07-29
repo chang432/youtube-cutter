@@ -142,6 +142,7 @@ function App() {
                 barWidth: 2,
                 barGap: 1,
                 barRadius: 2,
+                hideScrollbar: true
             });
 
             // Load audio source
@@ -424,7 +425,7 @@ function App() {
                         <input id="mp3_btn" type="radio" name="options" data-title="MP3" className="btn" checked />
                         <input id="wav_btn" type="radio" name="options" data-title="WAV" className="btn" />
                     </div>
-                    <button className="btn mt-10 rounded-none w-1/4 bg-accent" onClick={handleCutVideoClick}>CUT</button>
+                    <button className="btn mt-10 rounded-none w-1/4 bg-accent" onClick={handleCutVideoClick}>&#x2694;&nbsp;&nbsp;&nbsp;CUT&nbsp;&nbsp;&nbsp;&#x2694;</button>
                 </div>
             </div>
         </div>
