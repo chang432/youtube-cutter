@@ -20,6 +20,7 @@ python upload_static.py
 
 cd ..
 
+# zappa package dev
 zappa update dev
 
 cd frontend

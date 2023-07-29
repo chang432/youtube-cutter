@@ -61,7 +61,6 @@ function App() {
     }
 
     useEffect(() => {
-        console.log(import.meta.env.STAGE);
         // developing use for going straight to the cutter ui without having to paste in a youtube url]
         if (developMode) {
             setDisplaySearchUI(false)
