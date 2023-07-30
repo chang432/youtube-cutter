@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import reactLogo from "./assets/react.svg";
 import ninja from "./assets/wavninja-nobg.png";
 import axios from "axios";
 import WaveSurfer from "wavesurfer.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.js";
 import LoadingBar from "./components/LoadingBar";
 import Disclaimer from "./components/Disclaimer";
+import ThemeSwitch from "./components/ThemeSwitch";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -29,6 +29,7 @@ function App() {
     const [waverRegion, setWaverRegion] = useState(null);
     const [endDuration, setEndDuration] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
     const waveSurferRef = useRef(null);
     let clickedInsideStartInputBox = false;
     let clickedInsideEndInputBox = false;
@@ -460,16 +461,25 @@ function App() {
     }
 
     return (
-        <div data-theme="lofi" className="  mx-auto ">
+        <div
+            data-theme={`${isDarkMode ? "black" : "lofi"}`}
+            className=" transition-colors duration-300 ease-in-out mx-auto "
+        >
+            <ThemeSwitch
+                isDarkMode={isDarkMode}
+                setIsDarkMode={setIsDarkMode}
+            />
             <div className=" flex flex-col justify-center h-screen items-center">
                 {showLoader && <LoadingBar showLoader={showLoader} />}
                 {displaySearchUI && (
                     <div className="flex flex-col justify-center items-center w-full">
-                        <h1 className="text-8xl mb-20 ">
+                        <h1 className="text-8xl mb-20">
                             wav.ninja
                             <img
                                 src={ninja}
-                                className="inline w-28 h-28 invert-0 "
+                                className={`inline w-28 h-28 ${
+                                    isDarkMode ? "invert" : ""
+                                } `}
                             ></img>
                         </h1>
                         {/* <img src={ninja} className="w-10 h-10"></img> */}
@@ -481,10 +491,10 @@ function App() {
                             className="input input-bordered input-primary w-full max-w-2xl input-lg  "
                         />
                         <button
-                            className="btn btn-outline mt-5 "
+                            className="btn btn-outline text-2xl mt-5 "
                             onClick={handleFullVideoClick}
                         >
-                            DISPLAY
+                            Display
                         </button>
                     </div>
                 )}
