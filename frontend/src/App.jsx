@@ -6,6 +6,7 @@ import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.js";
 import LoadingBar from "./components/LoadingBar";
 import Disclaimer from "./components/Disclaimer";
 import ThemeSwitch from "./components/ThemeSwitch";
+import { WaveSpinner } from "react-spinners-kit";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -470,7 +471,12 @@ function App() {
                 setIsDarkMode={setIsDarkMode}
             />
             <div className=" flex flex-col justify-center h-screen items-center">
-                {showLoader && <LoadingBar showLoader={showLoader} />}
+                {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
+                <WaveSpinner
+                    size={60}
+                    color={`${isDarkMode ? "" : "#000"}`}
+                    loading={showLoader}
+                />
                 {displaySearchUI && (
                     <div className="flex flex-col justify-center items-center w-full">
                         <h1 className="text-8xl mb-20">
@@ -482,7 +488,6 @@ function App() {
                                 } `}
                             ></img>
                         </h1>
-                        {/* <img src={ninja} className="w-10 h-10"></img> */}
                         <input
                             type="text"
                             value={fullDownloadYoutubeId}
