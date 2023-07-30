@@ -31,6 +31,7 @@ function App() {
     const [endDuration, setEndDuration] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [showError, setShowError] = useState(false);
     const waveSurferRef = useRef(null);
     let clickedInsideStartInputBox = false;
     let clickedInsideEndInputBox = false;
@@ -378,9 +379,10 @@ function App() {
                 console.log("axios error:", error);
                 setShowLoader(false);
                 setDisplaySearchUI(true);
-                alert(
-                    "Server error...try again and if it still persists, please let us know!"
-                );
+                setShowError(true);
+                // alert(
+                //     "Server error...try again and if it still persists, please let us know!"
+                // );
             });
     }
 
@@ -473,8 +475,8 @@ function App() {
             <div className=" flex flex-col justify-center h-screen items-center">
                 {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
                 <WaveSpinner
-                    size={60}
-                    color={`${isDarkMode ? "" : "#000"}`}
+                    size={90}
+                    color={`${isDarkMode ? "#fff" : "#000"}`}
                     loading={showLoader}
                 />
                 {displaySearchUI && (
@@ -501,6 +503,13 @@ function App() {
                         >
                             Display
                         </button>
+                        <p
+                            className={` mt-4 text-3xl text-error animate-pulse ${
+                                showError ? "" : "invisible"
+                            } `}
+                        >
+                            ERROR: No bitches detected. Try again in a bit!
+                        </p>
                     </div>
                 )}
                 {displayCutterUI && (
