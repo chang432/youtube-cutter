@@ -32,6 +32,7 @@ function App() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [showError, setShowError] = useState(false);
+    const [thumbnailUrl, setThumbnailUrl] = useState("");
     const waveSurferRef = useRef(null);
     let clickedInsideStartInputBox = false;
     let clickedInsideEndInputBox = false;
@@ -265,6 +266,13 @@ function App() {
         }
     }, [audioSrc]);
 
+    function getThumbnailFromUrl(ytl) {
+        const yt = ytl.match(
+            /(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:watch\?v=|)([^\s&]+)/
+        );
+        return yt ? `https://i3.ytimg.com/vi/${yt[1]}/maxresdefault.jpg` : null;
+    }
+
     function moveStartOrEndToNotOverlap() {
         if (waverRegionRef.current) {
             let endDurationWhole = Math.floor(endDuration);
@@ -388,6 +396,7 @@ function App() {
     }
 
     const handleFullVideoTextChange = (event) => {
+        setThumbnailUrl(getThumbnailFromUrl(event.target.value));
         setFullDownloadYoutubeId(event.target.value);
     };
 
@@ -491,13 +500,17 @@ function App() {
                                 } `}
                             ></img>
                         </h1>
+
                         <input
                             type="text"
                             value={fullDownloadYoutubeId}
                             onChange={handleFullVideoTextChange}
                             placeholder="Paste Youtube link here"
-                            className="input input-bordered input-primary w-full  max-w-2xl input-lg  "
+                            className="input input-bordered input-primary w-full max-w-2xl input-lg  "
                         />
+                        {thumbnailUrl && (
+                            <img src={thumbnailUrl} className={` mt-5 h-36`} />
+                        )}
                         <button
                             className="btn btn-outline text-2xl mt-5 "
                             onClick={handleFullVideoClick}
@@ -507,7 +520,7 @@ function App() {
                     </div>
                 )}
                 <p
-                    className={`absolute p-4 mt-96 text-3xl text-error animate-pulse ${
+                    className={`absolute p-4 mb-[50rem] text-3xl text-error animate-pulse ${
                         showError ? "" : "invisible"
                     } `}
                     onClick={() => {
