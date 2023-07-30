@@ -353,6 +353,7 @@ function App() {
     }
 
     function handleFullVideoClick() {
+        setShowError(false);
         console.log("Displaying full video");
         setDisplaySearchUI(false);
         setShowLoader(true);
@@ -481,7 +482,7 @@ function App() {
                 />
                 {displaySearchUI && (
                     <div className="flex flex-col justify-center items-center w-full">
-                        <h1 className="text-8xl mb-20">
+                        <h1 className="text-8xl mb-10">
                             wav.ninja
                             <img
                                 src={ninja}
@@ -495,7 +496,7 @@ function App() {
                             value={fullDownloadYoutubeId}
                             onChange={handleFullVideoTextChange}
                             placeholder="Paste Youtube link here"
-                            className="input input-bordered input-primary w-full max-w-2xl input-lg  "
+                            className="input input-bordered input-primary w-full  max-w-2xl input-lg  "
                         />
                         <button
                             className="btn btn-outline text-2xl mt-5 "
@@ -503,15 +504,18 @@ function App() {
                         >
                             Display
                         </button>
-                        <p
-                            className={` mt-4 text-3xl text-error animate-pulse ${
-                                showError ? "" : "invisible"
-                            } `}
-                        >
-                            ERROR: No bitches detected. Try again in a bit!
-                        </p>
                     </div>
                 )}
+                <p
+                    className={`absolute p-4 mt-96 text-3xl text-error animate-pulse ${
+                        showError ? "" : "invisible"
+                    } `}
+                    onClick={() => {
+                        setShowError(false);
+                    }}
+                >
+                    ERROR: No bitches detected. Try again in a bit!
+                </p>
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00
