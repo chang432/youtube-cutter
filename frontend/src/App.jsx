@@ -187,11 +187,12 @@ function App() {
 
     useEffect(() => {
         if (audioSrc) {
+            let wavColor = isDarkMode ? "white" : "black"
             // Instantiate WaveSurfer
             console.log(waveSurferRef.current);
             const wavesurfer = WaveSurfer.create({
                 container: waveSurferRef.current,
-                waveColor: "black",
+                waveColor: wavColor,
                 progressColor: "lightblack",
                 barWidth: 2,
                 barGap: 1,
@@ -225,6 +226,8 @@ function App() {
 
                 setEndDuration(end_duration);
                 setWaverRegion(wsRegion);
+
+                setShowLoader(false);
             });
 
             wavesurfer.on("region-updated", function (region) {
@@ -263,8 +266,12 @@ function App() {
             });
 
             setWaver(wavesurfer);
+
+            return () => {
+                wavesurfer.destroy()
+            };
         }
-    }, [audioSrc]);
+    }, [audioSrc, isDarkMode]);
 
     function getThumbnailFromUrl(ytl) {
         const yt = ytl.match(
@@ -380,7 +387,6 @@ function App() {
                 // console.log("return post: " + res.data)
                 const location = res.data;
                 console.log(location);
-                setShowLoader(false);
                 setAudioSrc(location.url);
                 setDisplayCutterUI(true);
             })
@@ -484,11 +490,6 @@ function App() {
             />
             <div className=" flex flex-col justify-center h-screen items-center">
                 {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
-                <WaveSpinner
-                    size={90}
-                    color={`${isDarkMode ? "#fff" : "#000"}`}
-                    loading={showLoader}
-                />
                 {displaySearchUI && (
                     <div className="flex flex-col justify-center items-center w-full">
                         <h1 className="text-8xl mb-10">
@@ -534,6 +535,11 @@ function App() {
                         00:00:00
                     </span>
                 )}
+                <WaveSpinner
+                    size={90}
+                    color={`${isDarkMode ? "#fff" : "#000"}`}
+                    loading={showLoader}
+                />
                 <div
                     hidden={!displayCutterUI}
                     id="waveform"
