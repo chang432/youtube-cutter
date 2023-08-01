@@ -28,14 +28,17 @@ function App() {
     const [displayCutterUI, setDisplayCutterUI] = useState(false);
     const [waver, setWaver] = useState(null);
     const [waverRegion, setWaverRegion] = useState(null);
-    const [endDuration, setEndDuration] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [showError, setShowError] = useState(false);
     const [thumbnailUrl, setThumbnailUrl] = useState("");
+
+    // start and end time in seconds for waveform
+    const [endDuration, setEndDuration] = useState(0);
+
     const waveSurferRef = useRef(null);
-    let clickedInsideStartInputBox = false;
-    let clickedInsideEndInputBox = false;
+    let clickedInsideStartInputBox = { value: false };
+    let clickedInsideEndInputBox = { value: false };
 
     const [showLoader, setShowLoader] = useState(false);
 
@@ -81,89 +84,98 @@ function App() {
         }
     }, []);
 
+    function keydownEnterEventHandler(event, isStartInput) {
+        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current
+        let input_name = isStartInput ? "startTimeInput" : "endTimeInput"
+        
+        if (event.key === "Enter") {
+            console.log(
+                input_name + " enter pressed: " +
+                    time_ref +
+                    ", " +
+                    waverRegionRef.current
+            );
+            if (isStartInput) {
+                waverRegionRef.current.update({
+                    start: unformatSeconds(startTimeRef.current, true),
+                });
+            } else {
+                waverRegionRef.current.update({
+                    end: unformatSeconds(endTimeRef.current, false),
+                });
+            }
+        }
+    }
+
+    function outsideInputBoxClickEventHandler(event, inputElement, clickedInsideInputBox, isStartInput) {
+        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current
+        let input_name = isStartInput ? "startTimeInput" : "endTimeInput"
+
+        if (
+            !inputElement.contains(event.target) &&
+            clickedInsideInputBox.value
+        ) {
+            // Execute your code here
+            console.log(
+                input_name + " outside input box pressed: " +
+                time_ref +
+                ", " +
+                waverRegionRef.current
+            );
+
+            if (isStartInput) {
+                waverRegionRef.current.update({
+                    start: unformatSeconds(startTimeRef.current, true),
+                });
+            } else {
+                waverRegionRef.current.update({
+                    end: unformatSeconds(endTimeRef.current, false),
+                });
+            }
+
+            clickedInsideInputBox.value = false;
+        }
+    }
+
     useEffect(() => {
         let inputElement = document.getElementById("startTimeInput");
 
-        inputElement.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") {
-                console.log(
-                    "startTimeInput enter pressed: " +
-                        startTimeRef.current +
-                        ", " +
-                        waverRegionRef.current
-                );
-                waverRegionRef.current.update({
-                    start: unformatSeconds(startTimeRef.current),
-                });
-            }
-        });
+        const keydownEnterEventHandlerRef = (event) => keydownEnterEventHandler(event, true)
+        inputElement.addEventListener("keydown", keydownEnterEventHandlerRef);
 
-        inputElement.addEventListener("click", () => {
-            clickedInsideStartInputBox = true;
-        });
+        const insideInputBoxClickEventHandlerRef = () => {clickedInsideStartInputBox.value = true;}
+        inputElement.addEventListener("click", insideInputBoxClickEventHandlerRef);
 
-        document.addEventListener("click", (event) => {
-            if (
-                !inputElement.contains(event.target) &&
-                clickedInsideStartInputBox
-            ) {
-                // Execute your code here
-                console.log(
-                    "startTimeInput outside input box pressed: " +
-                        startTimeRef.current +
-                        ", " +
-                        waverRegionRef.current
-                );
-                waverRegionRef.current.update({
-                    start: unformatSeconds(startTimeRef.current),
-                });
+        const outsideInputBoxClickEventHandlerRef = (event) => outsideInputBoxClickEventHandler(event, inputElement, clickedInsideStartInputBox, true)
+        document.addEventListener("click", outsideInputBoxClickEventHandlerRef);
 
-                clickedInsideStartInputBox = false;
-            }
-        });
-    }, []);
+        return () => {
+            // cleanup on unmount
+            inputElement.removeEventListener("keydown", keydownEnterEventHandlerRef);
+            inputElement.removeEventListener("click", insideInputBoxClickEventHandlerRef);
+            document.removeEventListener("click", outsideInputBoxClickEventHandlerRef);
+        }
+    },[]);
 
     useEffect(() => {
         let inputElement = document.getElementById("endTimeInput");
 
-        inputElement.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") {
-                console.log(
-                    "endTimeInput enter pressed: " +
-                        endTimeRef.current +
-                        ", " +
-                        waverRegionRef.current
-                );
-                waverRegionRef.current.update({
-                    end: unformatSeconds(endTimeRef.current),
-                });
-            }
-        });
+        const keydownEnterEventHandlerRef = (event) => keydownEnterEventHandler(event, false)
+        inputElement.addEventListener("keydown", keydownEnterEventHandlerRef);
 
-        inputElement.addEventListener("click", () => {
-            clickedInsideEndInputBox = true;
-        });
+        const insideInputBoxClickEventHandlerRef = () => {clickedInsideEndInputBox.value = true;}
+        inputElement.addEventListener("click", insideInputBoxClickEventHandlerRef);
 
-        document.addEventListener("click", (event) => {
-            if (
-                !inputElement.contains(event.target) &&
-                clickedInsideEndInputBox
-            ) {
-                // Execute your code here
-                console.log(
-                    "endTimeInput outside input box pressed: " +
-                        endTimeRef.current +
-                        ", " +
-                        waverRegionRef.current
-                );
-                waverRegionRef.current.update({
-                    end: unformatSeconds(endTimeRef.current),
-                });
+        const outsideInputBoxClickEventHandlerRef = (event) => outsideInputBoxClickEventHandler(event, inputElement, clickedInsideEndInputBox, false)
+        document.addEventListener("click", outsideInputBoxClickEventHandlerRef);
 
-                clickedInsideEndInputBox = false;
-            }
-        });
-    }, []);
+        return () => {
+            // cleanup on unmount
+            inputElement.removeEventListener("keydown", keydownEnterEventHandlerRef);
+            inputElement.removeEventListener("click", insideInputBoxClickEventHandlerRef);
+            document.removeEventListener("click", outsideInputBoxClickEventHandlerRef);
+        }
+    }, [endDuration]);
 
     // The following adjusts the wavesurfer region to match the start and end time exactly because sometimes its slightly off
     useEffect(() => {
@@ -177,8 +189,8 @@ function App() {
 
             function handleMouseUp() {
                 waverRegionRef.current.update({
-                    start: unformatSeconds(startTimeRef.current),
-                    end: unformatSeconds(endTimeRef.current),
+                    start: unformatSeconds(startTimeRef.current, true),
+                    end: unformatSeconds(endTimeRef.current, false),
                 });
                 document.removeEventListener("mouseup", handleMouseUp);
             }
@@ -224,6 +236,7 @@ function App() {
                     resize: true, // Enable resizing the region
                 });
 
+                console.log("WAVE FORM READY, SETTING END DURATION TO: " + end_duration)
                 setEndDuration(end_duration);
                 setWaverRegion(wsRegion);
 
@@ -251,10 +264,10 @@ function App() {
                     // if playhead hits endTime locator, loop around
                     if (
                         Math.trunc(wavesurfer.getCurrentTime()) ==
-                        unformatSeconds(endTimeRef.current)
+                        unformatSeconds(endTimeRef.current, false)
                     ) {
                         wavesurfer.setCurrentTime(
-                            unformatSeconds(startTimeRef.current)
+                            unformatSeconds(startTimeRef.current, true)
                         );
                     }
 
@@ -283,8 +296,8 @@ function App() {
     function moveStartOrEndToNotOverlap() {
         if (waverRegionRef.current) {
             let endDurationWhole = Math.floor(endDuration);
-            let endTimeSeconds = unformatSeconds(endTimeRef.current);
-            let startTimeSeconds = unformatSeconds(startTimeRef.current);
+            let endTimeSeconds = unformatSeconds(endTimeRef.current, false);
+            let startTimeSeconds = unformatSeconds(startTimeRef.current, true);
             console.log(endTimeSeconds + ", " + endDurationWhole);
             if (endTimeSeconds < endDurationWhole) {
                 waverRegionRef.current.update({ end: startTimeSeconds + 1 });
@@ -337,7 +350,7 @@ function App() {
         return hours + ":" + minutes + ":" + seconds;
     }
 
-    function unformatSeconds(formatted_time) {
+    function unformatSeconds(formatted_time, unformatting_start_time) {
         // HH:MM:SS -> X seconds
         let times = formatted_time.split(":");
         if (
@@ -345,9 +358,11 @@ function App() {
             strIsNotNumber(times[1]) ||
             strIsNotNumber(times[2])
         ) {
-            throw Error(
-                "one of the hours, minutes, or seconds are not formatted correctly"
-            );
+            alert("one of the hours, minutes, or seconds are not formatted correctly");
+            if (unformatting_start_time) {
+                return 0;
+            }
+            return Math.floor(endDuration);
         }
 
         let hours = parseInt(times[0]);
@@ -363,7 +378,7 @@ function App() {
 
     function playLoopClick() {
         setIsPlaying(true);
-        waver?.setCurrentTime(unformatSeconds(startTimeRef.current));
+        waver?.setCurrentTime(unformatSeconds(startTimeRef.current, true));
         waver?.play();
     }
 
