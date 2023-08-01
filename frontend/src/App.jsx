@@ -46,16 +46,34 @@ function App() {
     const startTimeRef = useRef(startTime);
     const endTimeRef = useRef(endTime);
 
+    function isValidTime(str) {
+        // console.log("checking time: " + str)
+        let times = str.split(":");
+        if (str.length != 8) {
+            return false
+        } else if (
+            strIsNotNumber(times[0]) ||
+            strIsNotNumber(times[1]) ||
+            strIsNotNumber(times[2])
+        ) {
+            return false
+        }
+
+        return true
+    }
+
     useEffect(() => {
         startTimeRef.current = startTime;
-        if (startTimeRef.current >= endTimeRef.current) {
+        if (isValidTime(startTimeRef.current) && startTimeRef.current >= endTimeRef.current) {
             moveStartOrEndToNotOverlap();
         }
     }, [startTime]);
 
     useEffect(() => {
         endTimeRef.current = endTime;
-        if (startTimeRef.current >= endTimeRef.current) {
+        // console.log("start: " + startTimeRef.current + ", end: " + endTimeRef.current + ", isValidTime: " + isValidTime(endTimeRef.current))
+        if (isValidTime(endTimeRef.current) && startTimeRef.current >= endTimeRef.current) {
+            // console.log("executing moveStartOrEndToNotOverlap")
             moveStartOrEndToNotOverlap();
         }
     }, [endTime]);
@@ -236,7 +254,7 @@ function App() {
                     resize: true, // Enable resizing the region
                 });
 
-                console.log("WAVE FORM READY, SETTING END DURATION TO: " + end_duration)
+                // console.log("WAVE FORM READY, SETTING END DURATION TO: " + end_duration)
                 setEndDuration(end_duration);
                 setWaverRegion(wsRegion);
 
@@ -298,7 +316,7 @@ function App() {
             let endDurationWhole = Math.floor(endDuration);
             let endTimeSeconds = unformatSeconds(endTimeRef.current, false);
             let startTimeSeconds = unformatSeconds(startTimeRef.current, true);
-            console.log(endTimeSeconds + ", " + endDurationWhole);
+            // console.log(endTimeSeconds + ", " + endDurationWhole);
             if (endTimeSeconds < endDurationWhole) {
                 waverRegionRef.current.update({ end: startTimeSeconds + 1 });
             } else {
@@ -352,6 +370,7 @@ function App() {
 
     function unformatSeconds(formatted_time, unformatting_start_time) {
         // HH:MM:SS -> X seconds
+
         let times = formatted_time.split(":");
         if (
             strIsNotNumber(times[0]) ||
