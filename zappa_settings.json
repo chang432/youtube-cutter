@@ -26,6 +26,8 @@
         "runtime": "python3.9",
         "s3_bucket": "youtube-cutter",
         "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
+        "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/97cf30a5-1a0c-4742-b52b-169264d2add6",
+        "domain": "wav.ninja",
         "exclude": [
             "node_modules",
             "public",

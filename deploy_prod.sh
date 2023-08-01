@@ -17,7 +17,7 @@ npm run build
 
 find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/\/assets/https:\/\/youtube-cutter-static-files-prod.s3.amazonaws.com\/assets/g' {} +
 
-find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/http:\/\/127.0.0.1:5000/https:\/\/ivvwrm921c.execute-api.us-east-1.amazonaws.com\/prod/g' {} +
+find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/http:\/\/127.0.0.1:5000/https:\/\/wav.ninja/g' {} +
 
 cd ../scripts
 
@@ -39,7 +39,7 @@ cd frontend
 
 find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/https:\/\/youtube-cutter-static-files-prod.s3.amazonaws.com\/assets/\/assets/g' {} +
 
-find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/https:\/\/ivvwrm921c.execute-api.us-east-1.amazonaws.com\/prod/http:\/\/127.0.0.1:5000/g' {} +
+find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/https:\/\/wav.ninja/http:\/\/127.0.0.1:5000/g' {} +
 
 cd ..
 
