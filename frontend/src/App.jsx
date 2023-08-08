@@ -83,21 +83,17 @@ function App() {
     }, [waverRegion]);
 
     function convertYoutubeUrlToId(url) {
-        let youtube_id = ""
-        if (url.includes("youtu.be/")) {
-            let start = url.indexOf("youtu.be/")+9
-            youtube_id = url.substring(start, start+11);
-        } else if (url.includes("youtube") && url.includes("watch?v=")) {
-            let start = url.indexOf("watch?v=")+8
-            youtube_id = url.substring(start, start+11);
+        const yt = url.match(
+            /(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:watch\?v=|)([^\s&]+)/
+        );
+        let yt_id = yt[1]
+
+        if (yt_id.length != 11) {
+            throw Error("Incorrect youtube id")
         }
 
-        if (youtube_id.length != 11) {
-            throw Error("invalid youtube url, please try again")
-        } 
-
-        console.log("youtube id is: " + youtube_id);
-        return youtube_id;
+        console.log("youtube id is: " + yt_id);
+        return yt_id;
     }
 
     useEffect(() => {
