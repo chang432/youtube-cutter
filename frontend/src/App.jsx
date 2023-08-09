@@ -13,6 +13,7 @@ import {
     faPlay,
     faPause,
     faRotateLeft,
+    faMugHot,
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
@@ -534,11 +535,18 @@ function App() {
             });
     }
 
+    function handleDonationClick() {
+        window.open('https://ko-fi.com/wavninja', '_blank');
+    }
+
     return (
         <div
             data-theme={`${isDarkMode ? "black" : "lofi"}`}
             className=" transition-colors duration-300 ease-in-out mx-auto "
         >
+            <button className="fixed top-4 left-6 flex items-center" onClick={handleDonationClick}>
+                <FontAwesomeIcon icon={faMugHot} className="fa-2xl"/>
+            </button>
             <ThemeSwitch
                 isDarkMode={isDarkMode}
                 setIsDarkMode={setIsDarkMode}
