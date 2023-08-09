@@ -579,7 +579,7 @@ function App() {
                             className="btn btn-outline text-2xl mt-5 "
                             onClick={handleFullVideoClick}
                         >
-                            Display
+                            Begin
                         </button>
                     </div>}
                 </div>
