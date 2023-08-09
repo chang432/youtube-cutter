@@ -406,6 +406,15 @@ function App() {
         waver?.play();
     }
 
+    function goHome() {
+        if (!showLoader) {
+            setAudioSrc(null);
+            setDisplaySearchUI(true);
+            setDisplayCutterUI(false);
+            setShowError(false);
+        }
+    }
+
     function handleFullVideoClick() {
         setShowError(false);
         console.log("Displaying full video");
@@ -536,18 +545,18 @@ function App() {
             />
             <div className=" flex flex-col justify-center h-screen items-center">
                 {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
-                {displaySearchUI && (
-                    <div className="flex flex-col justify-center items-center w-full">
-                        <h1 className="text-8xl mb-10">
-                            wav.ninja
-                            <img
-                                src={ninja}
-                                className={`inline w-28 h-28 ${
-                                    isDarkMode ? "invert" : ""
-                                } `}
-                            ></img>
-                        </h1>
+                <div className="flex flex-col justify-center items-center w-full">
+                    <button onClick={goHome} className="text-8xl mb-10">
+                        wav.ninja
+                        <img
+                            src={ninja}
+                            className={`inline w-28 h-28 ${
+                                isDarkMode ? "invert" : ""
+                            } `}
+                        ></img>
+                    </button>
 
+                    {displaySearchUI && <div className="flex flex-col justify-center items-center w-full">
                         <input
                             type="text"
                             value={fullDownloadYoutubeId}
@@ -564,8 +573,8 @@ function App() {
                         >
                             Display
                         </button>
-                    </div>
-                )}
+                    </div>}
+                </div>
                 <p
                     className={`absolute p-4 mb-[50rem] text-3xl text-error animate-pulse ${
                         showError ? "" : "invisible"
