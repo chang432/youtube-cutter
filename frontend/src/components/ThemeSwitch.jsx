@@ -1,6 +1,6 @@
 import React from "react";
 
-const ThemeSwitch = ({ isDarkMode, setIsDarkMode }) => {
+const ThemeSwitch = ({ isDarkMode, setIsDarkMode, setIsPlaying }) => {
     return (
         <div className="fixed top-4 right-6 flex items-center">
             <label className="swap swap-rotate">
@@ -9,6 +9,7 @@ const ThemeSwitch = ({ isDarkMode, setIsDarkMode }) => {
                     type="checkbox"
                     onChange={() => {
                         setIsDarkMode(!isDarkMode);
+                        setIsPlaying(false);
                     }}
                 />
 

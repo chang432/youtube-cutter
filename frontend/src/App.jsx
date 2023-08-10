@@ -550,6 +550,7 @@ function App() {
             <ThemeSwitch
                 isDarkMode={isDarkMode}
                 setIsDarkMode={setIsDarkMode}
+                setIsPlaying={setIsPlaying}
             />
             <div className=" flex flex-col justify-center h-screen items-center">
                 {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
