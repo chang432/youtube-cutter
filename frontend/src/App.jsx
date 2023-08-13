@@ -247,14 +247,14 @@ function App() {
 
                 try {
                     setStartTime(formatSeconds(0));
-                    setEndTime(formatSeconds(end_duration / 4));
+                    setEndTime(formatSeconds(end_duration));
                 } catch (e) {
                     console.error(e);
                 }
 
                 const wsRegion = wavesurfer.addRegion({
                     start: 0, // Start time in seconds
-                    end: end_duration / 4, // End time in seconds
+                    end: end_duration, // End time in seconds
                     color: "rgba(255, 0, 0, 0.3)", // Region color
                     drag: true, // Enable dragging the region
                     resize: true, // Enable resizing the region
@@ -473,6 +473,7 @@ function App() {
     function handleCutVideoClick() {
         setDisplayCutterUI(false);
         setShowLoader(true);
+        waver?.pause();
 
         let audio_type = document.getElementById("mp3_btn").checked
             ? "MP3"
