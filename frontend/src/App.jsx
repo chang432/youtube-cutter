@@ -16,7 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = false;
+    const developMode = true;
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
     const [getMessage, setGetMessage] = useState({});
     const [audioSrc, setAudioSrc] = useState("");
@@ -32,6 +32,7 @@ function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [showError, setShowError] = useState(false);
     const [thumbnailUrl, setThumbnailUrl] = useState("");
+    const [audioFormat, setAudioFormat] = useState("MP3");
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -50,21 +51,24 @@ function App() {
         // console.log("checking time: " + str)
         let times = str.split(":");
         if (str.length != 8) {
-            return false
+            return false;
         } else if (
             strIsNotNumber(times[0]) ||
             strIsNotNumber(times[1]) ||
             strIsNotNumber(times[2])
         ) {
-            return false
+            return false;
         }
 
-        return true
+        return true;
     }
 
     useEffect(() => {
         startTimeRef.current = startTime;
-        if (isValidTime(startTimeRef.current) && startTimeRef.current >= endTimeRef.current) {
+        if (
+            isValidTime(startTimeRef.current) &&
+            startTimeRef.current >= endTimeRef.current
+        ) {
             moveStartOrEndToNotOverlap();
         }
     }, [startTime]);
@@ -72,7 +76,10 @@ function App() {
     useEffect(() => {
         endTimeRef.current = endTime;
         // console.log("start: " + startTimeRef.current + ", end: " + endTimeRef.current + ", isValidTime: " + isValidTime(endTimeRef.current))
-        if (isValidTime(endTimeRef.current) && startTimeRef.current >= endTimeRef.current) {
+        if (
+            isValidTime(endTimeRef.current) &&
+            startTimeRef.current >= endTimeRef.current
+        ) {
             // console.log("executing moveStartOrEndToNotOverlap")
             moveStartOrEndToNotOverlap();
         }
@@ -83,18 +90,18 @@ function App() {
     }, [waverRegion]);
 
     function convertYoutubeUrlToId(url) {
-        let youtube_id = ""
+        let youtube_id = "";
         if (url.includes("youtu.be/")) {
-            let start = url.indexOf("youtu.be/")+9
-            youtube_id = url.substring(start, start+11);
+            let start = url.indexOf("youtu.be/") + 9;
+            youtube_id = url.substring(start, start + 11);
         } else if (url.includes("youtube") && url.includes("watch?v=")) {
-            let start = url.indexOf("watch?v=")+8
-            youtube_id = url.substring(start, start+11);
+            let start = url.indexOf("watch?v=") + 8;
+            youtube_id = url.substring(start, start + 11);
         }
 
         if (youtube_id.length != 11) {
-            throw Error("invalid youtube url, please try again")
-        } 
+            throw Error("invalid youtube url, please try again");
+        }
 
         console.log("youtube id is: " + youtube_id);
         return youtube_id;
@@ -112,12 +119,13 @@ function App() {
     }, []);
 
     function keydownEnterEventHandler(event, isStartInput) {
-        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current
-        let input_name = isStartInput ? "startTimeInput" : "endTimeInput"
-        
+        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current;
+        let input_name = isStartInput ? "startTimeInput" : "endTimeInput";
+
         if (event.key === "Enter") {
             console.log(
-                input_name + " enter pressed: " +
+                input_name +
+                    " enter pressed: " +
                     time_ref +
                     ", " +
                     waverRegionRef.current
@@ -134,9 +142,14 @@ function App() {
         }
     }
 
-    function outsideInputBoxClickEventHandler(event, inputElement, clickedInsideInputBox, isStartInput) {
-        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current
-        let input_name = isStartInput ? "startTimeInput" : "endTimeInput"
+    function outsideInputBoxClickEventHandler(
+        event,
+        inputElement,
+        clickedInsideInputBox,
+        isStartInput
+    ) {
+        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current;
+        let input_name = isStartInput ? "startTimeInput" : "endTimeInput";
 
         if (
             !inputElement.contains(event.target) &&
@@ -144,10 +157,11 @@ function App() {
         ) {
             // Execute your code here
             console.log(
-                input_name + " outside input box pressed: " +
-                time_ref +
-                ", " +
-                waverRegionRef.current
+                input_name +
+                    " outside input box pressed: " +
+                    time_ref +
+                    ", " +
+                    waverRegionRef.current
             );
 
             if (isStartInput) {
@@ -167,41 +181,83 @@ function App() {
     useEffect(() => {
         let inputElement = document.getElementById("startTimeInput");
 
-        const keydownEnterEventHandlerRef = (event) => keydownEnterEventHandler(event, true)
+        const keydownEnterEventHandlerRef = (event) =>
+            keydownEnterEventHandler(event, true);
         inputElement.addEventListener("keydown", keydownEnterEventHandlerRef);
 
-        const insideInputBoxClickEventHandlerRef = () => {clickedInsideStartInputBox.value = true;}
-        inputElement.addEventListener("click", insideInputBoxClickEventHandlerRef);
+        const insideInputBoxClickEventHandlerRef = () => {
+            clickedInsideStartInputBox.value = true;
+        };
+        inputElement.addEventListener(
+            "click",
+            insideInputBoxClickEventHandlerRef
+        );
 
-        const outsideInputBoxClickEventHandlerRef = (event) => outsideInputBoxClickEventHandler(event, inputElement, clickedInsideStartInputBox, true)
+        const outsideInputBoxClickEventHandlerRef = (event) =>
+            outsideInputBoxClickEventHandler(
+                event,
+                inputElement,
+                clickedInsideStartInputBox,
+                true
+            );
         document.addEventListener("click", outsideInputBoxClickEventHandlerRef);
 
         return () => {
             // cleanup on unmount
-            inputElement.removeEventListener("keydown", keydownEnterEventHandlerRef);
-            inputElement.removeEventListener("click", insideInputBoxClickEventHandlerRef);
-            document.removeEventListener("click", outsideInputBoxClickEventHandlerRef);
-        }
-    },[]);
+            inputElement.removeEventListener(
+                "keydown",
+                keydownEnterEventHandlerRef
+            );
+            inputElement.removeEventListener(
+                "click",
+                insideInputBoxClickEventHandlerRef
+            );
+            document.removeEventListener(
+                "click",
+                outsideInputBoxClickEventHandlerRef
+            );
+        };
+    }, []);
 
     useEffect(() => {
         let inputElement = document.getElementById("endTimeInput");
 
-        const keydownEnterEventHandlerRef = (event) => keydownEnterEventHandler(event, false)
+        const keydownEnterEventHandlerRef = (event) =>
+            keydownEnterEventHandler(event, false);
         inputElement.addEventListener("keydown", keydownEnterEventHandlerRef);
 
-        const insideInputBoxClickEventHandlerRef = () => {clickedInsideEndInputBox.value = true;}
-        inputElement.addEventListener("click", insideInputBoxClickEventHandlerRef);
+        const insideInputBoxClickEventHandlerRef = () => {
+            clickedInsideEndInputBox.value = true;
+        };
+        inputElement.addEventListener(
+            "click",
+            insideInputBoxClickEventHandlerRef
+        );
 
-        const outsideInputBoxClickEventHandlerRef = (event) => outsideInputBoxClickEventHandler(event, inputElement, clickedInsideEndInputBox, false)
+        const outsideInputBoxClickEventHandlerRef = (event) =>
+            outsideInputBoxClickEventHandler(
+                event,
+                inputElement,
+                clickedInsideEndInputBox,
+                false
+            );
         document.addEventListener("click", outsideInputBoxClickEventHandlerRef);
 
         return () => {
             // cleanup on unmount
-            inputElement.removeEventListener("keydown", keydownEnterEventHandlerRef);
-            inputElement.removeEventListener("click", insideInputBoxClickEventHandlerRef);
-            document.removeEventListener("click", outsideInputBoxClickEventHandlerRef);
-        }
+            inputElement.removeEventListener(
+                "keydown",
+                keydownEnterEventHandlerRef
+            );
+            inputElement.removeEventListener(
+                "click",
+                insideInputBoxClickEventHandlerRef
+            );
+            document.removeEventListener(
+                "click",
+                outsideInputBoxClickEventHandlerRef
+            );
+        };
     }, [endDuration]);
 
     // The following adjusts the wavesurfer region to match the start and end time exactly because sometimes its slightly off
@@ -226,7 +282,7 @@ function App() {
 
     useEffect(() => {
         if (audioSrc) {
-            let wavColor = isDarkMode ? "white" : "black"
+            let wavColor = isDarkMode ? "white" : "black";
             // Instantiate WaveSurfer
             console.log(waveSurferRef.current);
             const wavesurfer = WaveSurfer.create({
@@ -308,7 +364,7 @@ function App() {
             setWaver(wavesurfer);
 
             return () => {
-                wavesurfer.destroy()
+                wavesurfer.destroy();
             };
         }
     }, [audioSrc, isDarkMode]);
@@ -386,7 +442,9 @@ function App() {
             strIsNotNumber(times[1]) ||
             strIsNotNumber(times[2])
         ) {
-            alert("one of the hours, minutes, or seconds are not formatted correctly");
+            alert(
+                "one of the hours, minutes, or seconds are not formatted correctly"
+            );
             if (unformatting_start_time) {
                 return 0;
             }
@@ -413,13 +471,13 @@ function App() {
     function handleFullVideoClick() {
         setShowError(false);
         console.log("Displaying full video");
-        let youtube_id = ""
+        let youtube_id = "";
 
         try {
             youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId);
         } catch (error) {
-            alert(error)
-            return
+            alert(error);
+            return;
         }
 
         setDisplaySearchUI(false);
@@ -472,7 +530,7 @@ function App() {
             ? "MP3"
             : "WAV";
 
-        console.log("downloading cut video in " + audio_type + " form");
+        console.log("downloading cut video in " + audioFormat + " form");
 
         let youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId);
 
@@ -641,7 +699,9 @@ function App() {
                             type="radio"
                             name="options"
                             data-title="MP3"
-                            className="btn"
+                            className={`btn ${
+                                !isDarkMode ? "btn-outline" : ""
+                            } `}
                             checked
                         />
                         <input
@@ -649,7 +709,9 @@ function App() {
                             type="radio"
                             name="options"
                             data-title="WAV"
-                            className="btn"
+                            className={`btn ${
+                                !isDarkMode ? "btn-outline" : ""
+                            } `}
                         />
                     </div>
                     <button

@@ -2,3 +2,4 @@ venv
 .DS_Store
 log.txt
 lambda_log.txt
+__pycache__
