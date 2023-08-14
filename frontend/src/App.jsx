@@ -17,7 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = true;
+    const developMode = false;
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
     const [getMessage, setGetMessage] = useState({});
     const [audioSrc, setAudioSrc] = useState("");
@@ -604,7 +604,7 @@ function App() {
             className=" transition-colors duration-300 ease-in-out mx-auto "
         >
             <button
-                className="fixed top-4 left-6 flex items-center"
+                className="fixed top-4 left-6"
                 onClick={handleDonationClick}
             >
                 <FontAwesomeIcon icon={faMugHot} className="fa-2xl" />
