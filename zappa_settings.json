@@ -20,7 +20,7 @@
             "binaries",
             "scripts"
         ],
-        "timeout_seconds": 300, 
+        "timeout_seconds": 900, 
         "memory_size": 1024
     },
     "prod": {
@@ -41,7 +41,7 @@
             "binaries",
             "scripts"
         ],
-        "timeout_seconds": 300, 
+        "timeout_seconds": 900, 
         "memory_size": 1024
     }
 }
