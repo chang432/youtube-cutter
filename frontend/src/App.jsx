@@ -659,7 +659,7 @@ function App() {
                         setShowError(false);
                     }}
                 >
-                    ERROR: No bitches detected. Try again in a bit!
+                    ERROR: Server connection refused. Try again in a bit!
                 </p>
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
@@ -722,9 +722,7 @@ function App() {
                             type="radio"
                             name="options"
                             data-title="MP3"
-                            className={`btn ${
-                                !isDarkMode ? "btn-outline" : ""
-                            } `}
+                            className={`btn btn-outline border-black`}
                             checked
                         />
                         <input
@@ -732,9 +730,7 @@ function App() {
                             type="radio"
                             name="options"
                             data-title="WAV"
-                            className={`btn ${
-                                !isDarkMode ? "btn-outline" : ""
-                            } `}
+                            className={`btn btn-outline border-black`}
                         />
                     </div>
                     <button
