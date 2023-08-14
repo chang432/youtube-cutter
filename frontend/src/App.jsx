@@ -33,6 +33,7 @@ function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [showError, setShowError] = useState(false);
     const [thumbnailUrl, setThumbnailUrl] = useState("");
+    const [audioFormat, setAudioFormat] = useState("MP3");
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -51,21 +52,24 @@ function App() {
         // console.log("checking time: " + str)
         let times = str.split(":");
         if (str.length != 8) {
-            return false
+            return false;
         } else if (
             strIsNotNumber(times[0]) ||
             strIsNotNumber(times[1]) ||
             strIsNotNumber(times[2])
         ) {
-            return false
+            return false;
         }
 
-        return true
+        return true;
     }
 
     useEffect(() => {
         startTimeRef.current = startTime;
-        if (isValidTime(startTimeRef.current) && startTimeRef.current >= endTimeRef.current) {
+        if (
+            isValidTime(startTimeRef.current) &&
+            startTimeRef.current >= endTimeRef.current
+        ) {
             moveStartOrEndToNotOverlap();
         }
     }, [startTime]);
@@ -73,7 +77,10 @@ function App() {
     useEffect(() => {
         endTimeRef.current = endTime;
         // console.log("start: " + startTimeRef.current + ", end: " + endTimeRef.current + ", isValidTime: " + isValidTime(endTimeRef.current))
-        if (isValidTime(endTimeRef.current) && startTimeRef.current >= endTimeRef.current) {
+        if (
+            isValidTime(endTimeRef.current) &&
+            startTimeRef.current >= endTimeRef.current
+        ) {
             // console.log("executing moveStartOrEndToNotOverlap")
             moveStartOrEndToNotOverlap();
         }
@@ -87,10 +94,10 @@ function App() {
         const yt = url.match(
             /(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:watch\?v=|)([^\s&]+)/
         );
-        let yt_id = yt[1]
+        let yt_id = yt[1];
 
         if (yt_id.length != 11) {
-            throw Error("Incorrect youtube id")
+            throw Error("Incorrect youtube id");
         }
 
         console.log("youtube id is: " + yt_id);
@@ -109,12 +116,13 @@ function App() {
     }, []);
 
     function keydownEnterEventHandler(event, isStartInput) {
-        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current
-        let input_name = isStartInput ? "startTimeInput" : "endTimeInput"
-        
+        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current;
+        let input_name = isStartInput ? "startTimeInput" : "endTimeInput";
+
         if (event.key === "Enter") {
             console.log(
-                input_name + " enter pressed: " +
+                input_name +
+                    " enter pressed: " +
                     time_ref +
                     ", " +
                     waverRegionRef.current
@@ -131,9 +139,14 @@ function App() {
         }
     }
 
-    function outsideInputBoxClickEventHandler(event, inputElement, clickedInsideInputBox, isStartInput) {
-        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current
-        let input_name = isStartInput ? "startTimeInput" : "endTimeInput"
+    function outsideInputBoxClickEventHandler(
+        event,
+        inputElement,
+        clickedInsideInputBox,
+        isStartInput
+    ) {
+        let time_ref = isStartInput ? startTimeRef.current : endTimeRef.current;
+        let input_name = isStartInput ? "startTimeInput" : "endTimeInput";
 
         if (
             !inputElement.contains(event.target) &&
@@ -141,10 +154,11 @@ function App() {
         ) {
             // Execute your code here
             console.log(
-                input_name + " outside input box pressed: " +
-                time_ref +
-                ", " +
-                waverRegionRef.current
+                input_name +
+                    " outside input box pressed: " +
+                    time_ref +
+                    ", " +
+                    waverRegionRef.current
             );
 
             if (isStartInput) {
@@ -164,41 +178,83 @@ function App() {
     useEffect(() => {
         let inputElement = document.getElementById("startTimeInput");
 
-        const keydownEnterEventHandlerRef = (event) => keydownEnterEventHandler(event, true)
+        const keydownEnterEventHandlerRef = (event) =>
+            keydownEnterEventHandler(event, true);
         inputElement.addEventListener("keydown", keydownEnterEventHandlerRef);
 
-        const insideInputBoxClickEventHandlerRef = () => {clickedInsideStartInputBox.value = true;}
-        inputElement.addEventListener("click", insideInputBoxClickEventHandlerRef);
+        const insideInputBoxClickEventHandlerRef = () => {
+            clickedInsideStartInputBox.value = true;
+        };
+        inputElement.addEventListener(
+            "click",
+            insideInputBoxClickEventHandlerRef
+        );
 
-        const outsideInputBoxClickEventHandlerRef = (event) => outsideInputBoxClickEventHandler(event, inputElement, clickedInsideStartInputBox, true)
+        const outsideInputBoxClickEventHandlerRef = (event) =>
+            outsideInputBoxClickEventHandler(
+                event,
+                inputElement,
+                clickedInsideStartInputBox,
+                true
+            );
         document.addEventListener("click", outsideInputBoxClickEventHandlerRef);
 
         return () => {
             // cleanup on unmount
-            inputElement.removeEventListener("keydown", keydownEnterEventHandlerRef);
-            inputElement.removeEventListener("click", insideInputBoxClickEventHandlerRef);
-            document.removeEventListener("click", outsideInputBoxClickEventHandlerRef);
-        }
-    },[]);
+            inputElement.removeEventListener(
+                "keydown",
+                keydownEnterEventHandlerRef
+            );
+            inputElement.removeEventListener(
+                "click",
+                insideInputBoxClickEventHandlerRef
+            );
+            document.removeEventListener(
+                "click",
+                outsideInputBoxClickEventHandlerRef
+            );
+        };
+    }, []);
 
     useEffect(() => {
         let inputElement = document.getElementById("endTimeInput");
 
-        const keydownEnterEventHandlerRef = (event) => keydownEnterEventHandler(event, false)
+        const keydownEnterEventHandlerRef = (event) =>
+            keydownEnterEventHandler(event, false);
         inputElement.addEventListener("keydown", keydownEnterEventHandlerRef);
 
-        const insideInputBoxClickEventHandlerRef = () => {clickedInsideEndInputBox.value = true;}
-        inputElement.addEventListener("click", insideInputBoxClickEventHandlerRef);
+        const insideInputBoxClickEventHandlerRef = () => {
+            clickedInsideEndInputBox.value = true;
+        };
+        inputElement.addEventListener(
+            "click",
+            insideInputBoxClickEventHandlerRef
+        );
 
-        const outsideInputBoxClickEventHandlerRef = (event) => outsideInputBoxClickEventHandler(event, inputElement, clickedInsideEndInputBox, false)
+        const outsideInputBoxClickEventHandlerRef = (event) =>
+            outsideInputBoxClickEventHandler(
+                event,
+                inputElement,
+                clickedInsideEndInputBox,
+                false
+            );
         document.addEventListener("click", outsideInputBoxClickEventHandlerRef);
 
         return () => {
             // cleanup on unmount
-            inputElement.removeEventListener("keydown", keydownEnterEventHandlerRef);
-            inputElement.removeEventListener("click", insideInputBoxClickEventHandlerRef);
-            document.removeEventListener("click", outsideInputBoxClickEventHandlerRef);
-        }
+            inputElement.removeEventListener(
+                "keydown",
+                keydownEnterEventHandlerRef
+            );
+            inputElement.removeEventListener(
+                "click",
+                insideInputBoxClickEventHandlerRef
+            );
+            document.removeEventListener(
+                "click",
+                outsideInputBoxClickEventHandlerRef
+            );
+        };
     }, [endDuration]);
 
     // The following adjusts the wavesurfer region to match the start and end time exactly because sometimes its slightly off
@@ -223,7 +279,7 @@ function App() {
 
     useEffect(() => {
         if (audioSrc) {
-            let wavColor = isDarkMode ? "white" : "black"
+            let wavColor = isDarkMode ? "white" : "black";
             // Instantiate WaveSurfer
             console.log(waveSurferRef.current);
             const wavesurfer = WaveSurfer.create({
@@ -305,7 +361,7 @@ function App() {
             setWaver(wavesurfer);
 
             return () => {
-                wavesurfer.destroy()
+                wavesurfer.destroy();
             };
         }
     }, [audioSrc, isDarkMode]);
@@ -383,7 +439,9 @@ function App() {
             strIsNotNumber(times[1]) ||
             strIsNotNumber(times[2])
         ) {
-            alert("one of the hours, minutes, or seconds are not formatted correctly");
+            alert(
+                "one of the hours, minutes, or seconds are not formatted correctly"
+            );
             if (unformatting_start_time) {
                 return 0;
             }
@@ -419,13 +477,13 @@ function App() {
     function handleFullVideoClick() {
         setShowError(false);
         console.log("Displaying full video");
-        let youtube_id = ""
+        let youtube_id = "";
 
         try {
             youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId);
         } catch (error) {
-            alert(error)
-            return
+            alert(error);
+            return;
         }
 
         setDisplaySearchUI(false);
@@ -479,7 +537,7 @@ function App() {
             ? "MP3"
             : "WAV";
 
-        console.log("downloading cut video in " + audio_type + " form");
+        console.log("downloading cut video in " + audioFormat + " form");
 
         let youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId);
 
@@ -537,7 +595,7 @@ function App() {
     }
 
     function handleDonationClick() {
-        window.open('https://ko-fi.com/wavninja', '_blank');
+        window.open("https://ko-fi.com/wavninja", "_blank");
     }
 
     return (
@@ -545,8 +603,11 @@ function App() {
             data-theme={`${isDarkMode ? "black" : "lofi"}`}
             className=" transition-colors duration-300 ease-in-out mx-auto "
         >
-            <button className="fixed top-4 left-6 flex items-center" onClick={handleDonationClick}>
-                <FontAwesomeIcon icon={faMugHot} className="fa-2xl"/>
+            <button
+                className="fixed top-4 left-6"
+                onClick={handleDonationClick}
+            >
+                <FontAwesomeIcon icon={faMugHot} className="fa-2xl" />
             </button>
             <ThemeSwitch
                 isDarkMode={isDarkMode}
@@ -566,24 +627,29 @@ function App() {
                         ></img>
                     </button>
 
-                    {displaySearchUI && <div className="flex flex-col justify-center items-center w-full">
-                        <input
-                            type="text"
-                            value={fullDownloadYoutubeId}
-                            onChange={handleFullVideoTextChange}
-                            placeholder="Paste Youtube link here"
-                            className="input input-bordered input-primary w-full max-w-2xl input-lg  "
-                        />
-                        {thumbnailUrl && (
-                            <img src={thumbnailUrl} className={` mt-5 h-36`} />
-                        )}
-                        <button
-                            className="btn btn-outline text-2xl mt-5 "
-                            onClick={handleFullVideoClick}
-                        >
-                            Begin
-                        </button>
-                    </div>}
+                    {displaySearchUI && (
+                        <div className="flex flex-col justify-center items-center w-full">
+                            <input
+                                type="text"
+                                value={fullDownloadYoutubeId}
+                                onChange={handleFullVideoTextChange}
+                                placeholder="Paste Youtube link here"
+                                className="input input-bordered input-primary w-full max-w-2xl input-lg  "
+                            />
+                            {thumbnailUrl && (
+                                <img
+                                    src={thumbnailUrl}
+                                    className={` mt-5 h-36`}
+                                />
+                            )}
+                            <button
+                                className="btn btn-outline text-2xl mt-5 "
+                                onClick={handleFullVideoClick}
+                            >
+                                Begin
+                            </button>
+                        </div>
+                    )}
                 </div>
                 <p
                     className={`absolute p-4 mb-[50rem] text-3xl text-error animate-pulse ${
@@ -593,7 +659,7 @@ function App() {
                         setShowError(false);
                     }}
                 >
-                    ERROR: No bitches detected. Try again in a bit!
+                    ERROR: Server connection refused. Try again in a bit!
                 </p>
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
@@ -656,7 +722,7 @@ function App() {
                             type="radio"
                             name="options"
                             data-title="MP3"
-                            className="btn"
+                            className={`btn btn-outline border-black`}
                             checked
                         />
                         <input
@@ -664,7 +730,7 @@ function App() {
                             type="radio"
                             name="options"
                             data-title="WAV"
-                            className="btn"
+                            className={`btn btn-outline border-black`}
                         />
                     </div>
                     <button
