@@ -6,6 +6,11 @@
         "project_name": "youtube-cutter",
         "runtime": "python3.9",
         "s3_bucket": "youtube-cutter",
+        "events": [{
+            "function": "monitoring.check_pytube",
+            "expression": "rate(10 minutes)"
+        }],
+        "keep_warm": false,
         "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
         "exclude": [
             "node_modules",

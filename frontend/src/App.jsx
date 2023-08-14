@@ -13,6 +13,7 @@ import {
     faPlay,
     faPause,
     faRotateLeft,
+    faMugHot,
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
@@ -90,21 +91,17 @@ function App() {
     }, [waverRegion]);
 
     function convertYoutubeUrlToId(url) {
-        let youtube_id = "";
-        if (url.includes("youtu.be/")) {
-            let start = url.indexOf("youtu.be/") + 9;
-            youtube_id = url.substring(start, start + 11);
-        } else if (url.includes("youtube") && url.includes("watch?v=")) {
-            let start = url.indexOf("watch?v=") + 8;
-            youtube_id = url.substring(start, start + 11);
+        const yt = url.match(
+            /(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:watch\?v=|)([^\s&]+)/
+        );
+        let yt_id = yt[1];
+
+        if (yt_id.length != 11) {
+            throw Error("Incorrect youtube id");
         }
 
-        if (youtube_id.length != 11) {
-            throw Error("invalid youtube url, please try again");
-        }
-
-        console.log("youtube id is: " + youtube_id);
-        return youtube_id;
+        console.log("youtube id is: " + yt_id);
+        return yt_id;
     }
 
     useEffect(() => {
@@ -306,14 +303,14 @@ function App() {
 
                 try {
                     setStartTime(formatSeconds(0));
-                    setEndTime(formatSeconds(end_duration / 4));
+                    setEndTime(formatSeconds(end_duration));
                 } catch (e) {
                     console.error(e);
                 }
 
                 const wsRegion = wavesurfer.addRegion({
                     start: 0, // Start time in seconds
-                    end: end_duration / 4, // End time in seconds
+                    end: end_duration, // End time in seconds
                     color: "rgba(255, 0, 0, 0.3)", // Region color
                     drag: true, // Enable dragging the region
                     resize: true, // Enable resizing the region
@@ -468,6 +465,15 @@ function App() {
         waver?.play();
     }
 
+    function goHome() {
+        if (!showLoader) {
+            setAudioSrc(null);
+            setDisplaySearchUI(true);
+            setDisplayCutterUI(false);
+            setShowError(false);
+        }
+    }
+
     function handleFullVideoClick() {
         setShowError(false);
         console.log("Displaying full video");
@@ -525,6 +531,7 @@ function App() {
     function handleCutVideoClick() {
         setDisplayCutterUI(false);
         setShowLoader(true);
+        waver?.pause();
 
         let audio_type = document.getElementById("mp3_btn").checked
             ? "MP3"
@@ -587,47 +594,63 @@ function App() {
             });
     }
 
+    function handleDonationClick() {
+        window.open("https://ko-fi.com/wavninja", "_blank");
+    }
+
     return (
         <div
             data-theme={`${isDarkMode ? "black" : "lofi"}`}
             className=" transition-colors duration-300 ease-in-out mx-auto "
         >
+            <button
+                className="fixed top-4 left-6 flex items-center"
+                onClick={handleDonationClick}
+            >
+                <FontAwesomeIcon icon={faMugHot} className="fa-2xl" />
+            </button>
             <ThemeSwitch
                 isDarkMode={isDarkMode}
                 setIsDarkMode={setIsDarkMode}
+                setIsPlaying={setIsPlaying}
             />
             <div className=" flex flex-col justify-center h-screen items-center">
                 {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
-                {displaySearchUI && (
-                    <div className="flex flex-col justify-center items-center w-full">
-                        <h1 className="text-8xl mb-10">
-                            wav.ninja
-                            <img
-                                src={ninja}
-                                className={`inline w-28 h-28 ${
-                                    isDarkMode ? "invert" : ""
-                                } `}
-                            ></img>
-                        </h1>
+                <div className="flex flex-col justify-center items-center w-full">
+                    <button onClick={goHome} className="text-8xl mb-10">
+                        wav.ninja
+                        <img
+                            src={ninja}
+                            className={`inline w-28 h-28 ${
+                                isDarkMode ? "invert" : ""
+                            } `}
+                        ></img>
+                    </button>
 
-                        <input
-                            type="text"
-                            value={fullDownloadYoutubeId}
-                            onChange={handleFullVideoTextChange}
-                            placeholder="Paste Youtube link here"
-                            className="input input-bordered input-primary w-full max-w-2xl input-lg  "
-                        />
-                        {thumbnailUrl && (
-                            <img src={thumbnailUrl} className={` mt-5 h-36`} />
-                        )}
-                        <button
-                            className="btn btn-outline text-2xl mt-5 "
-                            onClick={handleFullVideoClick}
-                        >
-                            Display
-                        </button>
-                    </div>
-                )}
+                    {displaySearchUI && (
+                        <div className="flex flex-col justify-center items-center w-full">
+                            <input
+                                type="text"
+                                value={fullDownloadYoutubeId}
+                                onChange={handleFullVideoTextChange}
+                                placeholder="Paste Youtube link here"
+                                className="input input-bordered input-primary w-full max-w-2xl input-lg  "
+                            />
+                            {thumbnailUrl && (
+                                <img
+                                    src={thumbnailUrl}
+                                    className={` mt-5 h-36`}
+                                />
+                            )}
+                            <button
+                                className="btn btn-outline text-2xl mt-5 "
+                                onClick={handleFullVideoClick}
+                            >
+                                Begin
+                            </button>
+                        </div>
+                    )}
+                </div>
                 <p
                     className={`absolute p-4 mb-[50rem] text-3xl text-error animate-pulse ${
                         showError ? "" : "invisible"
