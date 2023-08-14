@@ -616,7 +616,7 @@ function App() {
             />
             <div className=" flex flex-col justify-center h-screen items-center">
                 {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
-                <div className="flex flex-col justify-center items-center w-full">
+                <div className="flex flex-col justify-center items-center w-full" style={{ zIndex: 1 }}>
                     <button onClick={goHome} className="text-8xl mb-10">
                         wav.ninja
                         <img
@@ -643,7 +643,7 @@ function App() {
                                 />
                             )}
                             <button
-                                className="btn btn-outline text-2xl mt-5 "
+                                className="btn bg-white text-2xl text-black mt-5 "
                                 onClick={handleFullVideoClick}
                             >
                                 Begin
@@ -719,18 +719,18 @@ function App() {
                     </div>
                     <div className="btn-group mt-10">
                         <input
-                            id="mp3_btn"
-                            type="radio"
-                            name="options"
-                            data-title="MP3"
-                            className={`btn btn-outline border-black`}
-                            checked
-                        />
-                        <input
                             id="wav_btn"
                             type="radio"
                             name="options"
                             data-title="WAV"
+                            className={`btn btn-outline border-black`}
+                            checked
+                        />
+                        <input
+                            id="mp3_btn"
+                            type="radio"
+                            name="options"
+                            data-title="MP3"
                             className={`btn btn-outline border-black`}
                         />
                     </div>
