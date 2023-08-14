@@ -28,6 +28,9 @@ class FullDownloadHandler(Resource):
     file_key = f"audio/{yt_id}.mp3"
     s3.meta.client.upload_file(new_file, bucket_name, file_key, ExtraArgs={'ACL': 'public-read'})
 
+    # Removing file from tmp folder
+    os.remove(new_file)
+
     print(f"[CUSTOM] upload to {bucket_name}/{file_key} complete! Now sending s3 url as response...")
     location = f"https://youtube-cutter-static-files-dev.s3.amazonaws.com/{file_key}"
 

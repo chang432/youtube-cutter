@@ -12,7 +12,7 @@ def sanitize(title: str):
     # title = title.replace('free', '')
     title = title.strip()
     title = title.replace(' ','_')
-    toReplace = '[](){}"“.,@#*&<>:;/\\|' + "'"
+    toReplace = '[](){}"“.,@#*&<>:;/\\|+' + "'"
     for char in toReplace:
         title = title.replace(char, '')
     return title
@@ -73,6 +73,9 @@ class CutDownloadHandler(Resource):
     bucket_name = 'youtube-cutter-static-files-dev'
     file_key = f"audio/{yt_title}.mp3" if audio_type == "MP3" else f"audio/{yt_title}.wav"
     s3.meta.client.upload_file(cut_file, bucket_name, file_key, ExtraArgs={'ACL': 'public-read'})
+
+    # cleaning up cut file 
+    os.remove(cut_file)
 
     print(f"[CUSTOM] upload of cut file {bucket_name}/{file_key} complete! Now sending s3 url as response...")
 
