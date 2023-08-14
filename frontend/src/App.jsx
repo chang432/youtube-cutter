@@ -681,6 +681,7 @@ function App() {
                     className={`flex flex-col justify-center items-center w-full ${
                         displayCutterUI ? "" : "hidden"
                     } mt-10`}
+                    style={{ zIndex: 1 }}
                 >
                     <div className="w-4/5 flex flex-row justify-between">
                         <input
@@ -740,8 +741,8 @@ function App() {
                         &#x2694;&nbsp;&nbsp;&nbsp;CUT&nbsp;&nbsp;&nbsp;&#x2694;
                     </button>
                 </div>
+                <Disclaimer />
             </div>
-            <Disclaimer />
         </div>
     );
 }
