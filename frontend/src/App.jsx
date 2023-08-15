@@ -281,7 +281,6 @@ function App() {
         if (audioSrc) {
             let wavColor = isDarkMode ? "white" : "black";
             // Instantiate WaveSurfer
-            console.log(waveSurferRef.current);
             const wavesurfer = WaveSurfer.create({
                 container: waveSurferRef.current,
                 waveColor: wavColor,
@@ -316,7 +315,6 @@ function App() {
                     resize: true, // Enable resizing the region
                 });
 
-                // console.log("WAVE FORM READY, SETTING END DURATION TO: " + end_duration)
                 setEndDuration(end_duration);
                 setWaverRegion(wsRegion);
 
@@ -586,6 +584,7 @@ function App() {
                 setShowLoader(false);
                 setDisplaySearchUI(true);
                 waver?.destroy();
+                setAudioSrc(null);
             })
             .catch((error) => {
                 console.log("axios error:", error);
