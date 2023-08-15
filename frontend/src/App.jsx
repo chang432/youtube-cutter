@@ -34,6 +34,8 @@ function App() {
     const [showError, setShowError] = useState(false);
     const [thumbnailUrl, setThumbnailUrl] = useState("");
     const [audioFormat, setAudioFormat] = useState("MP3");
+    const [showDisclaimer, setShowDisclaimer] = useState(false);
+
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -616,7 +618,7 @@ function App() {
             />
             <div className=" flex flex-col justify-center h-screen items-center">
                 {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
-                <div className="flex flex-col justify-center items-center w-full" style={{ zIndex: 1 }}>
+                <div className="flex flex-col justify-center items-center w-full" >
                     <button onClick={goHome} className="text-8xl mb-10">
                         wav.ninja
                         <img
@@ -681,7 +683,6 @@ function App() {
                     className={`flex flex-col justify-center items-center w-full ${
                         displayCutterUI ? "" : "hidden"
                     } mt-10`}
-                    style={{ zIndex: 1 }}
                 >
                     <div className="w-4/5 flex flex-row justify-between">
                         <input
@@ -741,7 +742,10 @@ function App() {
                         &#x2694;&nbsp;&nbsp;&nbsp;CUT&nbsp;&nbsp;&nbsp;&#x2694;
                     </button>
                 </div>
-                <Disclaimer />
+                <Disclaimer 
+                    showDisclaimer={showDisclaimer}
+                    setShowDisclaimer={setShowDisclaimer}
+                />
             </div>
         </div>
     );
