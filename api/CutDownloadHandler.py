@@ -82,4 +82,4 @@ class CutDownloadHandler(Resource):
     location = f"https://youtube-cutter-static-files-dev.s3.amazonaws.com/{file_key}"
 
     print("[CUSTOM] FINISHING CutDownloadHandler.py")
-    return {"url": location}
+    return {"url": location, "title": yt_title}

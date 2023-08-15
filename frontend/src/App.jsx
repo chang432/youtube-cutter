@@ -569,6 +569,7 @@ function App() {
                             "http://127.0.0.1:5000/cleanup",
                             {
                                 yt_id: youtube_id,
+                                yt_title: res.data.title
                             },
                             {
                                 responseType: "json",

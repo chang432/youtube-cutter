@@ -10,13 +10,14 @@ class CleanupHandler(Resource):
     print("[CUSTOM] STARTING CleanupHandler.py")
     data = request.get_json()
     yt_id = data.get('yt_id')
+    yt_title = data.get('yt_title')
 
     s3_client = boto3.client('s3')
     bucket_name = "youtube-cutter-static-files-dev"
 
     full_file = yt_id + ".mp3"
-    cut_file_wav = yt_id + "-cut.wav"
-    cut_file_mp3 = yt_id + "-cut.mp3"
+    cut_file_wav = yt_title + ".wav"
+    cut_file_mp3 = yt_title + ".mp3"
     
     try:
         s3_client.delete_object(Bucket=bucket_name, Key="audio/"+full_file)
