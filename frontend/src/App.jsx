@@ -14,14 +14,13 @@ import {
     faPause,
     faRotateLeft,
     faMugHot,
+    faDownload
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
     const developMode = false;
     const [iceSpiceMode, setIceSpiceMode] = useState(false);
-    const [getMessage, setGetMessage] = useState({});
     const [audioSrc, setAudioSrc] = useState("");
-    const [cutAudioSrc, setCutAudioSrc] = useState("");
     const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState("");
     const [startTime, setStartTime] = useState("00:00:00");
     const [endTime, setEndTime] = useState("00:00:00");
@@ -35,7 +34,7 @@ function App() {
     const [thumbnailUrl, setThumbnailUrl] = useState("");
     const [audioFormat, setAudioFormat] = useState("MP3");
     const [showDisclaimer, setShowDisclaimer] = useState(false);
-
+    const [fileName, setFileName] = useState(null);
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -474,7 +473,30 @@ function App() {
         }
     }
 
-    function handleFullVideoClick() {
+    function downloadAndCleanup(url, title) {
+        // Download video
+        const link = document.createElement("a");
+        link.href = url;
+
+        // Use the onload event to trigger cleanup after download
+        link.addEventListener("click", () => {
+            setTimeout(() => {
+                axios.post(
+                    "http://127.0.0.1:5000/cleanup",
+                    {
+                        yt_title: title
+                    },
+                    {
+                        responseType: "json",
+                    }
+                );
+            }, 3000);
+        });
+
+        link.click();
+    }
+
+    function handleFullVideoClick(isCut = false, downloadMp3 = false) {
         setShowError(false);
         console.log("Displaying full video");
         let youtube_id = "";
@@ -495,14 +517,26 @@ function App() {
             responseType: "json",
             data: {
                 yt_id: youtube_id,
+                is_cut: isCut,
+                download_mp3: downloadMp3
             },
         })
             .then((res) => {
                 // console.log("return post: " + res.data)
-                const location = res.data;
-                console.log(location);
-                setAudioSrc(location.url);
-                setDisplayCutterUI(true);
+                const output = res.data;
+                if (isCut) {
+                    console.log(output);
+                    setFileName(output.title)
+                    setAudioSrc(output.url);
+                    setDisplayCutterUI(true);
+                } else {
+                    downloadAndCleanup(output.url, output.title);
+
+                    setShowLoader(false);
+                    setDisplaySearchUI(true);
+                    waver?.destroy();
+                    setAudioSrc(null);
+                }
             })
             .catch((error) => {
                 console.log("axios error:", error);
@@ -538,15 +572,14 @@ function App() {
             : "WAV";
 
         console.log("downloading cut video in " + audioFormat + " form");
-
-        let youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId);
+        console.log(fileName)
 
         axios({
             url: "http://127.0.0.1:5000/handle_cut",
             method: "post",
             responseType: "json",
             data: {
-                yt_id: youtube_id,
+                yt_title: fileName,
                 start_time: startTime,
                 end_time: endTime,
                 audio_type: audio_type,
@@ -555,30 +588,7 @@ function App() {
             .then((res) => {
                 // Display
                 console.log("return post: " + res.data);
-                setCutAudioSrc(res.data.url);
-
-                // Download video
-                const link = document.createElement("a");
-                link.href = res.data.url;
-                link.download = audio_type ? "test.mp3" : "test.wav";
-
-                // Use the onload event to trigger cleanup after download
-                link.addEventListener("click", () => {
-                    setTimeout(() => {
-                        axios.post(
-                            "http://127.0.0.1:5000/cleanup",
-                            {
-                                yt_id: youtube_id,
-                                yt_title: res.data.title
-                            },
-                            {
-                                responseType: "json",
-                            }
-                        );
-                    }, 3000);
-                });
-
-                link.click();
+                downloadAndCleanup(res.data.url, res.data.title, audio_type)
 
                 return;
             })
@@ -644,12 +654,31 @@ function App() {
                                     className={` mt-5 h-36`}
                                 />
                             )}
-                            <button
-                                className="btn bg-white text-2xl text-black mt-5 "
-                                onClick={handleFullVideoClick}
-                            >
-                                Begin
-                            </button>
+                            <div className="flex inline-flex mt-10">
+                                <button
+                                    className="btn bg-white text-2xl text-black mr-6"
+                                    onClick={() => handleFullVideoClick(true)}
+                                >
+                                    BEGIN CUT
+                                </button>
+                                <p className="text-2xl mt-2">or</p>
+                                <div className="btn-group ml-6">
+                                    <button
+                                        className="btn bg-white text-2xl text-black"
+                                        onClick={() => handleFullVideoClick(false, false)}
+                                    >
+                                        <FontAwesomeIcon icon={faDownload} size="xs" className="mr-2" style={{color: "#000000",}}/>
+                                        WAV
+                                    </button>
+                                    <button
+                                        className="btn bg-white text-2xl text-black"
+                                        onClick={() => handleFullVideoClick(false, true)}
+                                    >
+                                        <FontAwesomeIcon icon={faDownload} size="xs" className="mr-2" style={{color: "#000000",}}/>
+                                        MP3
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
