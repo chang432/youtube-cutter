@@ -1,6 +1,6 @@
 # wav.ninja
 
-Welcome to the wav.ninja! This app allows users to input a YouTube URL, generate a waveform representation of the audio, cut a segment of the audio, and then download that segment in either MP3 or WAV format. The frontend of the app is built using ReactJS, Vite, TailwindCSS, and DaisyUI, while the backend is powered by Python using Pytube. Backend is hosted using AWS.
+Welcome to the [wav.ninja](https://wav.ninja)! This app allows users to input a YouTube URL, generate a waveform representation of the audio, cut a segment of the audio, and then download that segment in either MP3 or WAV format. The frontend of the app is built using ReactJS, Vite, TailwindCSS, and DaisyUI, while the backend is powered by Python using Pytube. Backend is hosted using AWS.
 
 
 ![image](https://github.com/chang432/youtube-cutter/assets/88285952/eb617cf4-5ad7-4da0-b375-bc39421af4a9)
