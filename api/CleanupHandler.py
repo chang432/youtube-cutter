@@ -28,3 +28,5 @@ class CleanupHandler(Resource):
         s3_client.delete_object(Bucket=bucket_name, Key="audio/"+full_file_mp3)
     except Exception as e:
         print(f"[CUSTOM] Error occurred while deleting cut audio from S3: {e}")
+    
+    print("[CUSTOM] CleanupHandler.py COMPLETE")

@@ -5,6 +5,7 @@ import subprocess
 import boto3
 import os
 import re
+import time
 
 def sanitize(title: str):
     title = re.sub(r'[^\x00-\x7f]',r'', title)
@@ -19,6 +20,7 @@ def sanitize(title: str):
 
 class FullDownloadHandler(Resource):
   def post(self):
+    start_time = time.time()
     print("[CUSTOM] STARTING FullDownloadHandler.py")
     data = request.get_json()
     yt_id = data.get('yt_id')
@@ -76,5 +78,5 @@ class FullDownloadHandler(Resource):
     print(f"[CUSTOM] upload to {bucket_name}/{file_key} complete! Now sending s3 url as response...")
     location = f"https://youtube-cutter-static-files-dev.s3.amazonaws.com/{file_key}"
 
-    print("[CUSTOM] FINISHING FullDownloadHandler.py")
+    print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds")
     return {"url": location, "title": yt_title}
