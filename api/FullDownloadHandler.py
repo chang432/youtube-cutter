@@ -1,6 +1,8 @@
 from flask_restful import Api, Resource, reqparse
 from flask import Flask, render_template, send_file, request, jsonify
 from pytube import YouTube
+from datetime import datetime
+from botocore.errorfactory import ClientError
 import subprocess
 import boto3
 import os
@@ -30,6 +32,7 @@ class FullDownloadHandler(Resource):
     print(f"[CUSTOM] yt_id is {yt_id}, is_cut is {is_cut}")
 
     s3 = boto3.resource('s3')
+    bucket_name = "youtube-cutter-static-files-dev"
 
     url = "https://www.youtube.com/watch?v=" + yt_id
     yt = YouTube(url, use_oauth=False, allow_oauth_cache=False)
@@ -48,9 +51,11 @@ class FullDownloadHandler(Resource):
         ffmpeg_exec = "/opt/bin/ffmpeg" # deployment
       
       if download_mp3:
+        file_extension = "mp3"
         converted_file = f"/tmp/{yt_id}.mp3"
       else:
         converted_file = f"/tmp/{yt_id}.wav"
+        file_extension = "wav"
 
       print(download_mp3, converted_file)
       ffmpeg_command = f'{ffmpeg_exec} -i "{new_file}" -write_xing 0 -y "{converted_file}"'
@@ -64,9 +69,29 @@ class FullDownloadHandler(Resource):
       os.remove(new_file)
       new_file = converted_file
 
+      # Collect metrics
+      s3_client = boto3.client('s3')
+      curr_time = datetime.now()
+      curr_month_year = str(curr_time.month) + "-" + str(curr_time.year)
+      metrics_file_key = f"metrics/{curr_month_year}.txt"
+      downloaded_file_path = "/tmp/metrics.txt"
+
+      try:
+        s3_client.head_object(Bucket=bucket_name, Key=metrics_file_key)
+        s3_client.download_file(bucket_name, metrics_file_key, downloaded_file_path)
+
+        with open(downloaded_file_path, 'a') as file:
+          file.write(f'[FULL]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title}\n')
+      except ClientError as e:
+        if e.response['Error']['Code'] == "404":
+          # The key does not exist
+          with open(downloaded_file_path, 'a') as file:
+            file.write(f'[FULL]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title}\n')
+      
+      s3_client.upload_file(downloaded_file_path, bucket_name, metrics_file_key)
+
     print(f"[CUSTOM] download from youtube complete of {new_file}! Now uploading to s3...")
 
-    bucket_name = 'youtube-cutter-static-files-dev'
     file_key = f"audio/{yt_title}.mp4"
     if not is_cut:
       file_key = f"audio/{yt_title}.mp3" if download_mp3 else f"audio/{yt_title}.wav"
@@ -76,7 +101,7 @@ class FullDownloadHandler(Resource):
     os.remove(new_file)
 
     print(f"[CUSTOM] upload to {bucket_name}/{file_key} complete! Now sending s3 url as response...")
-    location = f"https://youtube-cutter-static-files-dev.s3.amazonaws.com/{file_key}"
+    location = f"https://{bucket_name}.s3.amazonaws.com/{file_key}"
 
     print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds")
     return {"url": location, "title": yt_title}

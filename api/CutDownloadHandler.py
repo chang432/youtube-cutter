@@ -1,6 +1,8 @@
 from flask_restful import Api, Resource, reqparse
 from flask import Flask, render_template, send_file, request
 from pytube import YouTube
+from datetime import datetime
+from botocore.errorfactory import ClientError
 import boto3
 import os
 import subprocess
@@ -36,7 +38,13 @@ class CutDownloadHandler(Resource):
         print(f"[CUSTOM] Error occurred while deleting full audio from S3: {e}")
 
     # cutting file
-    cut_file = f"/tmp/{yt_title}-cut.mp3" if audio_type == "MP3" else f"/tmp/{yt_title}-cut.wav"
+    if audio_type == "MP3":
+        file_extension = "mp3"
+        cut_file = f"/tmp/{yt_title}-cut.mp3"
+    else:
+        file_extension = "wav"
+        cut_file = f"/tmp/{yt_title}-cut.wav"
+
     print(f'[CUSTOM] cutting {file_name} into {cut_file} from {start_time} to {end_time}')
 
     if os.environ["IS_DEPLOYMENT"] == "FALSE":
@@ -59,6 +67,26 @@ class CutDownloadHandler(Resource):
 
     # cleaning up cut file 
     os.remove(cut_file)
+
+    # Collect metrics
+    curr_time = datetime.now()
+    curr_month_year = str(curr_time.month) + "-" + str(curr_time.year)
+    metrics_file_key = f"metrics/{curr_month_year}.txt"
+    downloaded_file_path = "/tmp/metrics.txt"
+
+    try:
+        s3_client.head_object(Bucket=bucket_name, Key=metrics_file_key)
+        s3_client.download_file(bucket_name, metrics_file_key, downloaded_file_path)
+
+        with open(downloaded_file_path, 'a') as file:
+            file.write(f'[CUT]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title}\n')
+    except ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            # The key does not exist
+            with open(downloaded_file_path, 'a') as file:
+                file.write(f'[CUT]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title}\n')
+    
+    s3_client.upload_file(downloaded_file_path, bucket_name, metrics_file_key)
 
     print(f"[CUSTOM] upload of cut file {bucket_name}/{file_key} complete! Now sending s3 url as response...")
 
