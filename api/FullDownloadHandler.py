@@ -70,6 +70,7 @@ class FullDownloadHandler(Resource):
       new_file = converted_file
 
       # Collect metrics
+      print(f"[CUSTOM] collecting metrics for full download")
       s3_client = boto3.client('s3')
       curr_time = datetime.now()
       curr_month_year = str(curr_time.month) + "-" + str(curr_time.year)
@@ -85,7 +86,8 @@ class FullDownloadHandler(Resource):
       except ClientError as e:
         if e.response['Error']['Code'] == "404":
           # The key does not exist
-          with open(downloaded_file_path, 'a') as file:
+          print(f"[CUSTOM] metric file not found, creating new one")
+          with open(downloaded_file_path, 'w') as file:
             file.write(f'[FULL]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title}\n')
       
       s3_client.upload_file(downloaded_file_path, bucket_name, metrics_file_key)
