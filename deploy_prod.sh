@@ -26,7 +26,7 @@ python upload_static.py
 cd ..
 
 # zappa package prod
-zappa update prod
+zappa deploy prod
 
 # REVERT STUFF NOW
 
