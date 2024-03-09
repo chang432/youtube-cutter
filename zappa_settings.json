@@ -20,7 +20,7 @@
             "binaries",
             "scripts"
         ],
-        "timeout_seconds": 900, 
+        "timeout_seconds": 600, 
         "memory_size": 1024,
         "apigateway_enabled": false,
         "alb_enabled": true,
@@ -53,7 +53,7 @@
             "binaries",
             "scripts"
         ],
-        "timeout_seconds": 900, 
+        "timeout_seconds": 600, 
         "memory_size": 1024,
         "apigateway_enabled": false,
         "alb_enabled": true,

@@ -34,7 +34,7 @@ class FullDownloadHandler(Resource):
     s3 = boto3.resource('s3')
     bucket_name = "youtube-cutter-static-files-dev"
 
-    url = "https://www.youtube.com/watch?v=" + yt_id
+    url = "https://youtube.com/watch?v=" + yt_id
     yt = YouTube(url, use_oauth=False, allow_oauth_cache=False)
 
     yt_title = sanitize(yt.title)
