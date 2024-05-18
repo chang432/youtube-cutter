@@ -6,10 +6,6 @@
         "project_name": "youtube-cutter",
         "runtime": "python3.9",
         "s3_bucket": "youtube-cutter",
-        "events": [{
-            "function": "monitoring.check_pytube",
-            "expression": "rate(10 minutes)"
-        }],
         "keep_warm": false,
         "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
         "exclude": [
@@ -45,6 +41,10 @@
         "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
         "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/97cf30a5-1a0c-4742-b52b-169264d2add6",
         "domain": "wav.ninja",
+        "events": [{
+            "function": "monitoring.check_pytube",
+            "expression": "rate(10 minutes)"
+        }],
         "exclude": [
             "node_modules",
             "public",
