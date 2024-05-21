@@ -519,7 +519,6 @@ function App() {
             },
         })
             .then((res) => {
-                // console.log("return post: " + res.data)
                 const output = res.data;
 
                 if (output.error == "true") {
@@ -529,9 +528,7 @@ function App() {
                     alert(
                         `Error...${output.message}`
                     );
-                }
-
-                if (isCut) {
+                } else if (isCut) {
                     console.log(output);
                     setFileName(output.title)
                     setAudioSrc(output.url);
@@ -546,7 +543,7 @@ function App() {
                 }
             })
             .catch((error) => {
-                console.log("axios error:", error);
+                console.log(error);
                 setShowLoader(false);
                 setDisplaySearchUI(true);
                 alert(
