@@ -30,7 +30,6 @@ function App() {
     const [waverRegion, setWaverRegion] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [showError, setShowError] = useState(false);
     const [thumbnailUrl, setThumbnailUrl] = useState("");
     const [audioFormat, setAudioFormat] = useState("MP3");
     const [showDisclaimer, setShowDisclaimer] = useState(false);
@@ -469,7 +468,6 @@ function App() {
             setAudioSrc(null);
             setDisplaySearchUI(true);
             setDisplayCutterUI(false);
-            setShowError(false);
         }
     }
 
@@ -497,7 +495,6 @@ function App() {
     }
 
     function handleFullVideoClick(isCut = false, downloadMp3 = false) {
-        setShowError(false);
         console.log("Displaying full video");
         let youtube_id = "";
 
@@ -524,6 +521,16 @@ function App() {
             .then((res) => {
                 // console.log("return post: " + res.data)
                 const output = res.data;
+
+                if (output.error == "true") {
+                    console.log(output.error);
+                    setShowLoader(false);
+                    setDisplaySearchUI(true);
+                    alert(
+                        `Error...${output.message}`
+                    );
+                }
+
                 if (isCut) {
                     console.log(output);
                     setFileName(output.title)
@@ -542,10 +549,9 @@ function App() {
                 console.log("axios error:", error);
                 setShowLoader(false);
                 setDisplaySearchUI(true);
-                setShowError(true);
-                // alert(
-                //     "Server error...try again and if it still persists, please let us know!"
-                // );
+                alert(
+                    `Server error...${error}`
+                );
             });
     }
 
@@ -682,16 +688,6 @@ function App() {
                         </div>
                     )}
                 </div>
-                <p
-                    className={`absolute p-4 mb-[50rem] text-3xl text-error animate-pulse ${
-                        showError ? "" : "invisible"
-                    } `}
-                    onClick={() => {
-                        setShowError(false);
-                    }}
-                >
-                    ERROR: Server connection refused. Try again in a bit!
-                </p>
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00

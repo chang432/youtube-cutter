@@ -3,3 +3,4 @@ venv
 log.txt
 lambda_log.txt
 __pycache__
+.vscode

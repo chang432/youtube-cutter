@@ -37,6 +37,16 @@ class FullDownloadHandler(Resource):
     url = "https://youtube.com/watch?v=" + yt_id
     yt = YouTube(url, use_oauth=False, allow_oauth_cache=False)
 
+    try:
+      # set a limit on video length for cuts
+      duration_hours = yt.length / 3600
+      limit = 4
+      print(f"duration in hours is {duration_hours}")
+      if duration_hours > limit:
+        raise Exception(f"this video is over the limit of {limit} hours")
+    except Exception as e: 
+      return {"error": "true", "message": str(e)}
+
     yt_title = sanitize(yt.title)
     audio = yt.streams.filter(only_audio=True).first()
     out_file = audio.download(output_path="/tmp/")
@@ -106,4 +116,4 @@ class FullDownloadHandler(Resource):
     location = f"https://{bucket_name}.s3.amazonaws.com/{file_key}"
 
     print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds")
-    return {"url": location, "title": yt_title}
+    return {"error": "false", "url": location, "title": yt_title}
