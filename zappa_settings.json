@@ -8,7 +8,7 @@
         "s3_bucket": "youtube-cutter",
         "keep_warm": false,
         "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
-        "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/97cf30a5-1a0c-4742-b52b-169264d2add6",
+        "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/4ff1b81b-c88a-4652-8ab9-e425fc11ad9f",
         "exclude": [
             "node_modules",
             "public",
@@ -22,7 +22,7 @@
         "apigateway_enabled": false,
         "alb_enabled": true,
         "alb_vpc_config": {
-            "CertificateArn": "arn:aws:acm:us-east-1:235154285215:certificate/97cf30a5-1a0c-4742-b52b-169264d2add6",
+            "CertificateArn": "arn:aws:acm:us-east-1:235154285215:certificate/4ff1b81b-c88a-4652-8ab9-e425fc11ad9f",
             "SubnetIds": [
                 "subnet-0977c86c9ad182c25",
                 "subnet-04ddd5d41552b71b7"
@@ -40,7 +40,7 @@
         "runtime": "python3.9",
         "s3_bucket": "youtube-cutter",
         "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
-        "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/97cf30a5-1a0c-4742-b52b-169264d2add6",
+        "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/4ff1b81b-c88a-4652-8ab9-e425fc11ad9f",
         "domain": "wav.ninja",
         "events": [{
             "function": "monitoring.check_pytube",
@@ -59,7 +59,7 @@
         "apigateway_enabled": false,
         "alb_enabled": true,
         "alb_vpc_config": {
-            "CertificateArn": "arn:aws:acm:us-east-1:235154285215:certificate/97cf30a5-1a0c-4742-b52b-169264d2add6",
+            "CertificateArn": "arn:aws:acm:us-east-1:235154285215:certificate/4ff1b81b-c88a-4652-8ab9-e425fc11ad9f",
             "SubnetIds": [
                 "subnet-0977c86c9ad182c25",
                 "subnet-04ddd5d41552b71b7"

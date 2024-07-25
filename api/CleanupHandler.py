@@ -1,6 +1,5 @@
 from flask_restful import Api, Resource, reqparse
 from flask import Flask, render_template, send_file, request
-from pytube import YouTube
 import boto3
 import os
 import subprocess
