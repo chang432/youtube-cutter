@@ -1,6 +1,6 @@
 from flask_restful import Api, Resource, reqparse
 from flask import Flask, render_template, send_file, request
-from pytube import YouTube
+from pytubefix import YouTube
 from datetime import datetime
 from botocore.errorfactory import ClientError
 import boto3

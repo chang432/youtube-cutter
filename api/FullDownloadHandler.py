@@ -1,6 +1,6 @@
 from flask_restful import Api, Resource, reqparse
 from flask import Flask, render_template, send_file, request, jsonify
-from pytube import YouTube
+from pytubefix import YouTube
 from datetime import datetime
 from botocore.errorfactory import ClientError
 import subprocess
@@ -45,7 +45,7 @@ class FullDownloadHandler(Resource):
       return {"error": "true", "message": f"this video is over the limit of {limit} hours"}
 
     yt_title = sanitize(yt.title)
-    audio = yt.streams.filter(only_audio=True).first()
+    audio = yt.streams.get_audio_only()
     out_file = audio.download(output_path="/tmp/")
     base, ext = os.path.splitext(out_file)
     new_file = f"/tmp/{yt_id}.mp4"

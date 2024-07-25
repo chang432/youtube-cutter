@@ -26,7 +26,7 @@ placebo==0.9.0
 pycryptodomex==3.17
 python-dateutil==2.8.2
 python-slugify==8.0.1
-pytube==15.0.0
+pytubefix==6.5.2
 pytz==2023.3
 PyYAML==6.0
 requests==2.29.0
