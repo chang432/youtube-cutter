@@ -1,8 +1,8 @@
 from flask_restful import Api, Resource, reqparse
 from flask import Flask, render_template, send_file, request, jsonify
-from pytubefix import YouTube
 from datetime import datetime
 from botocore.errorfactory import ClientError
+from api.YtdlpHandler import YtdlpHandler
 import subprocess
 import boto3
 import os
@@ -35,21 +35,23 @@ class FullDownloadHandler(Resource):
     bucket_name = "youtube-cutter-static-files-dev"
 
     url = "https://youtube.com/watch?v=" + yt_id
-    yt = YouTube(url, use_oauth=False, allow_oauth_cache=False)
+    yt_object = YtdlpHandler(url)
+
+    yt_info = yt_object.yt_dlp_request(False)
 
     # set a limit on video length for cuts
-    duration_hours = yt.length / 3600
+    duration_hours = yt_info["duration"] / 3600
     limit = 4
     print(f"duration in hours is {duration_hours}")
     if duration_hours > limit:
       return {"error": "true", "message": f"this video is over the limit of {limit} hours"}
 
-    yt_title = sanitize(yt.title)
-    audio = yt.streams.get_audio_only()
-    out_file = audio.download(output_path="/tmp/")
-    base, ext = os.path.splitext(out_file)
-    new_file = f"/tmp/{yt_id}.mp4"
-    os.rename(out_file, new_file)
+    yt_title = sanitize(yt_info["title"])
+
+    destination_filename = yt_object.yt_dlp_request(True)['destfilename']
+
+    new_file = f"/tmp/{yt_id}.m4a"
+    os.rename(destination_filename, new_file)
 
     if not is_cut:
       if os.environ["IS_DEPLOYMENT"] == "FALSE":
@@ -101,7 +103,7 @@ class FullDownloadHandler(Resource):
 
     print(f"[CUSTOM] download from youtube complete of {new_file}! Now uploading to s3...")
 
-    file_key = f"audio/{yt_title}.mp4"
+    file_key = f"audio/{yt_title}.m4a"
     if not is_cut:
       file_key = f"audio/{yt_title}.mp3" if download_mp3 else f"audio/{yt_title}.wav"
     s3.meta.client.upload_file(new_file, bucket_name, file_key, ExtraArgs={'ACL': 'public-read'})

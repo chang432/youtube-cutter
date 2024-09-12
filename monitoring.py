@@ -1,4 +1,4 @@
-from pytube import YouTube
+import yt_dlp
 import os
 import traceback
 import boto3

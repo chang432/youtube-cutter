@@ -1,7 +1,7 @@
 #!/bin/bash
 # run from root dir
 
-load_balancer="youtube-cutter-dev-1470211170.us-east-1.elb.amazonaws.com"    # CHANGE EVERY REDEPLOY
+load_balancer="youtube-cutter-dev-1167799868.us-east-1.elb.amazonaws.com"    # CHANGE EVERY REDEPLOY
 
 sed 's/os\.environ\["IS_DEPLOYMENT"] = "FALSE"/os\.environ["IS_DEPLOYMENT"] = "TRUE"/' app.py > prod_app.py
 

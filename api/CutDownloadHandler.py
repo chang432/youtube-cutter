@@ -1,6 +1,5 @@
 from flask_restful import Api, Resource, reqparse
 from flask import Flask, render_template, send_file, request
-from pytubefix import YouTube
 from datetime import datetime
 from botocore.errorfactory import ClientError
 import boto3
@@ -22,13 +21,13 @@ class CutDownloadHandler(Resource):
     bucket_name = "youtube-cutter-static-files-dev"
 
     # download full file from s3 (previously uploaded)
-    full_file = yt_title + ".mp4"
+    full_file = yt_title + ".m4a"
     object_key = f"audio/{full_file}"
     file_name = f"/tmp/{full_file}"
 
     try:
         s3_client.download_file(bucket_name, object_key, file_name)
-        print(f"[CUSTOM] Full mp4 '{object_key}' downloaded from S3 bucket '{bucket_name}' and saved as '{file_name}'.")
+        print(f"[CUSTOM] Full m4a '{object_key}' downloaded from S3 bucket '{bucket_name}' and saved as '{file_name}'.")
     except Exception as e:
         print(f"[CUSTOM] Error occurred while downloading full audio from S3: {e}")
 

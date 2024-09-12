@@ -23,7 +23,6 @@ kappa==0.6.0
 MarkupSafe==2.1.2
 mutagen==1.46.0
 placebo==0.9.0
-pycryptodomex==3.17
 python-dateutil==2.8.2
 python-slugify==8.0.1
 pytubefix==6.5.2

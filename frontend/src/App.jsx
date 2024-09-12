@@ -630,7 +630,7 @@ function App() {
                 setIsPlaying={setIsPlaying}
             />
             <div className=" flex flex-col justify-center h-screen items-center">
-                {/* {showLoader && <LoadingBar showLoader={showLoader} />} */}
+                {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
                 <div className="flex flex-col justify-center items-center w-full" >
                     <button onClick={goHome} className="text-8xl mb-10">
                         wav.ninja
