@@ -1,17 +1,16 @@
-import yt_dlp
 import os
 import traceback
 import boto3
+from api.YtdlpHandler import YtdlpHandler
 
 def check_pytube():
     print("[MONITORING] Starting Execution ")
     try:
         url = "https://www.youtube.com/watch?v=oftolPu9qp4"
-        yt = YouTube(url, use_oauth=False, allow_oauth_cache=False)
-        audio = yt.streams.filter(only_audio=True).first()
-        out_file = audio.download(output_path="/tmp/")
-        os.remove(out_file)
-        print(f"[MONITORING] successfully tested download of {out_file}")
+        yt = YtdlpHandler(url)
+        destfilename = yt.yt_dlp_request(True)["destfilename"]
+        os.remove(destfilename)
+        print(f"[MONITORING] successfully tested download of {destfilename}")
     except:
         print("[MONITORING] EXCEPTION OCCURRED!!!!!")
         traceback.print_exc()
