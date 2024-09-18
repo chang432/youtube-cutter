@@ -14,7 +14,7 @@ def check_pytube():
     except:
         print("[MONITORING] EXCEPTION OCCURRED!!!!!")
         traceback.print_exc()
-        os.system('aws sns publish --message "WAV NINJA MONITORING HAS FAILED PLEASE LOOK INTO IT" --topic-arn "arn:aws:sns:us-east-1:235154285215:wav-ninja-monitoring"')
+        # os.system('aws sns publish --message "WAV NINJA MONITORING HAS FAILED PLEASE LOOK INTO IT" --topic-arn "arn:aws:sns:us-east-1:235154285215:wav-ninja-monitoring"')
 
         sns = boto3.client('sns')
         sns.publish(
