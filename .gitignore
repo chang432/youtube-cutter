@@ -5,3 +5,5 @@ lambda_log.txt
 __pycache__
 .vscode
 youtube-oauth2
+.idea
+cookies

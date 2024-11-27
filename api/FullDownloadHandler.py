@@ -24,6 +24,7 @@ class FullDownloadHandler(Resource):
   def post(self):
     start_time = time.time()
     print("[CUSTOM] STARTING FullDownloadHandler.py")
+
     data = request.get_json()
     yt_id = data.get('yt_id')
     is_cut = data.get('is_cut')
