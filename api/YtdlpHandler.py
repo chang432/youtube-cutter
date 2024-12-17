@@ -4,7 +4,7 @@ import os
 
 class YtdlpHandler:
     destination = None
-    po_token = "MltCjAjVkynpW0K0hgwsSA_q3q7yq6qPqNCG_Bs193N3nVBodY3xYKlA-eAAkZ2U0x35wq91-PcREGdgdGULzwb_RT4xrouCtp9gGw0qgti0p_vWjftAwviyXPqq"   # CHANGEME
+    po_token = "MlsERlkDKXfBkgR-4jmMpIj959fwnCOOrTuJrFHt3rgxskx92kDoiXWSlKlf2jndiqPwvL89w8cznVhB3qSuXKSGwQiz0c8IOOrgtknUiSEG0ucfTLaXnu7XHH6Y"   # CHANGEME
 
     def __init__(self, url) -> None:
         self.url = url
@@ -23,7 +23,9 @@ class YtdlpHandler:
         'extractor_args': {'youtube': 'player-client=web;po_token=web+'+po_token},
         'cookiefile': '/tmp/cookies.txt',
         'verbose': True,
-        'cachedir': '/tmp'
+        'cachedir': '/tmp',
+        'nocachedir': True,
+        'ignoreerrors': True
     }
 
     def yt_dlp_request(self, shouldDownload=False):
