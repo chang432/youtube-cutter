@@ -52,7 +52,9 @@
             "src",
             "static",
             "binaries",
-            "scripts"
+            "scripts",
+            "venv/lib/python3.9/site-packages/boto3",
+            "venv/lib/python3.9/site-packages/botocore"
         ],
         "timeout_seconds": 600, 
         "memory_size": 1024,

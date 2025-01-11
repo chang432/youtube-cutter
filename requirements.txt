@@ -26,8 +26,6 @@ placebo==0.9.0
 pycryptodomex==3.21.0
 python-dateutil==2.8.2
 python-slugify==8.0.1
-pytube==15.0.0
-pytubefix==6.5.2
 pytz==2023.3
 PyYAML==6.0
 requests==2.32.3
@@ -37,7 +35,7 @@ text-unidecode==1.3
 toml==0.10.2
 tqdm==4.65.0
 troposphere==4.3.2
-urllib3==2.2.2
+urllib3==1.26.20
 websockets==12.0
 Werkzeug==2.3.3
 yt-dlp==2024.12.13
