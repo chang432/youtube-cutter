@@ -19,7 +19,6 @@ import {
 
 function App() {
     const developMode = false;
-    const [iceSpiceMode, setIceSpiceMode] = useState(false);
     const [audioSrc, setAudioSrc] = useState("");
     const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState("");
     const [startTime, setStartTime] = useState("00:00:00");
