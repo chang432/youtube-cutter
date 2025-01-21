@@ -4,7 +4,7 @@ import os
 
 class YtdlpHandler:
     destination = None
-    po_token = "MltNBmuE8JXlp00-98wVAyhVOLYaQ98ePLkHEJ3smfmBQGb2b8lfY0FEoNn7nZCa49miLX-7dHmmIMdk7brfvWnJ01Jf3h5oq3yMtyFMQOx68xGNvirBLw21bWi7"  # CHANGEME
+    po_token = "MlsUpByy-G3Y6RSchxvk6Z-s-ovJnBonuPBLSrzUc0wtnCYSSddMI9jc3sFSztblkaXNlm9t9yPiobVUvw0NycsKw5WjMohy95JAiDGyXGVK3SCn0QKsuLyhW-qn"  # CHANGEME
 
     def __init__(self, url) -> None:
         self.url = url
@@ -20,7 +20,8 @@ class YtdlpHandler:
         'progress_hooks': [yt_dlp_monitor],
         # 'username': 'oauth2',
         # 'password': '',
-        'extractor_args': {'youtube': 'player-client=web;po_token=web+'+po_token},
+        # 'extractor_args': {'youtube': 'player-client=web;po_token=web+'+po_token},
+        'extractor_args': {'youtube': 'player_client=web_creator;po_token=web_creator+'+po_token},
         'cookiefile': '/tmp/cookies.txt',
         'verbose': True,
         'cachedir': '/tmp',
@@ -30,8 +31,7 @@ class YtdlpHandler:
 
     def yt_dlp_request(self, shouldDownload=False):
         # Need to move cookies to tmp folder because that is the only area that is non read only for lambdas
-        if not os.path.exists("/tmp/cookies.txt"):
-            shutil.copyfile("./cookies/cookies.txt","/tmp/cookies.txt")
+        shutil.copyfile("./cookies/cookies.txt","/tmp/cookies.txt")
 
         with yt_dlp.YoutubeDL(self.yt_dlp_opts) as ydl:
             output = ydl.extract_info(self.url, download=shouldDownload)
