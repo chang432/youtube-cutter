@@ -7,6 +7,8 @@ import LoadingBar from "./components/LoadingBar";
 import Disclaimer from "./components/Disclaimer";
 import ThemeSwitch from "./components/ThemeSwitch";
 import { WaveSpinner } from "react-spinners-kit";
+import PremiumServices from "./components/PremiumServices";
+import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,7 +20,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = false;
+    const developMode = true;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
+
     const [audioSrc, setAudioSrc] = useState("");
     const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState("");
     const [startTime, setStartTime] = useState("00:00:00");
@@ -107,9 +110,7 @@ function App() {
         // developing use for going straight to the cutter ui without having to paste in a youtube url]
         if (developMode) {
             setDisplaySearchUI(false);
-            setAudioSrc(
-                "https://youtube-cutter-static-files-dev.s3.amazonaws.com/audio/tGTKY1dpo_E.mp3"
-            );
+            setAudioSrc(testAudioFile);
             setDisplayCutterUI(true);
         }
     }, []);
@@ -684,6 +685,9 @@ function App() {
                         </div>
                     )}
                 </div>
+                {displayCutterUI && (
+                    <PremiumServices audioSrc={audioSrc} setAudioSrc={setAudioSrc} />
+                )}
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00
