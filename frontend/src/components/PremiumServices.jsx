@@ -19,9 +19,8 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
     const ffmpegRef = useRef(new FFmpeg());
     var ffmpegLoaded = false;
 
-    const freqLimit = 20000;   // TODO: Change this to 1/2 the sample rate or some other dynamic val in the future?
-    const [freqFloor, setFreqFloor] = useState(0);
-    const [freqCeiling, setFreqCeiling] = useState(100);
+    const freqLimit = 24000;   // TODO: Change this to 1/2 the sample rate or some other dynamic val in the future?
+    const [freqRange, setFreqRange] = useState([0, freqLimit]);
 
     useEffect(async () => {
         if (!ffmpegLoaded) {
@@ -80,10 +79,8 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
         let speedSetting = speedValArr[selectedSpeed.current];
         let speedFilterString = "atempo=" + speedSetting;
         
-        let freqFloorHz = Math.round(freqFloor / 100 * freqLimit);
-        let freqCeilingHz = Math.round(freqCeiling / 100 * freqLimit);
-        let highcutFilter = "lowpass=f=" + freqCeilingHz;
-        let lowcutFilter = "highpass=f=" + freqFloorHz;
+        let highcutFilter = "lowpass=f=" + freqRange[1];
+        let lowcutFilter = "highpass=f=" + freqRange[0];
         let freqFilterString = highcutFilter + "," + lowcutFilter;
 
         let filterString = speedFilterString + "," + freqFilterString;
@@ -125,7 +122,7 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
             </div>
             <div className="flex flex-col items-center space-y-5">
                 <h1>Frequency Cutoff</h1>
-                <FrequencySlider freqFloor={freqFloor} setFreqFloor={setFreqFloor} freqCeiling={freqCeiling} setFreqCeiling={setFreqCeiling} freqLimit={freqLimit}/>
+                <FrequencySlider freqRange={freqRange} setFreqRange={setFreqRange} freqLimit={freqLimit}/>
             </div>
             <button onClick={applySettings}>Apply</button>
         </div>
