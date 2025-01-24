@@ -23,6 +23,7 @@ function App() {
     const developMode = true;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
 
     const [audioSrc, setAudioSrc] = useState("");
+    const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
     const [fullDownloadYoutubeId, setFullDownloadYoutubeId] = useState("");
     const [startTime, setStartTime] = useState("00:00:00");
     const [endTime, setEndTime] = useState("00:00:00");
@@ -111,6 +112,7 @@ function App() {
         if (developMode) {
             setDisplaySearchUI(false);
             setAudioSrc(testAudioFile);
+            setOrigAudioSrc(testAudioFile);
             setDisplayCutterUI(true);
         }
     }, []);
@@ -526,6 +528,7 @@ function App() {
                     console.log(output);
                     setFileName(output.title)
                     setAudioSrc(output.url);
+                    setOrigAudioSrc(output.url);
                     setDisplayCutterUI(true);
                 } else {
                     downloadAndCleanup(output.url, output.title);
@@ -679,9 +682,7 @@ function App() {
                         </div>
                     )}
                 </div>
-                {displayCutterUI && (
-                    <PremiumServices audioSrc={audioSrc} setAudioSrc={setAudioSrc} />
-                )}
+                <PremiumServices hidden={!displayCutterUI} audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} setDisplayCutterUI={setDisplayCutterUI} />
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00

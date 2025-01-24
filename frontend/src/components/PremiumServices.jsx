@@ -5,8 +5,7 @@ import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 import FrequencySlider from "./FrequencySlider";
 
-const PremiumServices = ({audioSrc, setAudioSrc}) => {
-    const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
+const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, setDisplayCutterUI}) => {
     const [speedSlowestHighlighted, setSpeedSlowestHighlighted] = useState(false);
     const [speedSlowHighlighted, setSpeedSlowHighlighted] = useState(false);
     const [speedNormalHighlighted, setSpeedNormalHighlighted] = useState(true);
@@ -30,15 +29,16 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
 
             const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm'
             const ffmpeg = ffmpegRef.current;
-            // ffmpeg.on('log', ({ message }) => {
-            //     console.log(message);
-            // });
+            ffmpeg.on('log', ({ message }) => {
+                console.log(message);
+            });
             await ffmpeg.load({
                 coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
                 wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
             });
 
             ffmpegLoaded = true;
+            console.log("ffmpeg finished loading!");
         }
     }, []);
 
@@ -58,23 +58,38 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
     }
 
     async function applySettings() {
-        let reverseFilterString = reverseSelected ? "areverse," : "";
+        try {
+            setShowLoader(true);
+            setDisplayCutterUI(false);
 
-        let speedSetting = speedValArr[selectedSpeed.current];
-        let speedFilterString = "atempo=" + speedSetting + ",";
-        
-        let highcutFilter = "lowpass=f=" + freqRange[1];
-        let lowcutFilter = "highpass=f=" + freqRange[0];
-        let freqFilterString = highcutFilter + "," + lowcutFilter;
+            let reverseFilterString = reverseSelected ? "areverse," : "";
 
-        let filterString = reverseFilterString + speedFilterString + freqFilterString;
-        console.log(filterString);
+            let speedSetting = speedValArr[selectedSpeed.current];
+            let speedFilterString = "atempo=" + speedSetting + ",";
+            
+            let highcutFilter = "lowpass=f=" + freqRange[1];
+            let lowcutFilter = "highpass=f=" + freqRange[0];
+            let freqFilterString = highcutFilter + "," + lowcutFilter;
 
-        const ffmpeg = ffmpegRef.current;
-        await ffmpeg.writeFile('input.mp3', await fetchFile(origAudioSrc));
-        await ffmpeg.exec(['-i', 'input.mp3', '-af', filterString, 'output.mp3']);
-        const data = await ffmpeg.readFile('output.mp3');
-        setAudioSrc(URL.createObjectURL(new Blob([data.buffer], {type: 'audio/mp3'})))
+            let filterString = reverseFilterString + speedFilterString + freqFilterString;
+            console.log(filterString);
+
+            console.log(audioSrc);
+            console.log(origAudioSrc);
+
+            const ffmpeg = ffmpegRef.current;
+            await ffmpeg.writeFile('input.mp3', await fetchFile(origAudioSrc));
+            await ffmpeg.exec(['-i', 'input.mp3', '-af', filterString, 'output.mp3']);
+            console.log("before");
+            const data = await ffmpeg.readFile('output.mp3');
+            console.log("after");
+            setAudioSrc(URL.createObjectURL(new Blob([data.buffer], {type: 'audio/mp3'})))
+
+            setShowLoader(false);
+            setDisplayCutterUI(true);
+        } catch (error) {
+            console.error("Caught error:", error.message);
+        }
     }
 
     return (
