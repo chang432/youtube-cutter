@@ -1,15 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Slider } from "antd" ;
+import { Slider, ConfigProvider } from "antd" ;
 
 const FrequencySlider = ({freqRange, setFreqRange, freqLimit}) => {
     const [freqRangeText, setFreqRangeText] = useState([freqRange[0], freqRange[1]]);
     const freqRangeTextRef = useRef([freqRangeText[0], freqRangeText[1]]);
+    const functionalityHighlightColor = "#dc2626";  
+    const functionalityDefaultColor = "#000000";  
     let clickedInsideLowCutInputBox = { value: false };
     let clickedInsideHighCutInputBox = { value: false };
 
     function handleLowCutInputChange(event) {
         setFreqRangeText([parseInt(event.target.value), freqRangeText[1]]);
-        console.log("Input changed to " + freqRangeText);
+        // console.log("Input changed to " + freqRangeText);
     }
 
     function handleHighCutInputChange(event) {
@@ -18,9 +20,7 @@ const FrequencySlider = ({freqRange, setFreqRange, freqLimit}) => {
 
     function keydownEnterEventHandler(event, isLowCut) {
         if (event.key === "Enter") {
-            console.log(
-                "enter pressed"
-            );
+            // console.log("enter pressed");
             if (isLowCut) {
                 setFreqRange([freqRangeTextRef.current[0], freqRange[1]]);
             } else {
@@ -39,13 +39,10 @@ const FrequencySlider = ({freqRange, setFreqRange, freqLimit}) => {
             !inputElement.contains(event.target) &&
             clickedInsideInputBox.value
         ) {
-            // Execute your code here
-            console.log(
-                "outside input box pressed"
-            );
+            // console.log("outside input box pressed");
 
             if (isLowCut) {
-                console.log("Setting freq range to " + freqRangeTextRef.current[0] + " " + freqRange[1]);
+                // console.log("Setting freq range to " + freqRangeTextRef.current[0] + " " + freqRange[1]);
                 setFreqRange([freqRangeTextRef.current[0], freqRange[1]]);
             } else {
                 setFreqRange([freqRange[0], freqRangeTextRef.current[1]]);
@@ -67,7 +64,7 @@ const FrequencySlider = ({freqRange, setFreqRange, freqLimit}) => {
         lowcutInputElement.addEventListener("keydown", keydownEnterEventHandlerRef);
 
         const insideInputBoxClickEventHandlerRef = () => {
-            console.log("inside input box clicked");
+            // console.log("inside input box clicked");
             clickedInsideLowCutInputBox.value = true;
         };
         lowcutInputElement.addEventListener(
@@ -109,7 +106,7 @@ const FrequencySlider = ({freqRange, setFreqRange, freqLimit}) => {
         highcutInputElement.addEventListener("keydown", keydownEnterEventHandlerRef);
 
         const insideInputBoxClickEventHandlerRef = () => {
-            console.log("inside input box clicked");
+            // console.log("inside input box clicked");
             clickedInsideHighCutInputBox.value = true;
         };
         highcutInputElement.addEventListener(
@@ -145,20 +142,38 @@ const FrequencySlider = ({freqRange, setFreqRange, freqLimit}) => {
 
     return (
         <div className="flex flex-col items-center w-56">
-            <div className="flex flex-row justify-between w-full items-center">
-                <input type="text" id="lowCutInput" defaultValue={0} value={freqRangeText[0]} onChange={handleLowCutInputChange}/>
-                <input type="text" id="highCutInput" defaultValue={freqLimit} value={freqRangeText[1]} onChange={handleHighCutInputChange}/>
+            <div className="flex flex-row justify-between w-full items-center mb-3">
+                <input className="border border-black w-12 px-1 focus:outline-none focus:ring-0" type="text" id="lowCutInput" defaultValue={0} value={freqRangeText[0]} onChange={handleLowCutInputChange}/>
+                <input className="border border-black w-12 px-1 focus:outline-none focus:ring-0" type="text" id="highCutInput" defaultValue={freqLimit} value={freqRangeText[1]} onChange={handleHighCutInputChange}/>
             </div>
-            <Slider
-                className="flex flex-col items-center w-full" 
-                range 
-                defaultValue={[0, freqLimit]}
-                max={freqLimit}
-                value={freqRange}
-                tooltip={{ open: false }} // Disables the tooltip
-                onChange={(value) => {setFreqRange([value[0],value[1]]);setFreqRangeText([value[0],value[1]])}}
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Slider: {
+                            trackBg: functionalityDefaultColor,
+                            trackHoverBg: functionalityDefaultColor,
+                            handleColor: functionalityHighlightColor,
+                            handleActiveColor: functionalityHighlightColor,
+                            handleActiveOutlineColor: functionalityHighlightColor,
+                            handleSizeHover: 2                        
+                        }
+                    },
+                    token: {
+                        colorPrimaryBorderHover: functionalityHighlightColor
+                    }
+                }}
             >
-            </Slider>
+                <Slider
+                    className="flex flex-row justify-center items-center w-52" 
+                    range 
+                    defaultValue={[0, freqLimit]}
+                    max={freqLimit}
+                    value={freqRange}
+                    tooltip={{ open: false }} // Disables the tooltip
+                    onChange={(value) => {setFreqRange([value[0],value[1]]);setFreqRangeText([value[0],value[1]])}}
+                >
+                </Slider>
+            </ConfigProvider>
         </div>
     );
 };

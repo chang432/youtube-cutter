@@ -120,13 +120,7 @@ function App() {
         let input_name = isStartInput ? "startTimeInput" : "endTimeInput";
 
         if (event.key === "Enter") {
-            console.log(
-                input_name +
-                    " enter pressed: " +
-                    time_ref +
-                    ", " +
-                    waverRegionRef.current
-            );
+            // console.log(input_name + " enter pressed: " + time_ref + ", " + waverRegionRef.current);
             if (isStartInput) {
                 waverRegionRef.current.update({
                     start: unformatSeconds(startTimeRef.current, true),

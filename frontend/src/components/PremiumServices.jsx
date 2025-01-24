@@ -94,7 +94,7 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
     }
 
     return (
-        <div className="flex flex-row space-x-28 items-top justify-center border border-black w-full py-20">
+        <div className="flex flex-row space-x-28 items-top justify-center border border-black w-full py-10">
             <div className="flex flex-col items-center space-y-5">
                 <h1>Speed</h1>
                 <div className="flex flex-row font-black">
@@ -121,7 +121,7 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
                 </div>
             </div>
             <div className="flex flex-col items-center space-y-5">
-                <h1>Frequency Cutoff</h1>
+                <h1>Frequency Cutoff (Hz)</h1>
                 <FrequencySlider freqRange={freqRange} setFreqRange={setFreqRange} freqLimit={freqLimit}/>
             </div>
             <button onClick={applySettings}>Apply</button>
