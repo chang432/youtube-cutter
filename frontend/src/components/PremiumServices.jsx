@@ -16,6 +16,8 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
     const speedValArr = {"slowest":0.5, "slow":0.75, "normal":1.0, "fast":1.5, "fastest":2.0};
     const selectedSpeed = useRef("normal")
 
+    const [reverseSelected, setReverseSelected] = useState(false);
+
     const ffmpegRef = useRef(new FFmpeg());
     var ffmpegLoaded = false;
 
@@ -51,39 +53,21 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
         }
     }
 
-    async function speedup() {
-        const ffmpeg = ffmpegRef.current;
-        await ffmpeg.writeFile('input.mp3', await fetchFile(audioSrc));
-        await ffmpeg.exec(['-i', 'input.mp3', '-af', 'aecho=0.8:0.88:60:0.4', 'output.mp3']);
-        const data = await ffmpeg.readFile('output.mp3');
-        setAudioSrc(URL.createObjectURL(new Blob([data.buffer], {type: 'audio/mp3'})))
-    }
-
-    async function highpass() {
-        const ffmpeg = ffmpegRef.current;
-        await ffmpeg.writeFile('input.mp3', await fetchFile(audioSrc));
-        await ffmpeg.exec(['-i', 'input.mp3', '-af', 'lowpass=f=1000', 'output.mp3']);
-        const data = await ffmpeg.readFile('output.mp3');
-        setAudioSrc(URL.createObjectURL(new Blob([data.buffer], {type: 'audio/mp3'})))
-    }
-
-    async function changepitch() {
-        const ffmpeg = ffmpegRef.current;
-        await ffmpeg.writeFile('input.mp3', await fetchFile(audioSrc));
-        await ffmpeg.exec(['-i', 'input.mp3', '-af', 'asetrate=48000*0.5,atempo=1/0.5,aresample=48000', 'output.mp3']);
-        const data = await ffmpeg.readFile('output.mp3');
-        setAudioSrc(URL.createObjectURL(new Blob([data.buffer], {type: 'audio/mp3'})))
+    function handleReverseClick() {
+        setReverseSelected(!reverseSelected);
     }
 
     async function applySettings() {
+        let reverseFilterString = reverseSelected ? "areverse," : "";
+
         let speedSetting = speedValArr[selectedSpeed.current];
-        let speedFilterString = "atempo=" + speedSetting;
+        let speedFilterString = "atempo=" + speedSetting + ",";
         
         let highcutFilter = "lowpass=f=" + freqRange[1];
         let lowcutFilter = "highpass=f=" + freqRange[0];
         let freqFilterString = highcutFilter + "," + lowcutFilter;
 
-        let filterString = speedFilterString + "," + freqFilterString;
+        let filterString = reverseFilterString + speedFilterString + freqFilterString;
         console.log(filterString);
 
         const ffmpeg = ffmpegRef.current;
@@ -94,7 +78,7 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
     }
 
     return (
-        <div className="flex flex-row space-x-28 items-top justify-center border border-black w-full py-10">
+        <div className="flex flex-row space-x-28 items-top justify-center w-full py-10">
             <div className="flex flex-col items-center space-y-5">
                 <h1>Speed</h1>
                 <div className="flex flex-row font-black">
@@ -123,6 +107,9 @@ const PremiumServices = ({audioSrc, setAudioSrc}) => {
             <div className="flex flex-col items-center space-y-5">
                 <h1>Frequency Cutoff (Hz)</h1>
                 <FrequencySlider freqRange={freqRange} setFreqRange={setFreqRange} freqLimit={freqLimit}/>
+            </div>
+            <div className="flex flex-col items-center justify-center space-y-5">
+                <button className={`text-white py-2 px-3 ${reverseSelected ? "bg-red-600" : "bg-black"}`} onClick={handleReverseClick}>Reverse</button>
             </div>
             <button onClick={applySettings}>Apply</button>
         </div>
