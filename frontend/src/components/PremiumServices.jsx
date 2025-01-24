@@ -16,6 +16,8 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, se
     const selectedSpeed = useRef("normal")
 
     const [reverseSelected, setReverseSelected] = useState(false);
+    
+    const [disablePremium, setDisablePremium] = useState(false);
 
     const ffmpegRef = useRef(new FFmpeg());
     var ffmpegLoaded = false;
@@ -61,6 +63,7 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, se
         try {
             setShowLoader(true);
             setDisplayCutterUI(false);
+            setDisablePremium(true);
 
             let reverseFilterString = reverseSelected ? "areverse," : "";
 
@@ -87,13 +90,17 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, se
 
             setShowLoader(false);
             setDisplayCutterUI(true);
+            setDisablePremium(false);
         } catch (error) {
             console.error("Caught error:", error.message);
         }
     }
 
     return (
-        <div className="flex flex-row space-x-28 items-top justify-center w-full py-10">
+        <div className={`relative flex flex-row space-x-28 items-top justify-center w-full py-5 ${disablePremium ? "opacity-50 pointer-events-none" : "" }`}>
+            {/* <div className="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 z-10">
+            </div> */}
+
             <div className="flex flex-col items-center space-y-5">
                 <h1>Speed</h1>
                 <div className="flex flex-row font-black">
