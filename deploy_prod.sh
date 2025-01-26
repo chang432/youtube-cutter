@@ -15,13 +15,7 @@ cd frontend
 
 npm run build
 
-find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/\/assets/https:\/\/youtube-cutter-static-files-prod.s3.amazonaws.com\/assets/g' {} +
-
 find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/http:\/\/127.0.0.1:5000/https:\/\/wav.ninja/g' {} +
-
-cd ../scripts
-
-python upload_static.py
 
 cd ..
 
@@ -36,8 +30,6 @@ sed -i '' 's/youtube-cutter-static-files-prod/youtube-cutter-static-files-dev/g'
 sed -i '' 's/youtube-cutter-static-files-prod/youtube-cutter-static-files-dev/g' scripts/upload_static.py
 
 cd frontend
-
-find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/https:\/\/youtube-cutter-static-files-prod.s3.amazonaws.com\/assets/\/assets/g' {} +
 
 find dist -type f \( -name '*.css' -o -name '*.js' -o -name '*.html' \) -exec sed -i '' 's/https:\/\/wav.ninja/http:\/\/127.0.0.1:5000/g' {} +
 
