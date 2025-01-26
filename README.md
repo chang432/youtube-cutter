@@ -60,6 +60,9 @@ The above command, executed in the root directory, will perform the following st
 - Update the Lambda function.
 - Reconfigure built files to use local references again.
 
+## Info
+- Pulls from https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js and https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)

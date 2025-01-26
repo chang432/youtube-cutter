@@ -34,8 +34,10 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
                 console.log(message);
             });
             await ffmpeg.load({
-                coreURL: await toBlobURL("https://youtube-cutter-static-files-dev.s3.us-east-1.amazonaws.com/ffmpegwasm/ffmpeg-core.js", 'text/javascript'),
-                wasmURL: await toBlobURL("https://youtube-cutter-static-files-dev.s3.us-east-1.amazonaws.com/ffmpegwasm/ffmpeg-core.wasm", 'application/wasm')
+                // coreURL: await toBlobURL("https://youtube-cutter-static-files-dev.s3.us-east-1.amazonaws.com/ffmpegwasm/ffmpeg-core.js", 'text/javascript'), 
+                // wasmURL: await toBlobURL("https://youtube-cutter-static-files-dev.s3.us-east-1.amazonaws.com/ffmpegwasm/ffmpeg-core.wasm", 'application/wasm')
+                coreURL: await toBlobURL("https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js", 'text/javascript'),
+                wasmURL: await toBlobURL("https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm", 'application/wasm')
             });
 
             ffmpegLoaded = true;
