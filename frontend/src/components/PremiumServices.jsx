@@ -5,7 +5,7 @@ import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 import FrequencySlider from "./FrequencySlider";
 
-const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, setDisplayCutterUI}) => {
+const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI}) => {
     const [speedSlowestHighlighted, setSpeedSlowestHighlighted] = useState(false);
     const [speedSlowHighlighted, setSpeedSlowHighlighted] = useState(false);
     const [speedNormalHighlighted, setSpeedNormalHighlighted] = useState(true);
@@ -29,14 +29,13 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, se
         if (!ffmpegLoaded) {
             console.log("ffmpeg not loaded, doing now!");
 
-            const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm'
             const ffmpeg = ffmpegRef.current;
             ffmpeg.on('log', ({ message }) => {
                 console.log(message);
             });
             await ffmpeg.load({
-                coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-                wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+                coreURL: await toBlobURL("https://youtube-cutter-static-files-dev.s3.us-east-1.amazonaws.com/ffmpegwasm/ffmpeg-core.js", 'text/javascript'),
+                wasmURL: await toBlobURL("https://youtube-cutter-static-files-dev.s3.us-east-1.amazonaws.com/ffmpegwasm/ffmpeg-core.wasm", 'application/wasm')
             });
 
             ffmpegLoaded = true;
@@ -97,7 +96,7 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, se
     }
 
     return (
-        <div className={`relative flex flex-row space-x-28 items-top justify-center w-full py-5 ${disablePremium ? "opacity-50 pointer-events-none" : "" }`}>
+        <div className={`${displayCutterUI ? "" : "invisible"} relative flex flex-row space-x-28 items-top justify-center w-full py-5 ${disablePremium ? "opacity-50 pointer-events-none" : "" }`}>
             {/* <div className="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 z-10">
             </div> */}
 
