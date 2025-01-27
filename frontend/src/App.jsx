@@ -683,7 +683,7 @@ function App() {
                         </div>
                     )}
                 </div>
-                <PremiumServices audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} />
+                {/* <PremiumServices audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} /> */}
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00
