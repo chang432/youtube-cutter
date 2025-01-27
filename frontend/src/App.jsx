@@ -8,6 +8,7 @@ import Disclaimer from "./components/Disclaimer";
 import ThemeSwitch from "./components/ThemeSwitch";
 import { WaveSpinner } from "react-spinners-kit";
 import PremiumServices from "./components/PremiumServices";
+import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
 import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -111,6 +112,7 @@ function App() {
         // developing use for going straight to the cutter ui without having to paste in a youtube url]
         if (developMode) {
             setDisplaySearchUI(false);
+            setFileName("bmf")
             setAudioSrc(testAudioFile);
             setOrigAudioSrc(testAudioFile);
             setDisplayCutterUI(true);
@@ -490,7 +492,7 @@ function App() {
         link.click();
     }
 
-    function handleFullVideoClick(isCut = false, downloadMp3 = false) {
+    async function handleFullVideoClick(isCut = false, downloadMp3 = false) {
         console.log("Displaying full video");
         let youtube_id = "";
 
@@ -503,6 +505,10 @@ function App() {
 
         setDisplaySearchUI(false);
         setShowLoader(true);
+
+        if (isCut) {
+            await FfmpegWasmHelper.load();
+        }
 
         axios({
             url: "http://127.0.0.1:5000/handle_full",
@@ -562,48 +568,43 @@ function App() {
         setEndTime(event.target.value);
     };
 
-    function handleCutVideoClick() {
+    async function handleCutVideoClick() {
         setDisplayCutterUI(false);
         setShowLoader(true);
         waver?.pause();
 
         let audio_type = document.getElementById("mp3_btn").checked
-            ? "MP3"
-            : "WAV";
+            ? "mp3"
+            : "wav";
 
         console.log("downloading cut video in " + audioFormat + " form");
         console.log(fileName)
 
-        axios({
-            url: "http://127.0.0.1:5000/handle_cut",
-            method: "post",
-            responseType: "json",
-            data: {
-                yt_title: fileName,
-                start_time: startTime,
-                end_time: endTime,
-                audio_type: audio_type,
-            },
-        })
-            .then((res) => {
-                // Display
-                console.log("return post: " + res.data);
-                downloadAndCleanup(res.data.url, res.data.title, audio_type)
+        let browserFileNameToCut = "processed_audio.m4a";
+        if (!(await FfmpegWasmHelper.fileExists("processed_audio.m4a"))) {
+            browserFileNameToCut = "og_audio.m4a"
+            await FfmpegWasmHelper.ffmpeg.writeFile("og_audio.m4a", await FfmpegWasmHelper.fetchFile(origAudioSrc));
+        }
 
-                return;
-            })
-            .then(() => {
-                setShowLoader(false);
-                setDisplaySearchUI(true);
-                waver?.destroy();
-                setAudioSrc(null);
-            })
-            .catch((error) => {
-                console.log("axios error:", error);
-                alert(
-                    "Server error...try again and if it still persists, please let us know!"
-                );
-            });
+        let cutFileName = fileName + "." + audio_type
+
+        await FfmpegWasmHelper.ffmpeg.exec(['-i', browserFileNameToCut, "-ss", startTime, "-to", endTime, "-write_xing", "0", "-y", cutFileName]);
+
+        let data = await FfmpegWasmHelper.ffmpeg.readFile(cutFileName);
+        let dataUrl = URL.createObjectURL(new Blob([data.buffer], {type: 'audio/'+audio_type}))
+
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = cutFileName;
+        link.click();
+
+        FfmpegWasmHelper.deleteFiles(["og_audio.m4a", "processed_audio.m4a", cutFileName]);    // cleanup
+
+        setShowLoader(false);
+        setDisplaySearchUI(true);
+        waver?.destroy();
+        setAudioSrc(null);
+        setOrigAudioSrc(null);
     }
 
     function handleDonationClick() {

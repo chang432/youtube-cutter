@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import { useRef } from 'react';
-import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
 import FrequencySlider from "./FrequencySlider";
+import FfmpegWasmHelper from "./FfmpegWasmHelper";
 
 const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI}) => {
     const [speedSlowestHighlighted, setSpeedSlowestHighlighted] = useState(false);
@@ -19,31 +18,8 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
     
     const [disablePremium, setDisablePremium] = useState(false);
 
-    const ffmpegRef = useRef(new FFmpeg());
-    var ffmpegLoaded = false;
-
     const freqLimit = 24000;   // TODO: Change this to 1/2 the sample rate or some other dynamic val in the future?
     const [freqRange, setFreqRange] = useState([0, freqLimit]);
-
-    useEffect(async () => {
-        if (!ffmpegLoaded) {
-            console.log("ffmpeg not loaded, doing now!");
-
-            const ffmpeg = ffmpegRef.current;
-            ffmpeg.on('log', ({ message }) => {
-                console.log(message);
-            });
-            await ffmpeg.load({
-                // coreURL: await toBlobURL("https://youtube-cutter-static-files-dev.s3.us-east-1.amazonaws.com/ffmpegwasm/ffmpeg-core.js", 'text/javascript'), 
-                // wasmURL: await toBlobURL("https://youtube-cutter-static-files-dev.s3.us-east-1.amazonaws.com/ffmpegwasm/ffmpeg-core.wasm", 'application/wasm')
-                coreURL: await toBlobURL("https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js", 'text/javascript'),
-                wasmURL: await toBlobURL("https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm", 'application/wasm')
-            });
-
-            ffmpegLoaded = true;
-            console.log("ffmpeg finished loading!");
-        }
-    }, []);
 
     function handleSpeedClick(speed) {
         for (let i = 0; i < speedHighlightedArr.length; i++) {
@@ -81,13 +57,10 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
             console.log(audioSrc);
             console.log(origAudioSrc);
 
-            const ffmpeg = ffmpegRef.current;
-            await ffmpeg.writeFile('input.mp3', await fetchFile(origAudioSrc));
-            await ffmpeg.exec(['-i', 'input.mp3', '-af', filterString, 'output.mp3']);
-            console.log("before");
-            const data = await ffmpeg.readFile('output.mp3');
-            console.log("after");
-            setAudioSrc(URL.createObjectURL(new Blob([data.buffer], {type: 'audio/mp3'})))
+            await FfmpegWasmHelper.ffmpeg.writeFile('og_audio.m4a', await FfmpegWasmHelper.fetchFile(origAudioSrc));
+            await FfmpegWasmHelper.ffmpeg.exec(['-i', 'og_audio.m4a', '-af', filterString, 'processed_audio.m4a']);
+            const data = await FfmpegWasmHelper.ffmpeg.readFile('processed_audio.m4a');
+            setAudioSrc(URL.createObjectURL(new Blob([data.buffer], {type: 'audio/m4a'})))
 
             setShowLoader(false);
             setDisplayCutterUI(true);

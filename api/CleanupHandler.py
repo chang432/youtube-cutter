@@ -16,13 +16,9 @@ class CleanupHandler(Resource):
     full_file = yt_title + ".mp4"
     full_file_wav = yt_title + ".wav"
     full_file_mp3 = yt_title + ".mp3"
-    cut_file_wav = yt_title + "-cut.wav"
-    cut_file_mp3 = yt_title + "-cut.mp3"
     
     try:
         s3_client.delete_object(Bucket=bucket_name, Key="audio/"+full_file)
-        s3_client.delete_object(Bucket=bucket_name, Key="audio/"+cut_file_wav)
-        s3_client.delete_object(Bucket=bucket_name, Key="audio/"+cut_file_mp3)
         s3_client.delete_object(Bucket=bucket_name, Key="audio/"+full_file_wav)
         s3_client.delete_object(Bucket=bucket_name, Key="audio/"+full_file_mp3)
     except Exception as e:
