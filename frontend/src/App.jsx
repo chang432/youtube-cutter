@@ -21,7 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
+    const developMode = true;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
 
     const [audioSrc, setAudioSrc] = useState("");
     const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
@@ -683,7 +683,7 @@ function App() {
                         </div>
                     )}
                 </div>
-                {/* <PremiumServices audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} /> */}
+                <PremiumServices audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} />
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00

@@ -15,8 +15,8 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
     const selectedSpeed = useRef("normal")
 
     const [reverseSelected, setReverseSelected] = useState(false);
-    
-    const [disablePremium, setDisablePremium] = useState(false);
+
+    const [disablePremium, setDisablePremium] = useState(true);
 
     const freqLimit = 24000;   // TODO: Change this to 1/2 the sample rate or some other dynamic val in the future?
     const [freqRange, setFreqRange] = useState([0, freqLimit]);
@@ -70,44 +70,62 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
         }
     }
 
-    return (
-        <div className={`${displayCutterUI ? "" : "invisible"} relative flex flex-row space-x-28 items-top justify-center w-full py-5 ${disablePremium ? "opacity-50 pointer-events-none" : "" }`}>
-            {/* <div className="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 z-10">
-            </div> */}
+    async function passwordEnterPressed() {
+        let password = document.getElementById("premiumPasswordInput").value;
+        console.log(password.length);
+        if (password.length != 14) {
+            alert("ERROR: Invalid Password!");
+            return;
+        }
+        
+        
+    }
 
-            <div className="flex flex-col items-center space-y-5">
-                <h1>Speed</h1>
-                <div className="flex flex-row font-black">
-                    <div className="flex flex-col w-10 items-center">
-                        <h1 className="text-sm cursor-default">0.5</h1>
-                        <h1 className={`text-xl cursor-pointer ${speedSlowestHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("slowest")}}>&lt;&lt;</h1>
-                    </div>
-                    <div className="flex flex-col w-10 items-center">
-                        <h1 className="text-sm cursor-default">0.75</h1>
-                        <h1 className={`text-xl cursor-pointer ${speedSlowHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("slow")}}>&lt;&lt;</h1>
-                    </div>
-                    <div className="flex flex-col w-10 items-center">
-                        <h1 className="text-sm cursor-default">1.0</h1>
-                        <h1 className={`text-xl cursor-pointer ${speedNormalHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("normal")}}>O</h1>
-                    </div>
-                    <div className="flex flex-col w-10 items-center">
-                        <h1 className="text-sm cursor-default">1.5</h1>
-                        <h1 className={`text-xl cursor-pointer ${speedFastHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("fast")}}>&gt;&gt;</h1>
-                    </div>
-                    <div className="flex flex-col w-10 items-center">
-                        <h1 className="text-sm cursor-default">2.0</h1>
-                        <h1 className={`text-xl cursor-pointer ${speedFastestHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("fastest")}}>&gt;&gt;</h1>
-                    </div>
+    return (
+        <div className={`${displayCutterUI ? "" : "invisible"} relative`}>
+            <div className="z-50 absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 group">
+                <div className="flex flex-row justify-center items-center w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <input id="premiumPasswordInput" className="w-32 h-6 px-1 focus:outline-none border border-black" type="text" />
+                    <button className="h-6 ml-2" onClick={passwordEnterPressed}>Enter</button>
+                    <button className="h-6 ml-4 text-red-600">?</button>
                 </div>
             </div>
-            <div className="flex flex-col items-center space-y-5">
-                <h1>Frequency Cutoff (Hz)</h1>
-                <FrequencySlider freqRange={freqRange} setFreqRange={setFreqRange} freqLimit={freqLimit}/>
+
+            <div className={`flex flex-row items-top justify-center w-fit py-5 px-10 ${disablePremium ? "opacity-30" : "" }`}>
+                <div className="flex flex-col items-center space-y-5 mr-28">
+                    <h1>Speed</h1>
+                    <div className="flex flex-row font-black">
+                        <div className="flex flex-col w-10 items-center">
+                            <h1 className="text-sm cursor-default">0.5</h1>
+                            <h1 className={`text-xl cursor-pointer ${speedSlowestHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("slowest")}}>&lt;&lt;</h1>
+                        </div>
+                        <div className="flex flex-col w-10 items-center">
+                            <h1 className="text-sm cursor-default">0.75</h1>
+                            <h1 className={`text-xl cursor-pointer ${speedSlowHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("slow")}}>&lt;&lt;</h1>
+                        </div>
+                        <div className="flex flex-col w-10 items-center">
+                            <h1 className="text-sm cursor-default">1.0</h1>
+                            <h1 className={`text-xl cursor-pointer ${speedNormalHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("normal")}}>O</h1>
+                        </div>
+                        <div className="flex flex-col w-10 items-center">
+                            <h1 className="text-sm cursor-default">1.5</h1>
+                            <h1 className={`text-xl cursor-pointer ${speedFastHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("fast")}}>&gt;&gt;</h1>
+                        </div>
+                        <div className="flex flex-col w-10 items-center">
+                            <h1 className="text-sm cursor-default">2.0</h1>
+                            <h1 className={`text-xl cursor-pointer ${speedFastestHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("fastest")}}>&gt;&gt;</h1>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-col items-center space-y-5 mr-28">
+                    <h1>Frequency Cutoff (Hz)</h1>
+                    <FrequencySlider freqRange={freqRange} setFreqRange={setFreqRange} freqLimit={freqLimit}/>
+                </div>
+                <div className="flex flex-col items-center justify-center space-y-5 mr-28">
+                    <button className={`text-white py-2 px-3 ${reverseSelected ? "bg-red-600" : "bg-black"}`} onClick={handleReverseClick}>Reverse</button>
+                </div>
+                <button onClick={applySettings}>Apply</button>
             </div>
-            <div className="flex flex-col items-center justify-center space-y-5">
-                <button className={`text-white py-2 px-3 ${reverseSelected ? "bg-red-600" : "bg-black"}`} onClick={handleReverseClick}>Reverse</button>
-            </div>
-            <button onClick={applySettings}>Apply</button>
         </div>
     );
 };
