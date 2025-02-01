@@ -5,6 +5,7 @@ from api.HelloApiHandler import HelloApiHandler
 from api.FullDownloadHandler import FullDownloadHandler
 from api.CleanupHandler import CleanupHandler
 from api.KofiWebhookHandler import KofiWebhookHandler
+from api.PremiumVerificationHandler import PremiumVerificationHandler
 import os
 import boto3
 import subprocess
@@ -29,6 +30,7 @@ api.add_resource(HelloApiHandler, '/flask/hello')
 api.add_resource(FullDownloadHandler, '/handle_full')
 api.add_resource(CleanupHandler, '/cleanup')
 api.add_resource(KofiWebhookHandler, '/kofi_webhook')
+api.add_resource(PremiumVerificationHandler, '/verify_premium')
 
 @app.route("/test", methods=["POST"])
 def handle_test():

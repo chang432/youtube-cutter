@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
 import FrequencySlider from "./FrequencySlider";
 import FfmpegWasmHelper from "./FfmpegWasmHelper";
+import axios from "axios";
 
 const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI}) => {
     const [speedSlowestHighlighted, setSpeedSlowestHighlighted] = useState(false);
@@ -72,24 +73,35 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
 
     async function passwordEnterPressed() {
         let password = document.getElementById("premiumPasswordInput").value;
-        console.log(password.length);
+
         if (password.length != 14) {
             alert("ERROR: Invalid Password!");
             return;
         }
         
-        
+        axios({
+            url: "http://127.0.0.1:5000/verify_premium",
+            method: "post",
+            responseType: "json",
+            data: {
+                input_password: password
+            },
+        })
+        .then((res) => {
+            let output = res.data;
+            setDisablePremium(!output)
+        })
     }
 
     return (
         <div className={`${displayCutterUI ? "" : "invisible"} relative`}>
-            <div className="z-50 absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 group">
+            { disablePremium && <div className="z-50 absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 group">
                 <div className="flex flex-row justify-center items-center w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <input id="premiumPasswordInput" className="w-32 h-6 px-1 focus:outline-none border border-black" type="text" />
+                    <input id="premiumPasswordInput" className="w-28 h-6 px-1 focus:outline-none border border-black" type="text" />
                     <button className="h-6 ml-2" onClick={passwordEnterPressed}>Enter</button>
                     <button className="h-6 ml-4 text-red-600">?</button>
                 </div>
-            </div>
+            </div> }
 
             <div className={`flex flex-row items-top justify-center w-fit py-5 px-10 ${disablePremium ? "opacity-30" : "" }`}>
                 <div className="flex flex-col items-center space-y-5 mr-28">
