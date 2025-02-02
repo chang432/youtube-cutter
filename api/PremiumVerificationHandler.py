@@ -1,20 +1,15 @@
 from flask_restful import Resource
-from flask import request
+from flask import request, make_response, jsonify
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import boto3
+import datetime
 
 class PremiumVerificationHandler(Resource):
-  def post(self):
+  @jwt_required()
+  def get(self):
     print("[CUSTOM] STARTING PremiumVerificationHandler.py")
-    data = request.get_json()
-    password = data.get('input_password')
+    
+    # user = get_jwt_identity()
+    # print(f"Hello, {user}! This is a protected route.")
 
-    s3_client = boto3.client("s3")
-    response = s3_client.get_object(Bucket="youtube-cutter-private-dev", Key="premium_subscribers.txt")
-    content = response["Body"].read().decode("utf-8")
-
-    print("[CUSTOM] PremiumVerificationHandler.py COMPLETE")
-
-    if (password in content):
-        return { 'authorized': True }
-
-    return { 'authorized': False }
+    print("[CUSTOM] ENDING PremiumVerificationHandler.py")

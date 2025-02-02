@@ -75,12 +75,15 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
         let password = document.getElementById("premiumPasswordInput").value;
 
         if (password.length != 14) {
-            alert("ERROR: Invalid Password!");
+            alert("Invalid Password!");
             return;
         }
-        
+
+        setShowLoader(true);
+        setDisplayCutterUI(false);
+
         axios({
-            url: "http://127.0.0.1:5000/verify_premium",
+            url: "http://127.0.0.1:5000/login_premium",
             method: "post",
             responseType: "json",
             data: {
@@ -89,9 +92,30 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
         })
         .then((res) => {
             let output = res.data;
-            setDisablePremium(!output)
+            let authorized = output.authorized
+            setShowLoader(false);
+            setDisplayCutterUI(true);
+            if (!authorized) {
+                alert("Invalid Password!");
+            } else {
+                setDisablePremium(!authorized);
+            }
         })
     }
+
+    // Check if user already has valid JWT
+    useEffect(() => {
+        axios({
+            url: "http://127.0.0.1:5000/verify_premium",
+            method: "get"
+        }).then(() => {
+            console.log("VALID LOGIN TOKEN DETECTED");
+            setDisablePremium(false);
+        }).catch((error) => {
+            console.log("INVALID LOGIN TOKEN");
+            setDisablePremium(true);
+        })
+    }, [])
 
     return (
         <div className={`${displayCutterUI ? "" : "invisible"} relative`}>
