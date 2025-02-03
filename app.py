@@ -24,7 +24,7 @@ app = Flask(__name__, template_folder='frontend/dist', static_folder='frontend/d
 ssm_client = boto3.client("ssm")
 
 param_output = ssm_client.get_parameter(
-    Name="youtube-cutter-dev-premium-jwt-key",
+    Name="youtube-cutter-premium-jwt-key",
     WithDecryption=True
 )
 
