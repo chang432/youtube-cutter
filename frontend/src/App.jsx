@@ -21,7 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = true;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
+    const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
 
     const [audioSrc, setAudioSrc] = useState("");
     const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
@@ -327,8 +327,10 @@ function App() {
             wavesurfer.on("interaction", function () {
                 try {
                     setTimeout(() => {
+                        let curr_time = wavesurfer.getCurrentTime() !== null ? wavesurfer.getCurrentTime() : 0
+
                         document.getElementById("current-time").innerText =
-                            formatSeconds(wavesurfer.getCurrentTime());
+                            formatSeconds(curr_time);
                     }, 0);
                 } catch (e) {
                     console.error(e);
@@ -347,8 +349,9 @@ function App() {
                         );
                     }
 
+                    let curr_time = wavesurfer.getCurrentTime() !== null ? wavesurfer.getCurrentTime() : 0
                     document.getElementById("current-time").innerText =
-                        formatSeconds(wavesurfer.getCurrentTime());
+                        formatSeconds(curr_time);
                 } catch (e) {
                     console.error(e);
                 }

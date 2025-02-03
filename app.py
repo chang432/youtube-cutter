@@ -53,7 +53,6 @@ api.add_resource(KofiWebhookHandler, '/kofi_webhook')
 api.add_resource(PremiumVerificationHandler, '/verify_premium')
 api.add_resource(PremiumLoginHandler, '/login_premium')
 
-
 @app.route('/')
 def serve():
     return render_template('index.html')
