@@ -8,8 +8,8 @@ mv prod_app.py app.py
 
 # change bucket name
 find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-static-files-dev/youtube-cutter-static-files-prod/g' {} +
+find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-private-dev/youtube-cutter-private-prod/g' {} +
 sed -i '' 's/youtube-cutter-static-files-dev/youtube-cutter-static-files-prod/g' app.py
-sed -i '' 's/youtube-cutter-static-files-dev/youtube-cutter-static-files-prod/g' scripts/upload_static.py
 
 cd frontend
 
@@ -26,8 +26,8 @@ zappa update prod
 
 # change back bucket name
 find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-static-files-prod/youtube-cutter-static-files-dev/g' {} +
+find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-private-prod/youtube-cutter-private-dev/g' {} +
 sed -i '' 's/youtube-cutter-static-files-prod/youtube-cutter-static-files-dev/g' app.py
-sed -i '' 's/youtube-cutter-static-files-prod/youtube-cutter-static-files-dev/g' scripts/upload_static.py
 
 cd frontend
 
