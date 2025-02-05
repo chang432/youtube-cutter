@@ -4,7 +4,7 @@ import os
 
 class YtdlpHandler:
     destination = None
-    po_token = "MluyHODD3AlMpLIku2NXNxvpQY2s-PtrjYAzPSX3AVo6or-qx3ATKzc45Bwzd5ieWkKjQPDrOCh2vqH7cSSeWvmF-QwYXRztl83VbpvPkL60LVN_Eas5pYfTlODJ"  # CHANGEME
+    po_token = "MluRGnGq1eOGf5EiVvoO5btNAErf5PyD8dLY9nTxoPZo9Idy-Bv834_datyqAiGXnFoOiMTXL1pgL1f0hl2m1JXAHAr1v5XG_MNwAFDhBG-hLo4BvAq2aoKeyt8d"  # CHANGEME
 
     def __init__(self, url) -> None:
         self.url = url

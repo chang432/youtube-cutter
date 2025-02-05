@@ -9,6 +9,7 @@ import ThemeSwitch from "./components/ThemeSwitch";
 import { WaveSpinner } from "react-spinners-kit";
 import PremiumServices from "./components/PremiumServices";
 import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
+import PremiumDialog from "./components/PremiumDialog";
 import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,6 +39,7 @@ function App() {
     const [audioFormat, setAudioFormat] = useState("MP3");
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const [fileName, setFileName] = useState(null);
+    const [showPremiumDialog, setShowPremiumDialog] = useState(false);
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -643,6 +645,8 @@ function App() {
                         ></img>
                     </button>
 
+                    { showPremiumDialog && <PremiumDialog setShowPremiumDialog={setShowPremiumDialog}/> }
+
                     {displaySearchUI && (
                         <div className="flex flex-col justify-center items-center w-full">
                             <input
@@ -686,7 +690,7 @@ function App() {
                         </div>
                     )}
                 </div>
-                <PremiumServices audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} />
+                <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowPremiumDialog={setShowPremiumDialog} />
                 {displayCutterUI && (
                     <span style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00
@@ -701,6 +705,7 @@ function App() {
                     hidden={!displayCutterUI}
                     id="waveform"
                     ref={waveSurferRef}
+                    className="z-42"
                     style={{ width: "80%" }}
                 />
                 <div

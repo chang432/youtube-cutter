@@ -5,7 +5,7 @@ import FrequencySlider from "./FrequencySlider";
 import FfmpegWasmHelper from "./FfmpegWasmHelper";
 import axios from "axios";
 
-const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI}) => {
+const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI, setShowPremiumDialog}) => {
     const [speedSlowestHighlighted, setSpeedSlowestHighlighted] = useState(false);
     const [speedSlowHighlighted, setSpeedSlowHighlighted] = useState(false);
     const [speedNormalHighlighted, setSpeedNormalHighlighted] = useState(true);
@@ -118,12 +118,12 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
     }, [])
 
     return (
-        <div className={`${displayCutterUI ? "" : "invisible"} relative`}>
+        <div className={`${displayCutterUI ? "" : "invisible"} relative z-40`}>
             { disablePremium && <div className="z-50 absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 group">
                 <div className="flex flex-row justify-center items-center w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <input id="premiumPasswordInput" className="w-28 h-6 px-1 focus:outline-none border border-black" type="text" />
                     <button className="h-6 ml-2" onClick={passwordEnterPressed}>Enter</button>
-                    <button className="h-6 ml-4 text-red-600">?</button>
+                    <button className="h-6 ml-4 text-red-600" onClick={() => {setShowPremiumDialog(true)}}>?</button>
                 </div>
             </div> }
 
