@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request, make_response, jsonify
 from flask_jwt_extended import create_access_token
-from DynamoDbHelper import DynamoDbHelper
+from api.DynamoDbHelper import DynamoDbHelper
 import datetime
 
 class PremiumLoginHandler(Resource):

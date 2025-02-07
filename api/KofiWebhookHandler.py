@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request
 from datetime import datetime, timezone
-from DynamoDbHelper import DynamoDbHelper
+from api.DynamoDbHelper import DynamoDbHelper
 import boto3
 import random
 import string
@@ -11,7 +11,7 @@ class KofiWebhookHandler(Resource):
   def post(self):
     print("[CUSTOM] STARTING KofiWebhookHandler.py")
 
-    ddb_helper = DynamoDbHelper("youtube-cutter-dev-premium-subscriptions")
+    ddb_helper = DynamoDbHelper("youtube-cutter-dev-premium-subscribers")
 
     correct_verification_token = "c0e0c9f5-96f4-4515-80b7-4b3ab6fb46b1"
 
@@ -30,7 +30,7 @@ class KofiWebhookHandler(Resource):
       password = "-".join("".join(random.choices(chars, k=4)) for _ in range(3))
 
       # Add user info to prem_subscribers.txt
-      curr_dt = datetime.now(timezone.utc)
+      curr_dt = datetime.now()
       curr_dt_str = curr_dt.strftime("%Y-%m-%d")
 
       ddb_helper.putItem(email=email, access_key=password, timestamp=curr_dt_str)
@@ -53,7 +53,7 @@ class KofiWebhookHandler(Resource):
       )
     
     elif is_subscription_payment:
-      curr_dt = datetime.now(timezone.utc)
+      curr_dt = datetime.now()
       curr_dt_str = curr_dt.strftime("%Y-%m-%d")
 
       ddb_helper.updateItem(email=email, new_timestamp=curr_dt_str)
