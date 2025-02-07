@@ -63,6 +63,25 @@ The above command, executed in the root directory, will perform the following st
 ## Info
 - Pulls from https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js and https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm
 
+
+## Premium Services Design 
+Users are able to sign up for a monthly donation on Ko-fi to get access to additional audio processing tools for videos. T
+he following is the system design workflow:
+
+Sign up workflow
+1. User signs up for monthly donation on Ko-fi
+2. Ko-fi webhook automatically sends api request to wav.ninja/kofi_payment which, in the backend, adds the row representing the user to a dynamodb table as well as sends an email to the user with a randomly generated access key.
+    - The new entry consists of the email, randomly generated access key, and timestamp.
+
+Processing workflow
+1. User inputs access key into the premium services text box.
+2. Backend queries the db and returns whether a row with the access_key exists or not.
+3. If exists, then grant user access to additional tools.
+
+Expiration handler workflow
+1. A daily eventbridge rule will trigger a lambda that will scan all entries in the db for any rows that have a timestamp older than 31 days compared to the current date.
+2. The lambda will delete any rows that fit this criteria and email the user that their access is revoked as they have not continued with the subscription.
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)

@@ -10,7 +10,6 @@ from api.PremiumLoginHandler import PremiumLoginHandler
 from api.PremiumVerificationHandler import PremiumVerificationHandler
 import os
 import boto3
-import subprocess
 import os
 
 # env variable for local or deployment build
