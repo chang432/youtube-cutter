@@ -13,3 +13,6 @@ def remove_expired_items():
     print("[CUSTOM] Finishing premiumExpirationHandler.py")
 
     return "done"
+
+if __name__ == "__main__":
+    remove_expired_items()

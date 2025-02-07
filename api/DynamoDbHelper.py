@@ -1,6 +1,6 @@
 import boto3
 from boto3.dynamodb.conditions import Attr, Key
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 class DynamoDbHelper:
     wav_email = "wavninja.team@gmail.com"
@@ -45,7 +45,7 @@ class DynamoDbHelper:
 
     # Remove all rows that have a timestamp which is greater than 31 days before the current date (membership cancelled)
     def removeExpiredItems(self):
-        curr_date = datetime.now()
+        curr_date = datetime.now(timezone.utc)
         curr_date_str = curr_date.strftime("%Y-%m-%d")
         expired_date = curr_date - timedelta(days=31)
         expired_date_str = expired_date.strftime("%Y-%m-%d")
@@ -61,7 +61,7 @@ class DynamoDbHelper:
 
             self.ses_client.send_email(
                 Source=DynamoDbHelper.wav_email,
-                Destination={"To_addresses": [email_val]},
+                Destination={"ToAddresses": [email_val]},
                 Message={
                     "Subject": {"Data": DynamoDbHelper.SUBJECT},
                     "Body": {"Text": {"Data": DynamoDbHelper.BODY_TEXT}},

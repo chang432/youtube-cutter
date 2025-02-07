@@ -25,12 +25,14 @@ class KofiWebhookHandler(Resource):
       raise Exception("Verification token does not match")
 
     if is_first_subscription_payment:
+      print(f"First subscription detected for {email}! Setting up now...")
+
       # Generate random password
       chars = string.ascii_uppercase + string.digits  # A-Z, 0-9
       password = "-".join("".join(random.choices(chars, k=4)) for _ in range(3))
 
       # Add user info to prem_subscribers.txt
-      curr_dt = datetime.now()
+      curr_dt = datetime.now(timezone)
       curr_dt_str = curr_dt.strftime("%Y-%m-%d")
 
       ddb_helper.putItem(email=email, access_key=password, timestamp=curr_dt_str)
@@ -53,7 +55,8 @@ class KofiWebhookHandler(Resource):
       )
     
     elif is_subscription_payment:
-      curr_dt = datetime.now()
+      print(f"subscription payment detected for {email}! Updating timestamp now...")
+      curr_dt = datetime.now(timezone)
       curr_dt_str = curr_dt.strftime("%Y-%m-%d")
 
       ddb_helper.updateItem(email=email, new_timestamp=curr_dt_str)
