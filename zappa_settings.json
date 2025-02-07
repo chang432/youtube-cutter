@@ -50,12 +50,8 @@
         "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/4ff1b81b-c88a-4652-8ab9-e425fc11ad9f",
         "domain": "wav.ninja",
         "events": [{
-            "function": "scripts/monitoring.check_pytube",
+            "function": "scripts.monitoring.check_pytube",
             "expression": "rate(10 minutes)"
-        },
-        {
-            "function": "api/PremiumExpirationHandler.remove_expired_items",
-            "expression": "rate(1 days)"
         }],
         "exclude": [
             "node_modules",

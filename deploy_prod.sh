@@ -9,6 +9,7 @@ mv prod_app.py app.py
 # change bucket name
 find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-static-files-dev/youtube-cutter-static-files-prod/g' {} +
 find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-private-dev/youtube-cutter-private-prod/g' {} +
+find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-dev-po-token/youtube-cutter-prod-po-token/g' {} +
 find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-dev-premium-subscribers/youtube-cutter-prod-premium-subscribers/g' {} +
 sed -i '' 's/youtube-cutter-static-files-dev/youtube-cutter-static-files-prod/g' app.py
 
@@ -28,6 +29,7 @@ zappa update prod
 # change back bucket name
 find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-static-files-prod/youtube-cutter-static-files-dev/g' {} +
 find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-private-prod/youtube-cutter-private-dev/g' {} +
+find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-prod-po-token/youtube-cutter-dev-po-token/g' {} +
 find api -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-prod-premium-subscribers/youtube-cutter-dev-premium-subscribers/g' {} +
 sed -i '' 's/youtube-cutter-static-files-prod/youtube-cutter-static-files-dev/g' app.py
 
