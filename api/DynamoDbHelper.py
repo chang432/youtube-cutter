@@ -59,6 +59,12 @@ class DynamoDbHelper:
         for item in response.get("Items", []):
             email_val = item["email"]
 
+            pk = { "email": email_val }
+            self.table.delete_item(
+                Key=pk
+            )
+            print(f"Removed row with the following email and timestamp: ({item['email']}, {item['timestamp']})")
+
             self.ses_client.send_email(
                 Source=DynamoDbHelper.wav_email,
                 Destination={"ToAddresses": [email_val]},
@@ -69,12 +75,6 @@ class DynamoDbHelper:
             )
 
             print(f"Sent deactivation email to {email_val}")
-
-            pk = { "email": email_val }
-            self.table.delete_item(
-                Key=pk
-            )
-            print(f"Removed row with the following email and timestamp: ({item['email']}, {item['timestamp']})")
 
     
 
