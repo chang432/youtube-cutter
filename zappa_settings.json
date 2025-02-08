@@ -12,7 +12,8 @@
         "events": [
         {
             "function": "api.PremiumExpirationHandler.remove_expired_items",
-            "expression": "rate(3 minutes)"
+            "expression": "rate(3 minutes)",
+            "enabled": false
         }],
         "exclude": [
             "node_modules",

@@ -1,15 +1,13 @@
 import boto3
 from boto3.dynamodb.conditions import Attr, Key
 from datetime import datetime, timedelta, timezone
+from api.SmtpHelper import SmtpHelper
 
 class DynamoDbHelper:
-    wav_email = "wavninja.team@gmail.com"
     SUBJECT = "Wav Ninja Premium"
     BODY_TEXT = "The membership has not been renewed so the access key associated with this email has expired.\nThank you for supporting us!\n\n-Wav Ninja Team"
 
-
     def __init__(self, table_name):
-        self.ses_client = boto3.client("ses")
         self.ddb = boto3.resource("dynamodb")
         self.table = self.ddb.Table(table_name)
 
@@ -65,16 +63,7 @@ class DynamoDbHelper:
             )
             print(f"Removed row with the following email and timestamp: ({item['email']}, {item['timestamp']})")
 
-            self.ses_client.send_email(
-                Source=DynamoDbHelper.wav_email,
-                Destination={"ToAddresses": [email_val]},
-                Message={
-                    "Subject": {"Data": DynamoDbHelper.SUBJECT},
-                    "Body": {"Text": {"Data": DynamoDbHelper.BODY_TEXT}},
-                },
-            )
-
-            print(f"Sent deactivation email to {email_val}")
+            SmtpHelper.sendEmail(destinationEmail=email_val, emailTitle=DynamoDbHelper.SUBJECT, emailBody=DynamoDbHelper.BODY_TEXT)
 
     
 

@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import request
 from datetime import datetime, timezone
 from api.DynamoDbHelper import DynamoDbHelper
+from api.SmtpHelper import SmtpHelper
 import boto3
 import random
 import string
@@ -38,21 +39,10 @@ class KofiWebhookHandler(Resource):
       ddb_helper.putItem(email=email, access_key=password, timestamp=curr_dt_str)
 
       # Email the password to the input email 
-      ses_client = boto3.client("ses", region_name="us-east-1")  # Change region if needed
-
-      SENDER = "wavninja.team@gmail.com"
-      RECIPIENT = email
       SUBJECT = "Wav Ninja Premium"
       BODY_TEXT = "Thank you for supporting us!\nPlease use the following password to access premium features: " + password + "\n\n- Wav Ninja Team"
 
-      response = ses_client.send_email(
-          Source=SENDER,
-          Destination={"ToAddresses": [RECIPIENT]},
-          Message={
-              "Subject": {"Data": SUBJECT},
-              "Body": {"Text": {"Data": BODY_TEXT}},
-          },
-      )
+      SmtpHelper.sendEmail(destinationEmail=email, emailTitle=SUBJECT, emailBody=BODY_TEXT)
     
     elif is_subscription_payment:
       print(f"subscription payment detected for {email}! Updating timestamp now...")
