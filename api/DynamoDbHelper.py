@@ -1,5 +1,6 @@
 import boto3
 from boto3.dynamodb.conditions import Attr, Key
+import json
 from datetime import datetime, timedelta, timezone
 from api.SmtpHelper import SmtpHelper
 
@@ -23,6 +24,20 @@ class DynamoDbHelper:
     
         return False
 
+    # Returns db entry associated with the input email in json
+    def getItem(self, email):
+        response = self.table.get_item(Key={'email': email}) 
+    
+        if 'Item' in response:
+            return json.dumps(response['Item'], indent=4)  
+        else:
+            return json.dumps({"error": "Item not found"}, indent=4)
+        
+    # Removes db entry associated with the input email
+    def removeItem(self, email):
+        self.table.delete_item(
+            Key={"email": email}
+        )
 
     # Writes new row with the following values to db
     def putItem(self, email, access_key, timestamp):

@@ -3,6 +3,8 @@ from flask import request
 from datetime import datetime, timezone
 from api.DynamoDbHelper import DynamoDbHelper
 from api.SmtpHelper import SmtpHelper
+from flask import jsonify, make_response
+import json
 import boto3
 import random
 import string
@@ -10,47 +12,69 @@ import string
 class KofiWebhookHandler(Resource):
   
   def post(self):
-    print("[CUSTOM] STARTING KofiWebhookHandler.py")
+    try:
+      print("[CUSTOM] STARTING KofiWebhookHandler.py")
 
-    ddb_helper = DynamoDbHelper("youtube-cutter-dev-premium-subscribers")
+      correct_verification_token = "c0e0c9f5-96f4-4515-80b7-4b3ab6fb46b1"
 
-    correct_verification_token = "c0e0c9f5-96f4-4515-80b7-4b3ab6fb46b1"
+      request_data = request.form.to_dict()
 
-    data = request.get_json()
-    verification_token = data.get('verification_token')
-    email = data.get('email')
-    is_subscription_payment = data.get('is_subscription_payment')
-    is_first_subscription_payment = data.get('is_first_subscription_payment')
+      if "data" in request_data:
+        # Actual request sent from Ko-fi
+        data = json.loads(request_data["data"])
+      else:
+        # Test request sent from monitoring
+        data = request_data
 
-    if verification_token != correct_verification_token:
-      raise Exception("Verification token does not match")
+      print(f"[DATA]: {data}")
 
-    if is_first_subscription_payment:
-      print(f"First subscription detected for {email}! Setting up now...")
+      testing = False
+      if 'testing' in data:
+        testing = data['testing']
+      verification_token = data['verification_token']
+      email = data['email']
+      is_subscription_payment = data['is_subscription_payment']
+      is_first_subscription_payment = data['is_first_subscription_payment']
 
-      # Generate random password
-      chars = string.ascii_uppercase + string.digits  # A-Z, 0-9
-      password = "-".join("".join(random.choices(chars, k=4)) for _ in range(3))
+      print(f"DATA CONTENTS:\ntesting: {testing}\nverification_token: {verification_token}\nemail: {email}\nis_subscription_payment: {is_subscription_payment}\nis_first_subscription_payment: {is_first_subscription_payment}")
 
-      # Add user info to prem_subscribers.txt
-      curr_dt = datetime.now(timezone)
-      curr_dt_str = curr_dt.strftime("%Y-%m-%d")
+      if testing:
+        ddb_helper = DynamoDbHelper(table_name="youtube-cutter-test-premium-subscribers")
+      else:
+        ddb_helper = DynamoDbHelper(table_name="youtube-cutter-dev-premium-subscribers")
 
-      ddb_helper.putItem(email=email, access_key=password, timestamp=curr_dt_str)
+      if verification_token != correct_verification_token:
+        raise Exception("Verification token does not match")
 
-      # Email the password to the input email 
-      SUBJECT = "Wav Ninja Premium"
-      BODY_TEXT = "Thank you for supporting us!\nPlease use the following password to access premium features: " + password + "\n\n- Wav Ninja Team"
+      if is_first_subscription_payment:
+        print(f"First subscription detected for {email}! Setting up now...")
 
-      SmtpHelper.sendEmail(destinationEmail=email, emailTitle=SUBJECT, emailBody=BODY_TEXT)
-    
-    elif is_subscription_payment:
-      print(f"subscription payment detected for {email}! Updating timestamp now...")
-      curr_dt = datetime.now(timezone)
-      curr_dt_str = curr_dt.strftime("%Y-%m-%d")
+        # Generate random password
+        chars = string.ascii_uppercase + string.digits  # A-Z, 0-9
+        password = "-".join("".join(random.choices(chars, k=4)) for _ in range(3))
 
-      ddb_helper.updateItem(email=email, new_timestamp=curr_dt_str)
-            
-    print("[CUSTOM] KofiWebhookHandler.py COMPLETE")
+        # Add user info to db
+        curr_dt = datetime.now(timezone.utc)
+        curr_dt_str = curr_dt.strftime("%Y-%m-%d")
 
-    return "done"
+        ddb_helper.putItem(email=email, access_key=password, timestamp=curr_dt_str)
+
+        if not testing:
+          # Email the password to the input email 
+          SUBJECT = "Wav Ninja Premium"
+          BODY_TEXT = "Thank you for supporting us!\nPlease use the following password to access premium features: " + password + "\n\n- Wav Ninja Team"
+
+          SmtpHelper.sendEmail(destinationEmail=email, emailTitle=SUBJECT, emailBody=BODY_TEXT)
+      
+      elif is_subscription_payment:
+        print(f"subscription payment detected for {email}! Updating timestamp now...")
+        curr_dt = datetime.now(timezone.utc)
+        curr_dt_str = curr_dt.strftime("%Y-%m-%d")
+
+        ddb_helper.updateItem(email=email, new_timestamp=curr_dt_str)
+              
+      print("[CUSTOM] KofiWebhookHandler.py COMPLETE")
+
+      return make_response(jsonify({"status": "success"}), 200)
+    except Exception as e:
+      return make_response(jsonify({"error": str(e)}), 500)
