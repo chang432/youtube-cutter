@@ -6,6 +6,9 @@ export default {
             fontFamily: {
                 primary: ["VT323", "monospace"],
             },
+            screens: {
+                xs: "35rem"
+            },
         },
     },
     plugins: [require("daisyui")],

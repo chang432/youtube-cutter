@@ -632,7 +632,7 @@ function App() {
                 setIsDarkMode={setIsDarkMode}
                 setIsPlaying={setIsPlaying}
             />
-            <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-10" : "h-screen"} items-center`}>
+            <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
                 <div className="flex flex-col justify-center items-center w-full" >
                     <button onClick={goHome} className="text-8xl mb-4">
@@ -719,7 +719,7 @@ function App() {
                             type="text"
                             value={startTime}
                             onChange={handleStartTimeTextChange}
-                            className="input input-bordered rounded-none input-primary p-4 w-1/6"
+                            className="input input-bordered rounded-none input-primary xs:p-4 p-2 xs:w-1/6 w-1/5"
                         />
                         <div>
                             <button
@@ -744,7 +744,7 @@ function App() {
                             type="text"
                             value={endTime}
                             onChange={handleEndTimeTextChange}
-                            className="input input-bordered rounded-none input-primary p-4 w-1/6"
+                            className="input input-bordered rounded-none input-primary xs:p-4 p-2 xs:w-1/6 w-1/5"
                         />
                     </div>
                     <div className="btn-group mt-10">

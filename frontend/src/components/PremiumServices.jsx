@@ -129,7 +129,7 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
             </div> }
 
             <div className={`flex flex-col justify-center items-center w-fit py-5 px-10 space-y-9 ${disablePremium ? "opacity-30" : "" } border border-dotted border-black`}>
-                <div className={`flex flex-row items-center justify-center w-fit space-x-20`}>
+                <div className={`flex xs:flex-row flex-col items-center justify-center w-fit xs:space-x-20 space-y-10`}>
                     <div className="flex flex-col items-center space-y-5">
                         <h1>Frequency Cutoff (Hz)</h1>
                         <FrequencySlider freqRange={freqRange} setFreqRange={setFreqRange} freqLimit={freqLimit}/>
