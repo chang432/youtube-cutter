@@ -22,7 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = true;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
+    const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
 
     const [audioSrc, setAudioSrc] = useState("");
     const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
@@ -632,7 +632,7 @@ function App() {
                 setIsDarkMode={setIsDarkMode}
                 setIsPlaying={setIsPlaying}
             />
-            <div className=" flex flex-col justify-center h-screen items-center">
+            <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-10" : "h-screen"} items-center`}>
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
                 <div className="flex flex-col justify-center items-center w-full" >
                     <button onClick={goHome} className="text-8xl mb-4">
@@ -690,9 +690,9 @@ function App() {
                         </div>
                     )}
                 </div>
-                <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowPremiumDialog={setShowPremiumDialog} />
+                {displayCutterUI && <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowPremiumDialog={setShowPremiumDialog} /> }
                 {displayCutterUI && (
-                    <span className="mt-10" style={{ paddingBottom: "5px" }} id="current-time">
+                    <span className="mt-6" style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00
                     </span>
                 )}

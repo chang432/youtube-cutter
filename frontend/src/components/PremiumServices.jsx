@@ -119,7 +119,7 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
     }, [])
 
     return (
-        <div className={`${displayCutterUI ? "" : "invisible"} relative z-40`}>
+        <div className={`relative z-40`}>
             { disablePremium && <div className="z-50 absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 group">
                 <div className="flex flex-row justify-center items-center w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <input id="premiumPasswordInput" className="w-28 h-6 px-1 focus:outline-none border border-black" type="text" />
