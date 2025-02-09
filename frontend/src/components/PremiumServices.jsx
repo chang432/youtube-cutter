@@ -128,40 +128,42 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
                 </div>
             </div> }
 
-            <div className={`flex flex-row items-top justify-center w-fit py-5 px-10 ${disablePremium ? "opacity-30" : "" }`}>
-                <div className="flex flex-col items-center space-y-5 mr-28">
-                    <h1>Speed</h1>
-                    <div className="flex flex-row font-black">
-                        <div className="flex flex-col w-10 items-center">
-                            <h1 className="text-sm cursor-default">0.5</h1>
-                            <h1 className={`text-xl cursor-pointer ${speedSlowestHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("slowest")}}>&lt;&lt;</h1>
-                        </div>
-                        <div className="flex flex-col w-10 items-center">
-                            <h1 className="text-sm cursor-default">0.75</h1>
-                            <h1 className={`text-xl cursor-pointer ${speedSlowHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("slow")}}>&lt;&lt;</h1>
-                        </div>
-                        <div className="flex flex-col w-10 items-center">
-                            <h1 className="text-sm cursor-default">1.0</h1>
-                            <h1 className={`text-xl cursor-pointer ${speedNormalHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("normal")}}>O</h1>
-                        </div>
-                        <div className="flex flex-col w-10 items-center">
-                            <h1 className="text-sm cursor-default">1.5</h1>
-                            <h1 className={`text-xl cursor-pointer ${speedFastHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("fast")}}>&gt;&gt;</h1>
-                        </div>
-                        <div className="flex flex-col w-10 items-center">
-                            <h1 className="text-sm cursor-default">2.0</h1>
-                            <h1 className={`text-xl cursor-pointer ${speedFastestHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("fastest")}}>&gt;&gt;</h1>
+            <div className={`flex flex-col justify-center items-center w-fit py-5 px-10 space-y-9 ${disablePremium ? "opacity-30" : "" } border border-dotted border-black`}>
+                <div className={`flex flex-row items-center justify-center w-fit space-x-20`}>
+                    <div className="flex flex-col items-center space-y-5">
+                        <h1>Frequency Cutoff (Hz)</h1>
+                        <FrequencySlider freqRange={freqRange} setFreqRange={setFreqRange} freqLimit={freqLimit}/>
+                    </div>
+                    <div className="flex flex-col items-center space-y-5">
+                        <h1>Speed</h1>
+                        <div className="flex flex-row font-black">
+                            <div className="flex flex-col w-10 items-center">
+                                <h1 className="text-sm cursor-default">0.5</h1>
+                                <h1 className={`text-xl cursor-pointer ${speedSlowestHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("slowest")}}>&lt;&lt;</h1>
+                            </div>
+                            <div className="flex flex-col w-10 items-center">
+                                <h1 className="text-sm cursor-default">0.75</h1>
+                                <h1 className={`text-xl cursor-pointer ${speedSlowHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("slow")}}>&lt;&lt;</h1>
+                            </div>
+                            <div className="flex flex-col w-10 items-center">
+                                <h1 className="text-sm cursor-default">1.0</h1>
+                                <h1 className={`text-xl cursor-pointer ${speedNormalHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("normal")}}>O</h1>
+                            </div>
+                            <div className="flex flex-col w-10 items-center">
+                                <h1 className="text-sm cursor-default">1.5</h1>
+                                <h1 className={`text-xl cursor-pointer ${speedFastHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("fast")}}>&gt;&gt;</h1>
+                            </div>
+                            <div className="flex flex-col w-10 items-center">
+                                <h1 className="text-sm cursor-default">2.0</h1>
+                                <h1 className={`text-xl cursor-pointer ${speedFastestHighlighted ? "text-red-600": ""}`} onClick={() => {handleSpeedClick("fastest")}}>&gt;&gt;</h1>
+                            </div>
                         </div>
                     </div>
+                    <div className="flex flex-col items-center justify-center space-y-5">
+                        <button className={` py-2 px-3 ${reverseSelected ? "bg-red-600 text-white" : "text-black"} border border-black`} onClick={handleReverseClick}>Reverse</button>
+                    </div>
                 </div>
-                <div className="flex flex-col items-center space-y-5 mr-28">
-                    <h1>Frequency Cutoff (Hz)</h1>
-                    <FrequencySlider freqRange={freqRange} setFreqRange={setFreqRange} freqLimit={freqLimit}/>
-                </div>
-                <div className="flex flex-col items-center justify-center space-y-5 mr-28">
-                    <button className={`text-white py-2 px-3 ${reverseSelected ? "bg-red-600" : "bg-black"}`} onClick={handleReverseClick}>Reverse</button>
-                </div>
-                <button onClick={applySettings}>Apply</button>
+                <button className="bg-black text-white py-2 px-3" onClick={applySettings}>Apply</button>
             </div>
         </div>
     );

@@ -635,7 +635,7 @@ function App() {
             <div className=" flex flex-col justify-center h-screen items-center">
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
                 <div className="flex flex-col justify-center items-center w-full" >
-                    <button onClick={goHome} className="text-8xl mb-10">
+                    <button onClick={goHome} className="text-8xl mb-4">
                         wav.ninja
                         <img
                             src={ninja}
@@ -692,7 +692,7 @@ function App() {
                 </div>
                 <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowPremiumDialog={setShowPremiumDialog} />
                 {displayCutterUI && (
-                    <span style={{ paddingBottom: "5px" }} id="current-time">
+                    <span className="mt-10" style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00
                     </span>
                 )}
