@@ -22,7 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
+    const developMode = true;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
 
     const [audioSrc, setAudioSrc] = useState("");
     const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
