@@ -87,7 +87,8 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
             method: "post",
             responseType: "json",
             data: {
-                input_password: password
+                input_password: password,
+                testing: false
             },
         })
         .then((res) => {

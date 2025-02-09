@@ -14,6 +14,11 @@
             "function": "api.PremiumExpirationHandler.remove_expired_items",
             "expression": "rate(3 minutes)",
             "enabled": false
+        },
+        {
+            "function": "scripts.monitoring.check_pytube",
+            "expression": "rate(3 minutes)",
+            "enabled": false
         }],
         "exclude": [
             "node_modules",
@@ -21,7 +26,6 @@
             "src",
             "static",
             "binaries",
-            "scripts",
             "venv/lib/python3.9/site-packages/boto3",
             "venv/lib/python3.9/site-packages/botocore"
         ],
@@ -60,7 +64,6 @@
             "src",
             "static",
             "binaries",
-            "scripts",
             "venv/lib/python3.9/site-packages/boto3",
             "venv/lib/python3.9/site-packages/botocore"
         ],
