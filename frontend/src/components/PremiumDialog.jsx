@@ -17,7 +17,7 @@ const PremiumDialog = ({ setShowPremiumDialog }) => {
                         {" with a monthly donation of $3!"}
                     </p>
                 </div>
-                <p className="mb-10">Get access to additional editing tools to modify speed, frequency, and reverse audio</p>
+                <p className="mb-10">Get access to additional editing tools while cutting to modify speed, frequency, and reverse audio</p>
                 <p className="text-red-600">Follow the below steps</p>
                 <div className="text-left mb-10">
                     <p>1. On our <span className="hover:cursor-pointer text-red-600 font-bold underline" onClick={handleKofiTextClicked}>Ko-fi page</span>, sign up for a monthly donation with your email account</p>

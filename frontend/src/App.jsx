@@ -18,6 +18,7 @@ import {
     faPause,
     faRotateLeft,
     faMugHot,
+    faCircleUp,
     faDownload
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -626,6 +627,12 @@ function App() {
                 onClick={handleDonationClick}
             >
                 <FontAwesomeIcon icon={faMugHot} className="fa-2xl" />
+            </button>
+            <button
+                className="fixed top-4 left-20"
+                onClick={() => {setShowPremiumDialog(true)}}
+            >
+                <FontAwesomeIcon icon={faCircleUp} className="fa-2xl" />
             </button>
             <ThemeSwitch
                 isDarkMode={isDarkMode}

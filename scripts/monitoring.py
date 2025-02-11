@@ -8,7 +8,7 @@ from api.YtdlpHandler import YtdlpHandler
 def check_pytube():
     print("========== [MONITORING] Starting Execution ==========")
     
-    webapp_url = "https://youtube-cutter-dev-703951066.us-east-1.elb.amazonaws.com"      # TODO: Change url to https://wav.ninja
+    webapp_url = "https://wav.ninja"      # Change url to this for dev //youtube-cutter-dev-703951066.us-east-1.elb.amazonaws.com
     sns = boto3.client('sns')
     ddb_helper = DynamoDbHelper(table_name="youtube-cutter-test-premium-subscribers")
 

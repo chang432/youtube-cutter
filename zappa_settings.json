@@ -52,7 +52,7 @@
         "events": [{
             "function": "api.PremiumExpirationHandler.remove_expired_items",
             "expression": "rate(1 days)",
-            "enabled": false
+            "enabled": true
         }],
         "exclude": [
             "node_modules",
