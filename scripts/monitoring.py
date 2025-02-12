@@ -7,10 +7,7 @@ from api.YtdlpHandler import YtdlpHandler
 
 def check_pytube():
     print("========== [MONITORING] Starting Execution ==========")
-    
-    webapp_url = "https://wav.ninja"      # Change url to this for dev //youtube-cutter-dev-703951066.us-east-1.elb.amazonaws.com
     sns = boto3.client('sns')
-    ddb_helper = DynamoDbHelper(table_name="youtube-cutter-test-premium-subscribers")
 
     print("[MONITORING] Starting yt-dlp download test...")
     
@@ -28,7 +25,12 @@ def check_pytube():
             TopicArn="arn:aws:sns:us-east-1:235154285215:wav-ninja-monitoring",
             Message="WAV NINJA MONITORING FAILED FOR Yt-dlp TEST PLEASE LOOK INTO IT"
         )
-    
+
+def check_premium():
+    webapp_url = "https://wav.ninja"      # Change url to this for dev //youtube-cutter-dev-703951066.us-east-1.elb.amazonaws.com
+    sns = boto3.client('sns')
+    ddb_helper = DynamoDbHelper(table_name="youtube-cutter-test-premium-subscribers")
+
     print("[MONITORING] Starting PremiumLogHandler test...")
 
     try:
