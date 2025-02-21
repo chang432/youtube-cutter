@@ -121,3 +121,11 @@ def check_premium():
         )
 
     print("========== [MONITORING] Ending Execution ==========")
+
+def handle(event, context):
+    check_pytube()
+    check_premium()
+
+    return {
+        "statusCode": 200
+    }

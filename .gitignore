@@ -1,4 +1,4 @@
-venv
+venv*
 .DS_Store
 log.txt
 lambda_log.txt
@@ -7,6 +7,8 @@ __pycache__
 youtube-oauth2
 .idea
 cookies
+staging
+layer-staging
 
 # Logs
 logs
