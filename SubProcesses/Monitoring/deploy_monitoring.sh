@@ -6,9 +6,13 @@
 root_path=$(git rev-parse --show-toplevel)
 monitoring_path="${root_path}/SubProcesses/Monitoring"
 
-if [[ "$1" != "--upload-deps" && "$1" != "--upload-main" && "$1" != "--upload-all" ]]; then
-    echo "Usage: deploy_monitoring.sh [--upload-deps | --upload-main | --upload-all]"
+if [[ "$1" != "--upload-deps" && "$1" != "--upload-main" && "$1" != "--upload-all" && "$1" != "--deploy-template" ]]; then
+    echo "Usage: deploy_monitoring.sh [--upload-deps | --upload-main | --upload-all | --deploy-template]"
     exit 1
+fi
+
+if [[ "$1" == "--deploy-template" ]]; then
+    aws cloudformation update-stack --stack-name "youtube-cutter-monitoring-stack" --template-body file://monitoring-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
 fi
 
 if [[ "$1" == "--upload-deps" || "$1" == "--upload-all" ]]; then

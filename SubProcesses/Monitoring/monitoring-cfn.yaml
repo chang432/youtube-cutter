@@ -40,7 +40,7 @@ Resources:
   YoutubeCutterProdMonitoringEventbridgeRule:
     Type: AWS::Scheduler::Schedule
     Properties:
-      ScheduleExpression: "rate(1 hour)"
+      ScheduleExpression: "rate(15 minutes)"
       FlexibleTimeWindow:
         Mode: 'OFF'
       ScheduleExpressionTimezone: Etc/UTC

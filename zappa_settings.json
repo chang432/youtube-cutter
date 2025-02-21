@@ -9,20 +9,17 @@
         "keep_warm": false,
         "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
         "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/4ff1b81b-c88a-4652-8ab9-e425fc11ad9f",
-        "events": [
-        {
-            "function": "scripts.monitoring.check_premium",
-            "expression": "rate(10 minutes)",
-            "enabled": true
-        }],
         "exclude": [
             "node_modules",
             "public",
             "src",
             "static",
             "binaries",
-            "venv/lib/python3.9/site-packages/boto3",
-            "venv/lib/python3.9/site-packages/botocore"
+            "SubProcesses"
+        ],
+        "exclude_glob": [
+            "boto3*",
+            "botocore*"
         ],
         "timeout_seconds": 600, 
         "memory_size": 1024,
@@ -53,10 +50,6 @@
             "function": "api.PremiumExpirationHandler.remove_expired_items",
             "expression": "rate(24 hours)",
             "enabled": true
-        },{
-            "function": "scripts.monitoring.check_pytube",
-            "expression": "rate(10 minutes)",
-            "enabled": true
         }],
         "exclude": [
             "node_modules",
@@ -64,8 +57,11 @@
             "src",
             "static",
             "binaries",
-            "venv/lib/python3.9/site-packages/boto3",
-            "venv/lib/python3.9/site-packages/botocore"
+            "SubProcesses"
+        ],
+        "exclude_glob": [
+            "boto3*",
+            "botocore*"
         ],
         "timeout_seconds": 600, 
         "memory_size": 1024,
