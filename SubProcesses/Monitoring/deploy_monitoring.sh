@@ -16,8 +16,7 @@ if [[ "$1" == "--deploy-template" ]]; then
 fi
 
 if [[ "$1" == "--upload-deps" || "$1" == "--upload-all" ]]; then
-    rm -rf "${monitoring_path}/MonitoringLambda/layer-staging"  # remove old layer staging folder
-
+    rm -rf "${monitoring_path}/MonitoringLambda/layer-staging"  # make sure old staging folder does not exist
     mkdir -p "${monitoring_path}/MonitoringLambda/layer-staging/python/lib"  # create new layer staging folder
 
     rsync -r --exclude "boto3" --exclude "botocore" "${root_path}/venv/lib/" "${monitoring_path}/MonitoringLambda/layer-staging/python/lib/"
@@ -29,11 +28,12 @@ if [[ "$1" == "--upload-deps" || "$1" == "--upload-all" ]]; then
     aws lambda publish-layer-version --layer-name "YoutubeCutterProdMonitoringLambdaLayer" --zip-file "fileb://${monitoring_path}/MonitoringLambda/layer-staging/monitoring-dep-layer.zip" --compatible-runtimes "python3.9"
 
     cd "${monitoring_path}"
+
+    rm -rf "${monitoring_path}/MonitoringLambda/layer-staging"  # remove staging folder
 fi
 
 if [[ "$1" == "--upload-main" || "$1" == "--upload-all" ]]; then
-    rm -rf "${monitoring_path}/MonitoringLambda/staging"  # remove old staging folder
-
+    rm -rf "${monitoring_path}/MonitoringLambda/staging"  # make sure old staging folder does not exist
     mkdir "${monitoring_path}/MonitoringLambda/staging"  # create new staging folder
 
     # Copy the lambda code/dependencies to the staging folder
@@ -55,6 +55,8 @@ if [[ "$1" == "--upload-main" || "$1" == "--upload-all" ]]; then
     aws lambda update-function-code --function-name "YoutubeCutterProdMonitoring" --zip-file "fileb://monitoring.zip"
 
     cd "${monitoring_path}"
+
+    rm -rf "${monitoring_path}/MonitoringLambda/staging"  # remove old staging folder
 fi
 
 
