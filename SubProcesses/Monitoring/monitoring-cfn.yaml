@@ -37,6 +37,7 @@ Resources:
                 - "SNS:Publish"
                 - "dynamodb:*"
               Resource: "*"
+
   YoutubeCutterProdMonitoringEventbridgeRule:
     Type: AWS::Scheduler::Schedule
     Properties:
@@ -47,6 +48,12 @@ Resources:
       Target:
         Arn: !GetAtt YoutubeCutterProdMonitoringLambdaFunction.Arn
         RoleArn: !GetAtt YoutubeCutterProdMonitoringLambdaRole.Arn
+
+  YoutubeCutterProdMonitoringLambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: "/aws/lambda/YoutubeCutterProdMonitoring"
+      RetentionInDays: 7
 
   # NOTE: If you want to update the layer, you need to change the s3 key because cfn won't detect an updated s3 file.
   YoutubeCutterProdMonitoringLambdaLayer:
@@ -76,3 +83,5 @@ Resources:
         S3Key: "monitoring-lambda/monitoring.zip"
       Layers:
         - !Ref YoutubeCutterProdMonitoringLambdaLayer
+      LoggingConfig:
+        LogGroup: !Ref YoutubeCutterProdMonitoringLambdaLogGroup
