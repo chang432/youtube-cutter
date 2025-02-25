@@ -1,5 +1,5 @@
 Resources:
-  YoutubeCutterProdMonitoringLambdaRole:
+  YoutubeCutterProdCheckPremLambdaRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -38,53 +38,52 @@ Resources:
                 - "dynamodb:*"
               Resource: "*"
 
-  YoutubeCutterProdMonitoringEventbridgeRule:
+  YoutubeCutterProdCheckPremEventbridgeRule:
     Type: AWS::Scheduler::Schedule
     Properties:
-      ScheduleExpression: "rate(15 minutes)"
+      ScheduleExpression: "rate(1 day)"
       FlexibleTimeWindow:
         Mode: 'OFF'
       ScheduleExpressionTimezone: Etc/UTC
       Target:
-        Arn: !GetAtt YoutubeCutterProdMonitoringLambdaFunction.Arn
-        RoleArn: !GetAtt YoutubeCutterProdMonitoringLambdaRole.Arn
+        Arn: !GetAtt YoutubeCutterProdCheckPremLambdaFunction.Arn
+        RoleArn: !GetAtt YoutubeCutterProdCheckPremLambdaRole.Arn
 
-  YoutubeCutterProdMonitoringLambdaLogGroup:
+  YoutubeCutterProdCheckPremLambdaLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: "/aws/lambda/YoutubeCutterProdMonitoring"
+      LogGroupName: "/aws/lambda/YoutubeCutterProdCheckPrem"
       RetentionInDays: 7
 
   # NOTE: If you want to update the layer, you need to change the s3 key because cfn won't detect an updated s3 file.
-  YoutubeCutterProdMonitoringLambdaLayer:
+  YoutubeCutterProdCheckPremLambdaLayer:
     Type: AWS::Lambda::LayerVersion
     Properties:
       CompatibleRuntimes: 
         - python3.9
       Content: 
         S3Bucket: "youtube-cutter-private-prod"
-        S3Key: "monitoring-dep-layer.zip"
-      Description: "Lambda layer containing python dependencies for youtube cutter monitoring."
-      LayerName: "YoutubeCutterProdMonitoringLambdaLayer"
+        S3Key: "check-prem-dep-layer.zip"
+      Description: "Lambda layer containing python dependencies for youtube cutter premium expiration handling."
+      LayerName: "YoutubeCutterProdCheckPremLambdaLayer"
 
-  # NOTE: If you want to update the layer, you need to change the s3 key because cfn won't detect an updated s3 file.
-  YoutubeCutterProdMonitoringLambdaFunction:
+  YoutubeCutterProdCheckPremLambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      Description: "Monitors various functionalities of wav.ninja and makes sure they're working properly."
-      FunctionName: "YoutubeCutterProdMonitoring"
-      Handler: monitoring.handle
+      Description: "Checks all premium subscriptions and remove the ones that are expired."
+      FunctionName: "YoutubeCutterProdCheckPrem"
+      Handler: check_prem_expiration.handle
       MemorySize: 128
-      Role: !GetAtt YoutubeCutterProdMonitoringLambdaRole.Arn
+      Role: !GetAtt YoutubeCutterProdCheckPremLambdaRole.Arn
       Runtime: python3.9
       Timeout: 300
       Code:
-        ZipFile: |                              # Placeholder lambda code. Will be updated by the deployment script
+        ZipFile: |
           def lambda_handler(event, context):
             return {
-              'statusCode': 200 
+              'statusCode': 200
             }
       Layers:
-        - !Ref YoutubeCutterProdMonitoringLambdaLayer
+        - !Ref YoutubeCutterProdCheckPremLambdaLayer
       LoggingConfig:
-        LogGroup: !Ref YoutubeCutterProdMonitoringLambdaLogGroup
+        LogGroup: !Ref YoutubeCutterProdCheckPremLambdaLogGroup
