@@ -46,11 +46,8 @@
         "layers": ["arn:aws:lambda:us-east-1:235154285215:layer:ffmpeg:1"],
         "certificate_arn": "arn:aws:acm:us-east-1:235154285215:certificate/4ff1b81b-c88a-4652-8ab9-e425fc11ad9f",
         "domain": "wav.ninja",
-        "events": [{
-            "function": "api.PremiumExpirationHandler.remove_expired_items",
-            "expression": "rate(24 hours)",
-            "enabled": true
-        }],
+        "log_level": "ERROR",
+        "cloudwatch_log_level": "ERROR",    
         "exclude": [
             "node_modules",
             "public",

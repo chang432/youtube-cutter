@@ -43,7 +43,7 @@ def check_premium():
             "testing": True
         }
 
-        bad_data_response = requests.post("https://youtube-cutter-dev-703951066.us-east-1.elb.amazonaws.com/login_premium", json=bad_data, verify=False)   
+        bad_data_response = requests.post("https://wav.ninja/login_premium", json=bad_data, verify=False)   
         bad_data_response_json = bad_data_response.json()
         if bad_data_response_json["authorized"] != False:
             raise Exception("Request should have returned False!")
@@ -54,7 +54,7 @@ def check_premium():
             "testing": True
         }
 
-        response = requests.post("https://youtube-cutter-dev-703951066.us-east-1.elb.amazonaws.com/login_premium", json=data, verify=False)    # TODO: Change url to https://wav.ninja
+        response = requests.post("https://wav.ninja/login_premium", json=data, verify=False)   
         response_json = response.json()
         if response_json["authorized"] != True:
             raise Exception("Request should have returned True!")

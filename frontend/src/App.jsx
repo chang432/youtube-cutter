@@ -99,7 +99,7 @@ function App() {
 
     function convertYoutubeUrlToId(url) {
         const yt = url.match(
-            /(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:watch\?v=|)([^\s&]+)/
+            /(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:watch\?v=|)([^\s&?]+)(?:[&\?]si=[^\s&]+)?/
         );
         let yt_id = yt[1];
 
@@ -726,7 +726,7 @@ function App() {
                             type="text"
                             value={startTime}
                             onChange={handleStartTimeTextChange}
-                            className="input input-bordered rounded-none input-primary xs:p-4 p-2 xs:w-1/6 w-1/5"
+                            className={`input input-bordered rounded-none input-primary xs:p-4 p-2 xs:w-1/6 w-1/5 ${isPlaying ? "opacity-50 pointer-events-none" : ""}`}
                         />
                         <div>
                             <button
@@ -751,7 +751,7 @@ function App() {
                             type="text"
                             value={endTime}
                             onChange={handleEndTimeTextChange}
-                            className="input input-bordered rounded-none input-primary xs:p-4 p-2 xs:w-1/6 w-1/5"
+                            className={`input input-bordered rounded-none input-primary xs:p-4 p-2 xs:w-1/6 w-1/5 ${isPlaying ? "opacity-50 pointer-events-none" : ""}`}
                         />
                     </div>
                     <div className="btn-group mt-10">
