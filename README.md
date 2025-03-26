@@ -61,7 +61,7 @@ The above command, executed in the root directory, will perform the following st
 - Reconfigure built files to use local references again.
 
 ## Info
-- Pulls from https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js and https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm
+- Pulls from https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js and https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm
 
 
 ## Premium Services Design 

@@ -68,7 +68,7 @@ class FullDownloadHandler(Resource):
         file_extension = "wav"
 
       print(download_mp3, converted_file)
-      ffmpeg_command = f'{ffmpeg_exec} -i "{new_file}" -write_xing 0 -y "{converted_file}"'
+      ffmpeg_command = f'{ffmpeg_exec} -loglevel error -i "{new_file}" -write_xing 0 -y "{converted_file}"'
 
       try:
         subprocess.check_output(ffmpeg_command, shell=True)

@@ -17,7 +17,6 @@ class YtdlpHandler:
         s3_client.download_file("youtube-cutter-private-dev", "youtube-credentials/cookies.txt", "/tmp/cookies.txt")
 
     def yt_dlp_monitor(self, d):
-        print(d)
         YtdlpHandler.destination  = d.get('info_dict').get('_filename')
         print("FILE NAME IS: ", YtdlpHandler.destination)
 
@@ -33,7 +32,7 @@ class YtdlpHandler:
             # 'extractor_args': {'youtube': 'player-client=web;po_token=web+'+po_token},
             'extractor_args': {'youtube': 'player_client=web_creator;po_token=web_creator+'+self.po_token["Parameter"]["Value"]},
             'cookiefile': '/tmp/cookies.txt',
-            'verbose': True,
+            'verbose': False,
             'cachedir': '/tmp',
             'nocachedir': True,
             'ignoreerrors': True

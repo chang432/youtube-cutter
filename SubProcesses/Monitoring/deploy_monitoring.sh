@@ -127,4 +127,3 @@ fi
 if [[ "$1" == "--upload-main" || "$1" == "--upload-all" ]]; then
     upload_main
 fi
-
