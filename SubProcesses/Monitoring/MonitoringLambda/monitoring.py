@@ -5,10 +5,9 @@ import requests
 from api.DynamoDbHelper import DynamoDbHelper
 from api.YtdlpHandler import YtdlpHandler
 
-def check_pytube():
-    print("========== [MONITORING] Starting Execution ==========")
-    sns = boto3.client('sns')
+sns = boto3.client('sns')
 
+def check_pytube():
     print("[MONITORING] Starting yt-dlp download test...")
     
     try:
@@ -28,7 +27,6 @@ def check_pytube():
 
 def check_premium():
     webapp_url = "https://wav.ninja"      # Change url to this for dev //youtube-cutter-dev-703951066.us-east-1.elb.amazonaws.com
-    sns = boto3.client('sns')
     ddb_helper = DynamoDbHelper(table_name="youtube-cutter-test-premium-subscribers")
 
     print("[MONITORING] Starting PremiumLogHandler test...")
@@ -120,11 +118,35 @@ def check_premium():
             Message="WAV NINJA MONITORING FAILED FOR KofiWebhookHandler TEST PLEASE LOOK INTO IT"
         )
 
-    print("========== [MONITORING] Ending Execution ==========")
+
+def check_ffmpeg_wasm_endpoints():
+    try: 
+        print("[MONITORING] Testing ffmpeg-core.js and ffmpeg-core.wasm endpoint reachability...")
+        ffmpeg_core_url = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js"
+        ffmpeg_wasm_url = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm"
+        
+        ffmpeg_core_output = requests.get(ffmpeg_core_url)
+        ffmpeg_wasm_output = requests.get(ffmpeg_wasm_url)
+        if ffmpeg_core_output.status_code != 200:
+            raise Exception("ffmpeg-core.js request failed")
+        if ffmpeg_wasm_output.status_code != 200:
+            raise Exception("ffmpeg-core.wasm request failed")
+        print("[MONITORING] successfully tested ffmpeg-core.js and ffmpeg-core.wasm endpoints")
+    except:
+        print("[MONITORING] KofiWebhookHandler test EXCEPTION OCCURRED!!!!!")
+        traceback.print_exc()
+
+        sns.publish(
+            TopicArn="arn:aws:sns:us-east-1:235154285215:wav-ninja-monitoring",
+            Message="WAV NINJA MONITORING FAILED FOR testing ffmpeg wasm endpoint reachability... PLEASE LOOK INTO IT"
+        )
 
 def handle(event, context):
+    print("========== [MONITORING] Starting Execution ==========")
     check_pytube()
     check_premium()
+    check_ffmpeg_wasm_endpoints()
+    print("========== [MONITORING] Ending Execution ==========")
 
     return {
         "statusCode": 200

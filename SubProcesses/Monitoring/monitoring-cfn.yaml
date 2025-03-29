@@ -74,7 +74,7 @@ Resources:
       Description: "Monitors various functionalities of wav.ninja and makes sure they're working properly."
       FunctionName: "YoutubeCutterProdMonitoring"
       Handler: monitoring.handle
-      MemorySize: 128
+      MemorySize: 200
       Role: !GetAtt YoutubeCutterProdMonitoringLambdaRole.Arn
       Runtime: python3.9
       Timeout: 300
