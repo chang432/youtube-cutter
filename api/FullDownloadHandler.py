@@ -92,13 +92,13 @@ class FullDownloadHandler(Resource):
         s3_client.download_file(bucket_name, metrics_file_key, downloaded_file_path)
 
         with open(downloaded_file_path, 'a') as file:
-          file.write(f'[FULL]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title}\n')
+          file.write(f'[FULL]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title.replace("\n","")}\n')
       except ClientError as e:
         if e.response['Error']['Code'] == "404":
           # The key does not exist
           print(f"[CUSTOM] metric file not found, creating new one")
           with open(downloaded_file_path, 'w') as file:
-            file.write(f'[FULL]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title}\n')
+            file.write(f'[FULL]-[{file_extension}]-[{curr_time.strftime("%d-%H:%M")}]-{yt_title.replace("\n","")}\n')
       
       s3_client.upload_file(downloaded_file_path, bucket_name, metrics_file_key)
 
