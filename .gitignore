@@ -1,4 +1,5 @@
 venv*
+staging
 .DS_Store
 log.txt
 lambda_log.txt
