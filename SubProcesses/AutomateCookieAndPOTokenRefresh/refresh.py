@@ -1,6 +1,6 @@
 import boto3
 
-PO_TOKEN = "..." # CHANGE THIS
+PO_TOKEN = "MluQ1eStiCwOyZDtE3ZR1fVDsh3c65b87hW-LArIRFTZ6kEXSEHc6-VQBtmcojODjZnqZfAswBxeHFu3HkNwPMf23ywBjdErAX4tdNjy-MkUOmkMJ4t-UVnyrMlY" # CHANGE THIS
 
 # Upload PO_TOKEN to SSM
 ssm = boto3.client("ssm")
@@ -16,5 +16,5 @@ ssm.put_parameter(
 # Upload cookie to S3
 s3 = boto3.client("s3")
 
-cookie_file_path = "staging/test.txt"
-s3.upload_file(cookie_file_path, "youtube-cutter-private-prod", "youtube-credentials/cookies_test.txt")
+cookie_file_path = "staging/cookies.txt"
+s3.upload_file(cookie_file_path, "youtube-cutter-private-prod", "youtube-credentials/cookies.txt")

@@ -10,7 +10,7 @@ import { WaveSpinner } from "react-spinners-kit";
 import PremiumServices from "./components/PremiumServices";
 import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
 import PremiumDialog from "./components/PremiumDialog";
-import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
+// import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -116,8 +116,8 @@ function App() {
         if (developMode) {
             setDisplaySearchUI(false);
             setFileName("bmf")
-            setAudioSrc(testAudioFile);
-            setOrigAudioSrc(testAudioFile);
+            // setAudioSrc(testAudioFile);
+            // setOrigAudioSrc(testAudioFile);
             setDisplayCutterUI(true);
         }
     }, []);
