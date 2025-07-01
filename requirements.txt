@@ -63,6 +63,6 @@ typing_extensions==4.12.2
 urllib3==2.4.0
 websockets==15.0.1
 Werkzeug==2.3.3
-yt-dlp @ https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz#sha256=c5a49a855bf1e78c755b23ec081eca9795c810d93349a89782139e4b56e9ccf6
+yt-dlp==2025.6.30
 zappa==0.56.1
 zipp==3.15.0
