@@ -4,12 +4,13 @@ from datetime import datetime
 from YtdlpHandler import YtdlpHandler
 import subprocess
 import os
+import shutil
 import re
 import time
 
 DOWNLOAD_LIMIT = 2  # In hours
 
-AUDIO_PATH="/opt/audio"
+AUDIO_PATH="/audio"
 
 LOCAL_METRICS_PATH = "/tmp/metrics.txt"
 
@@ -52,7 +53,7 @@ class FullDownloadHandler(Resource):
     destination_filename = yt_object.yt_dlp_request(True)['destfilename']
 
     new_file = f"{AUDIO_PATH}/{yt_id}.m4a"
-    os.rename(destination_filename, new_file)
+    shutil.move(destination_filename, new_file)
 
     if not is_cut:
       ffmpeg_exec = "/opt/bin/ffmpeg" # deployment

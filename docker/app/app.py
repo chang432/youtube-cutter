@@ -5,4 +5,4 @@ from FullDownloadHandler import FullDownloadHandler
 app = Flask(__name__)
 
 api = Api(app)
-api.add_resource(FullDownloadHandler, "/handle_full")
+api.add_resource(FullDownloadHandler, "/handle_yt")

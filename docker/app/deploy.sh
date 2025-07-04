@@ -3,6 +3,7 @@ apt update
 apt install -y vim
 apt install -y curl
 apt install -y xz-utils
+apt-get -o DPkg::Options::="--force-confnew" -y install nginx
 
 mkdir /opt/audio
 
@@ -18,7 +19,6 @@ mv "${FFMPEG_PKG_NAME}/bin/ffmpeg" "/opt/bin/"
 
 rm -rf ${FFMPEG_PKG_NAME}
 rm -f "${FFMPEG_PKG_NAME}.tar.xz"
-
 
 # Start server
 gunicorn -w 4 -b 0.0.0.0:8000 wsgi:app

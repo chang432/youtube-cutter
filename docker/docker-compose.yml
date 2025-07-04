@@ -1,0 +1,28 @@
+services:
+  flask:
+    build: .
+    expose:
+      - "8000"
+    volumes:
+      - ~/.aws:/root/.aws
+      - shared:/audio
+    networks:
+      - appnet
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - shared:/audio
+    depends_on:
+      - flask
+    networks:
+      - appnet
+
+volumes:
+  shared:
+
+networks:
+  appnet:
