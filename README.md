@@ -82,6 +82,11 @@ Expiration handler workflow
 1. A daily eventbridge rule will trigger a lambda that will scan all entries in the db for any rows that have a timestamp older than 31 days compared to the current date.
 2. The lambda will delete any rows that fit this criteria and email the user that their access is revoked as they have not continued with the subscription.
 
+
+## Docker project
+docker/**
+Files to get backend built as docker images
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
