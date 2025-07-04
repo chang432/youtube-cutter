@@ -6,5 +6,3 @@ app = Flask(__name__)
 
 api = Api(app)
 api.add_resource(FullDownloadHandler, "/handle_full")
-
-app.run(host="0.0.0.0", port=5001)
