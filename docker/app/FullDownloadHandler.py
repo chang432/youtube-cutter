@@ -28,14 +28,14 @@ def sanitize(title: str):
 class FullDownloadHandler(Resource):
   def post(self):
     start_time = time.time()
-    print("[CUSTOM] STARTING FullDownloadHandler.py")
+    print("[CUSTOM] STARTING FullDownloadHandler.py", flush=True)
 
     data = request.get_json()
     yt_id = data.get('yt_id')
     is_cut = data.get('is_cut')
     download_mp3 = data.get('download_mp3')
 
-    print(f"[CUSTOM] yt_id is {yt_id}, is_cut is {is_cut}")
+    print(f"[CUSTOM] yt_id is {yt_id}, is_cut is {is_cut}", flush=True)
 
     url = "https://youtube.com/watch?v=" + yt_id
     yt_object = YtdlpHandler(url)
@@ -44,7 +44,7 @@ class FullDownloadHandler(Resource):
 
     # set a limit on video length for cuts
     duration_hours = yt_info["duration"] / 3600
-    print(f"duration in hours is {duration_hours}")
+    print(f"duration in hours is {duration_hours}", flush=True)
     if duration_hours > DOWNLOAD_LIMIT:
       return {"error": "true", "message": f"this video is over the limit of {DOWNLOAD_LIMIT} hours"}
 
@@ -63,14 +63,14 @@ class FullDownloadHandler(Resource):
       else:
         converted_file = f"{AUDIO_PATH}/{yt_id}.wav"
 
-      print(download_mp3, converted_file)
+      print(f"{download_mp3}, {converted_file}", flush=True)
       ffmpeg_command = f'{ffmpeg_exec} -loglevel error -i "{new_file}" -write_xing 0 -y "{converted_file}"'
 
       try:
         subprocess.check_output(ffmpeg_command, shell=True)
-        print(f'[CUSTOM] File successfully converted to {converted_file}')
+        print(f'[CUSTOM] File successfully converted to {converted_file}', flush=True)
       except Exception as e:
-        print(f"[CUSTOM] Error occurred while converting to {converted_file}: {e}")
+        print(f"[CUSTOM] Error occurred while converting to {converted_file}: {e}", flush=True)
 
       os.remove(new_file)
       new_file = converted_file
@@ -81,7 +81,7 @@ class FullDownloadHandler(Resource):
     
     os.rename(new_file, output_file)
 
-    print(f"[CUSTOM] download from youtube complete of {output_file}!")
+    print(f"[CUSTOM] download from youtube complete of {output_file}!", flush=True)
 
-    print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds")
+    print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds", flush=True)
     return {"error": "false", "title": yt_title}

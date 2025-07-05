@@ -11,10 +11,10 @@ class YtdlpHandler:
         ssm_client = boto3.client("ssm")
 
         self.url = url
-        self.po_token = ssm_client.get_parameter(Name="youtube-cutter-dev-po-token")
+        self.po_token = ssm_client.get_parameter(Name="youtube-cutter-prod-po-token")
         
         # Need to move cookies to tmp folder because that is the only area that is non read only for lambdas
-        s3_client.download_file("youtube-cutter-private-dev", "youtube-credentials/cookies.txt", "/tmp/cookies.txt")
+        s3_client.download_file("youtube-cutter-private-prod", "youtube-credentials/cookies.txt", "/tmp/cookies.txt")
 
     def yt_dlp_monitor(self, d):
         YtdlpHandler.destination  = d.get('info_dict').get('_filename')
