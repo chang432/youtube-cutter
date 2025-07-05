@@ -4,6 +4,7 @@ boto3==1.39.1
 botocore==1.39.1
 click==8.2.1
 Flask==3.1.1
+Flask-Cors==3.0.10
 Flask-RESTful==0.3.10
 gunicorn==23.0.0
 itsdangerous==2.2.0

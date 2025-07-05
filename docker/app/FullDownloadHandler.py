@@ -8,6 +8,8 @@ import shutil
 import re
 import time
 
+HETZNER_VPS_IP = "178.156.164.80"
+
 DOWNLOAD_LIMIT = 2  # In hours
 
 AUDIO_PATH="/audio"
@@ -75,13 +77,16 @@ class FullDownloadHandler(Resource):
       os.remove(new_file)
       new_file = converted_file
 
-    output_file = f"{AUDIO_PATH}/{yt_title}.m4a"
+    output_file_name = f"{yt_title}.m4a"
     if not is_cut:
-      output_file = f"{AUDIO_PATH}/{yt_title}.mp3" if download_mp3 else f"{AUDIO_PATH}/{yt_title}.wav"
+      output_file_name = f"{yt_title}.mp3" if download_mp3 else f"{yt_title}.wav"
     
-    os.rename(new_file, output_file)
+    os.rename(new_file, f"{AUDIO_PATH}/{output_file_name}")
 
-    print(f"[CUSTOM] download from youtube complete of {output_file}!", flush=True)
+    print(f"[CUSTOM] download from youtube complete of {output_file_name}!", flush=True)
+
+    location = f"http://{HETZNER_VPS_IP}/audio/{output_file_name}"
 
     print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds", flush=True)
-    return {"error": "false", "title": yt_title}
+    print(f"Type: location -> {type(location)}, yt_title -> {type(yt_title)}", flush=True)
+    return jsonify({"error": "false", "url": location, "title": yt_title})

@@ -1,5 +1,5 @@
-from flask_restful import Api, Resource, reqparse
-from flask import Flask, render_template, send_file, request
+from flask_restful import Resource
+from flask import jsonify, request
 import os
 
 class CleanupHandler(Resource):
@@ -25,4 +25,4 @@ class CleanupHandler(Resource):
     
     print("[CUSTOM] CleanupHandler.py COMPLETE", flush=True)
 
-    return {"status": "done"}
+    return jsonify({"status": "done"})
