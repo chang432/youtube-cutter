@@ -19,5 +19,5 @@ if [[ -d "/mnt/${PARTITION_NAME}" && $(docker ps -q | wc -l) == 0 ]]; then
     docker-compose up -d
 
     echo "containers started up successfully, turning off cron..."
-    crontab -l 2>/dev/null | sed '/cloud-start.sh/ s/^/#/' | crontab -
+    crontab -l 2>/dev/null | sed '/cloud_start.sh/ s/^/#/' | crontab -
 fi
