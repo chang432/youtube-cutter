@@ -18,6 +18,6 @@ runcmd:
   - chmod +x /opt/docker/start.sh
   - (crontab -l 2>/dev/null; echo "*/1 * * * * /opt/docker/start.sh >> /var/log/start.log 2>&1") | crontab -
   - chmod +x /opt/docker/cleanup.sh
-  - (crontab -l; echo "*/10 * * * * /opt/docker/cleanup.sh >> /var/log/cleanup.log 2>&1") | crontab -
-  - (crontab -l; echo "0 0 * * * echo "" > /var/log/cleanup.log") | crontab -
+  - (crontab -l; echo "*/10 * * * * /opt/docker/cleanup.sh >> /var/log/cleanup.log 2>&1") | crontab -  
+  - (crontab -l; echo "0 0 * * * echo "" > /var/log/cleanup.log") | crontab -     # Refresh cleanup.log daily
   
