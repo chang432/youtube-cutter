@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Script made to run on cron to clean up any audio files older than X minutes
 
 AUDIO_PATH="/audio"

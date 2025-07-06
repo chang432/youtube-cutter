@@ -5,7 +5,7 @@ services:
       - "8000"
     volumes:
       - ~/.aws:/root/.aws
-      - shared:/audio
+      - /audio:/audio
     networks:
       - appnet
 
@@ -15,14 +15,11 @@ services:
       - "80:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - shared:/audio
+      - /audio:/audio
     depends_on:
       - flask
     networks:
       - appnet
-
-volumes:
-  shared:
 
 networks:
   appnet:

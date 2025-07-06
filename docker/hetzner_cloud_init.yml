@@ -8,6 +8,7 @@ runcmd:
   - apt install -y docker-compose
 
   - echo "[CHECKPOINT]"
+  - mkdir -p /audio
   - cd /opt
   - git clone https://github.com/chang432/youtube-cutter.git
   - mv youtube-cutter/docker ./
