@@ -1,0 +1,19 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+runcmd:
+  # install required packages
+  - apt install -y docker.io
+  - apt install -y docker-compose
+
+  - echo "[CHECKPOINT]"
+  - cd /opt
+  - git clone https://github.com/chang432/youtube-cutter.git
+  - mv youtube-cutter/docker ./
+  - rm -rf youtube-cutter
+
+  - chmod +x /opt/docker/start.sh
+  - (crontab -l 2>/dev/null; echo "*/3 * * * * /opt/docker/start.sh >> /var/log/start.log 2>&1") | crontab -
+  
+  - reboot

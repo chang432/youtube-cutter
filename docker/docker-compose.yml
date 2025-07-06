@@ -4,7 +4,7 @@ services:
     expose:
       - "8000"
     volumes:
-      - /mnt/HC_Volume_102861833/.aws:/root/.aws
+      - ~/.aws:/root/.aws
       - shared:/audio
     networks:
       - appnet
