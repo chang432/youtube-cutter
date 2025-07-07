@@ -8,13 +8,19 @@ import shutil
 import re
 import time
 
-HETZNER_VPS_IP = "178.156.164.80"
+HOST_ENDPOINT = os.getenv("HOST_ENDPOINT") 
 
 DOWNLOAD_LIMIT = 2  # In hours
 
 AUDIO_PATH="/audio"
 
 LOCAL_METRICS_PATH = "/tmp/metrics.txt"
+
+APP_ENV = os.getenv("APP_ENV")
+
+FFMPEG_EXEC = "/opt/bin/ffmpeg"
+if APP_ENV == 'local':
+  FFMPEG_EXEC = "/home/bin/ffmpeg"
 
 def sanitize(title: str):
     title = re.sub(r'[^\x00-\x7f]',r'', title)
@@ -57,16 +63,14 @@ class FullDownloadHandler(Resource):
     new_file = f"{AUDIO_PATH}/{yt_id}.m4a"
     shutil.move(destination_filename, new_file)
 
-    if not is_cut:
-      ffmpeg_exec = "/opt/bin/ffmpeg" # deployment
-      
+    if not is_cut:      
       if download_mp3:
         converted_file = f"{AUDIO_PATH}/{yt_id}.mp3"
       else:
         converted_file = f"{AUDIO_PATH}/{yt_id}.wav"
 
       print(f"{download_mp3}, {converted_file}", flush=True)
-      ffmpeg_command = f'{ffmpeg_exec} -loglevel error -i "{new_file}" -write_xing 0 -y "{converted_file}"'
+      ffmpeg_command = f'{FFMPEG_EXEC} -loglevel error -i "{new_file}" -write_xing 0 -y "{converted_file}"'
 
       try:
         subprocess.check_output(ffmpeg_command, shell=True)
@@ -85,8 +89,7 @@ class FullDownloadHandler(Resource):
 
     print(f"[CUSTOM] download from youtube complete of {output_file_name}!", flush=True)
 
-    location = f"http://{HETZNER_VPS_IP}/audio/{output_file_name}"
+    location = f"http://{HOST_ENDPOINT}/audio/{output_file_name}"
 
     print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds", flush=True)
-    print(f"Type: location -> {type(location)}, yt_title -> {type(yt_title)}", flush=True)
     return jsonify({"error": "false", "url": location, "title": yt_title})

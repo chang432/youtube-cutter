@@ -2,7 +2,11 @@
 
 # Hetzner vps startup cron script
 
-PARTITION_NAME="HC_Volume_102861833"
+# Variables used in docker-compose.yml
+export HOST_ENDPOINT="XXX.XXX.XXX.XX" # CHANGEME
+export APP_ENV="remote"
+
+PARTITION_NAME="HC_Volume_102861833" 
 
 if [[ ! -d "/mnt/${PARTITION_NAME}" ]]; then
     echo "External volume not detected, attempting to mount"
@@ -13,11 +17,14 @@ fi
 if [[ -d "/mnt/${PARTITION_NAME}" && $(docker ps -q | wc -l) == 0 ]]; then
     echo "External volume detected and containers are not running yet, starting up now!"
     
+    
+
     cp -r "/mnt/${PARTITION_NAME}/.aws" ~/.aws
     cd /opt/docker
+    docker-compose down
     docker-compose build
     docker-compose up -d
 
     echo "containers started up successfully, turning off cron..."
-    crontab -l 2>/dev/null | sed '/cloud_start.sh/ s/^/#/' | crontab -
+    crontab -l 2>/dev/null | sed '/start_cloud.sh/ s/^/#/' | crontab -
 fi

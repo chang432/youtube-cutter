@@ -5,7 +5,11 @@ services:
       - "8000"
     volumes:
       - ~/.aws:/root/.aws
-      - /audio:/audio
+      - ${AUDIO_HOST_PATH:-/audio}:/audio
+      - ${FFMPEG_HOST_PATH:-/tmp}:/home/bin   # Only for local deployment. If remote, then just attach tmp (useless)
+    environment:
+      - APP_ENV=${APP_ENV}
+      - HOST_ENDPOINT=${HOST_ENDPOINT:-127.0.0.1}
     networks:
       - appnet
 
@@ -15,7 +19,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - /audio:/audio
+      - ${AUDIO_HOST_PATH:-/audio}:/audio
     depends_on:
       - flask
     networks:
