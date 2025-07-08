@@ -3,12 +3,20 @@ package_update: true
 package_upgrade: true
 
 runcmd:
-  - HOST_ENDPOINT="XXX.XXX.XXX.XX" # CHANGEME
+  - HOST_ENDPOINT=$(curl https://api.ipify.org)
   - echo "HOST_ENDPOINT=${HOST_ENDPOINT}" > /etc/environment
 
   # install required packages
   - apt install -y docker.io
   - apt install -y docker-compose
+  - apt install -y unzip
+
+  - echo "[CUSTOM] Pulling down aws cli"
+  - curl -o "awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+  - unzip awscliv2.zip
+  - ./aws/install
+  - rm -rf awscliv2.zip
+  - rm -rf aws
 
   - echo "[CHECKPOINT]"
   - mkdir -p /audio
@@ -16,7 +24,6 @@ runcmd:
   - git clone https://github.com/chang432/youtube-cutter.git
   - mv youtube-cutter/docker ./
   - rm -rf youtube-cutter
-  - sed -i "s|http://127.0.0.1:5000|https://wav.ninja|" ./docker/nginx/default.conf  # PROD ONLY
 
   - reboot
 

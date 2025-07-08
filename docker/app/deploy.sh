@@ -4,7 +4,6 @@
 apt update
 apt install -y vim
 apt install -y curl
-# apt-get -o DPkg::Options::="--force-confnew" -y install nginx
 
 # Start server
 gunicorn -w 4 -b 0.0.0.0:8000 wsgi:app
