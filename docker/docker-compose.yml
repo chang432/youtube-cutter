@@ -6,7 +6,7 @@ services:
     volumes:
       - ~/.aws:/root/.aws
       - ${AUDIO_HOST_PATH:-/audio}:/audio
-      - ${FFMPEG_HOST_PATH:-/tmp}:/home/bin   # Only for local deployment. If remote, then just attach tmp (useless)
+      - ${FFMPEG_HOST_PATH}:/opt/bin   # Only for local deployment. If remote, then just attach tmp (useless)
     environment:
       - APP_ENV=${APP_ENV}
       - HOST_ENDPOINT=${HOST_ENDPOINT:-127.0.0.1}

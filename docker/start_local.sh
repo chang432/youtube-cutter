@@ -21,19 +21,11 @@ fi
 
 if [[ ! -f "${FFMPEG_HOST_PATH}/ffmpeg" ]]; then
     # Pull down ffmpeg executable (only once)
-    echo "${FFMPEG_HOST_PATH}/ffmpeg does not exist, pulling down..."
+    # Source location: https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-arm64-static.tar.xz
+    echo "${FFMPEG_HOST_PATH}/ffmpeg does not exist, pulling down from s3..."
 
-    FFMPEG_PKG_NAME="ffmpeg-git-arm64-static.tar.xz"
-    curl -L -o "${FFMPEG_HOST_PATH}/${FFMPEG_PKG_NAME}.tar.xz" https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-arm64-static.tar.xz
-    # the below one only works with x86 architecture and i'm using M1 Mac which is amd64 :(
-    # curl -L -o "${FFMPEG_HOST_PATH}/${FFMPEG_PKG_NAME}.tar.xz" https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
-
-    tar -xf "${FFMPEG_HOST_PATH}/${FFMPEG_PKG_NAME}.tar.xz"
-
-    mv "${FFMPEG_HOST_PATH}/${FFMPEG_PKG_NAME}/ffmpeg" "${FFMPEG_HOST_PATH}/"
-
-    rm -rf "${FFMPEG_HOST_PATH}/${FFMPEG_PKG_NAME}"
-    rm -f "${FFMPEG_HOST_PATH}/${FFMPEG_PKG_NAME}.tar.xz"
+    aws s3 cp "s3://youtube-cutter-hetzner-vps/ffmpeg-git-arm64-static/ffmpeg" "$FFMPEG_HOST_PATH/"
+    chmod +x "${FFMPEG_HOST_PATH}/ffmpeg"
 fi
 
 docker-compose down

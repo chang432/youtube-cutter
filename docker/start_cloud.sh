@@ -4,6 +4,7 @@
 
 # Variables used in docker-compose.yml
 export APP_ENV="remote"
+export FFMPEG_HOST_PATH="/opt/bin"
 
 PARTITION_NAME="HC_Volume_102861833" 
 
@@ -18,13 +19,13 @@ if [[ -d "/mnt/${PARTITION_NAME}" && $(docker ps -q | wc -l) == 0 ]]; then
     
     cp -r "/mnt/${PARTITION_NAME}/.aws" ~/.aws
 
-    if [[ ! -f "/opt/bin/ffmpeg" ]]; then
+    if [[ ! -f "${FFMPEG_HOST_PATH}/ffmpeg" ]]; then
         # Pull down ffmpeg executable
         # Source location: https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
         echo "Pulling down ffmpeg executable"
 
-        aws s3 cp "s3://youtube-cutter-hetzner-vps/ffmpeg-master-latest-linux64-gpl/ffmpeg" "/opt/bin/"
-        chmod +x "/opt/bin/ffmpeg"
+        aws s3 cp "s3://youtube-cutter-hetzner-vps/ffmpeg-master-latest-linux64-gpl/ffmpeg" "${FFMPEG_HOST_PATH}/"
+        chmod +x "${FFMPEG_HOST_PATH}/ffmpeg"
     fi
 
     cd /opt/docker

@@ -19,8 +19,6 @@ LOCAL_METRICS_PATH = "/tmp/metrics.txt"
 APP_ENV = os.getenv("APP_ENV")
 
 FFMPEG_EXEC = "/opt/bin/ffmpeg"
-if APP_ENV == 'local':
-  FFMPEG_EXEC = "/home/bin/ffmpeg"
 
 def sanitize(title: str):
     title = re.sub(r'[^\x00-\x7f]',r'', title)
