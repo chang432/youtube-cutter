@@ -10,6 +10,8 @@ To run containers on Hetzner VPS:
 
 - Use Ubuntu image, make sure volume with aws credentials is attached, and paste code from hetzner_cloud_init.yml into the Cloud Config block
 
+- After server has started, go to floating ips and attach the wav-ninja named ip to the instance
+
 - Wait a while for the setup to finish (startup logs are in /var/log/cloud-init-output.log and /var/log/start.log)
 
 
