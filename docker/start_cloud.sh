@@ -24,6 +24,7 @@ if [[ -d "/mnt/${PARTITION_NAME}" && $(docker ps -q | wc -l) == 0 ]]; then
         echo "Pulling down ffmpeg executable"
 
         aws s3 cp "s3://youtube-cutter-hetzner-vps/ffmpeg-master-latest-linux64-gpl/ffmpeg" "/opt/bin/"
+        chmod +x "/opt/bin/ffmpeg"
     fi
 
     cd /opt/docker
