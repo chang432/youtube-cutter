@@ -21,3 +21,10 @@ To restart containers on an existing VPS:
 - open cron ("crontab -e") and uncomment out the cron job running start_cloud.sh
 
 - wait for the startup script to run (the cron job disable itself automatically after startup is done)
+
+
+=====================
+General:
+- If floating public ip changes, update the following regions:
+-- frontend/src/App.jsx
+-- docker/start_cloud.sh
