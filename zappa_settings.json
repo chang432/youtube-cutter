@@ -15,7 +15,8 @@
             "src",
             "static",
             "binaries",
-            "SubProcesses"
+            "SubProcesses",
+            "docker"
         ],
         "exclude_glob": [
             "boto3*",
@@ -54,7 +55,8 @@
             "src",
             "static",
             "binaries",
-            "SubProcesses"
+            "SubProcesses",
+            "docker"
         ],
         "exclude_glob": [
             "boto3*",
