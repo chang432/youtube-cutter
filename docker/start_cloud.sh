@@ -16,9 +16,16 @@ fi
 if [[ -d "/mnt/${PARTITION_NAME}" && $(docker ps -q | wc -l) == 0 ]]; then
     echo "External volume detected and containers are not running yet, starting up now!"
     
-    
-
     cp -r "/mnt/${PARTITION_NAME}/.aws" ~/.aws
+
+    if [[ ! -f "/opt/bin/ffmpeg" ]]; then
+        # Pull down ffmpeg executable
+        # Source location: https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
+        echo "Pulling down ffmpeg executable"
+
+        aws s3 cp "s3://youtube-cutter-hetzner-vps/ffmpeg-master-latest-linux64-gpl/ffmpeg" "/opt/bin/"
+    fi
+
     cd /opt/docker
     docker-compose down
     docker-compose build
