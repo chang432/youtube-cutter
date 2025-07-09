@@ -1,0 +1,8 @@
+FROM nginx:stable
+
+WORKDIR /opt
+
+COPY nginx ./
+
+CMD [ "tail", "-f", "/dev/null" ]
+# CMD [ "bash", "deploy.sh" ]

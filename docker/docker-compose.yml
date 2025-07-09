@@ -1,6 +1,8 @@
 services:
   flask:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.app
     expose:
       - "8000"
     volumes:
@@ -14,11 +16,13 @@ services:
       - appnet
 
   nginx:
-    image: nginx:alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      # - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ${AUDIO_HOST_PATH:-/audio}:/audio
     depends_on:
       - flask
