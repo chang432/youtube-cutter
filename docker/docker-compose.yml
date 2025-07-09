@@ -11,7 +11,7 @@ services:
       - ${FFMPEG_HOST_PATH:-/tmp}:/opt/bin   # Only for local deployment. If remote, then just attach tmp (useless)
     environment:
       - APP_ENV=${APP_ENV}
-      - HOST_ENDPOINT=${HOST_ENDPOINT:-127.0.0.1}
+      - HOST_ENDPOINT=${HOST_ENDPOINT:-"wav-helper.com"}
     networks:
       - appnet
 

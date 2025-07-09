@@ -485,7 +485,7 @@ function App() {
             setTimeout(() => {
                 axios.post(
                     // "http://127.0.0.1/cleanup",
-                    "http://5.161.21.191/cleanup",
+                    "https://wav-helper.com/cleanup",
                     {
                         yt_title: title
                     },
@@ -519,7 +519,7 @@ function App() {
 
         axios({
             // url: "http://127.0.0.1/handle_yt",
-            url: "http://5.161.21.191/handle_yt",
+            url: "https://wav-helper.com/handle_yt",
             method: "post",
             responseType: "json",
             data: {

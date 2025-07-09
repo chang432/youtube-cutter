@@ -3,9 +3,6 @@ package_update: true
 package_upgrade: true
 
 runcmd:
-  - HOST_ENDPOINT=$(curl https://api.ipify.org)
-  - echo "HOST_ENDPOINT=${HOST_ENDPOINT}" > /etc/environment
-
   # install required packages
   - apt install -y docker.io
   - apt install -y docker-compose
