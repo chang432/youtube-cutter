@@ -4,5 +4,5 @@ WORKDIR /opt
 
 COPY nginx ./
 
-CMD [ "tail", "-f", "/dev/null" ]
-# CMD [ "bash", "deploy.sh" ]
+# CMD [ "tail", "-f", "/dev/null" ]
+CMD [ "nginx" ]
