@@ -8,4 +8,6 @@ cp ./default.conf /etc/nginx/conf.d/default.conf
 
 certbot install --cert-name wav-helper.com
 
+nginx -s stop
+
 nginx -g "daemon off;"

@@ -4,8 +4,6 @@ WORKDIR /opt
 
 COPY nginx ./
 
-COPY /opt/letsencrypt /etc/letsencrypt
+COPY letsencrypt /etc/letsencrypt
 
-# CMD [ "tail", "-f", "/dev/null" ]
-# CMD [ "nginx", "-g", "daemon off;"]
 CMD [ "bash", "deploy.sh" ]

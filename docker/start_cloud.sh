@@ -25,7 +25,7 @@ if [[ -d "/mnt/${PARTITION_NAME}" && $(docker ps -q | wc -l) == 0 ]] && ip addr 
     
     cp -r "/mnt/${PARTITION_NAME}/.aws" ~/.aws
 
-    cp -r "/mnt/${PARTITION_NAME}/letsencrypt" /opt/letsencrypt
+    cp -r "/mnt/${PARTITION_NAME}/letsencrypt" /opt/docker/letsencrypt
 
     if [[ ! -f "${FFMPEG_HOST_PATH}/ffmpeg" ]]; then
         # Pull down ffmpeg executable
