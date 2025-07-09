@@ -6,6 +6,6 @@ apt install -y certbot python3-certbot-nginx
 
 cp ./default.conf /etc/nginx/conf.d/default.conf
 
-nginx
+certbot install --cert-name wav-helper.com
 
-certbot --nginx -d wav-helper.com
+nginx -g "daemon off;"

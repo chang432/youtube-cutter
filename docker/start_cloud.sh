@@ -25,6 +25,8 @@ if [[ -d "/mnt/${PARTITION_NAME}" && $(docker ps -q | wc -l) == 0 ]] && ip addr 
     
     cp -r "/mnt/${PARTITION_NAME}/.aws" ~/.aws
 
+    cp -r "/mnt/${PARTITION_NAME}/letsencrypt" /opt/letsencrypt
+
     if [[ ! -f "${FFMPEG_HOST_PATH}/ffmpeg" ]]; then
         # Pull down ffmpeg executable
         # Source location: https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
