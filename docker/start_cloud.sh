@@ -5,6 +5,7 @@
 # Variables used in docker-compose.yml
 export APP_ENV="remote"
 export FFMPEG_HOST_PATH="/opt/bin"
+export LETSENCRYPT_HOST_PATH="./letsencrypt"
 
 PARTITION_NAME="HC_Volume_102861833" 
 FLOATING_IP="5.161.21.191"

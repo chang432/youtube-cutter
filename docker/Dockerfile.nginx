@@ -2,8 +2,6 @@ FROM nginx:stable
 
 WORKDIR /opt
 
-COPY nginx ./
-
-COPY letsencrypt /etc/letsencrypt
+COPY nginx/deploy.sh ./
 
 CMD [ "bash", "deploy.sh" ]
