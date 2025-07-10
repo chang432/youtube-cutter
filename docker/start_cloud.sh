@@ -10,6 +10,11 @@ export LETSENCRYPT_HOST_PATH="./letsencrypt"
 PARTITION_NAME="HC_Volume_102861833" 
 FLOATING_IP="5.161.21.191"
 
+if [[ ! -e "/dev/disk/by-id/scsi-0${PARTITION_NAME}" ]]; then
+    echo "Required external volume not attached, waiting..."
+    exit 0 
+fi
+
 if [[ ! -d "/mnt/${PARTITION_NAME}" ]]; then
     echo "External volume not detected, attempting to mount"
     mkdir -p "/mnt/${PARTITION_NAME}"
