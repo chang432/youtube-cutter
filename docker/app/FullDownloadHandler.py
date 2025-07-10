@@ -87,7 +87,7 @@ class FullDownloadHandler(Resource):
 
     print(f"[CUSTOM] download from youtube complete of {output_file_name}!", flush=True)
 
-    location = f"https://{HOST_ENDPOINT}/audio/{output_file_name}"
+    location = f"{HOST_ENDPOINT}/audio/{output_file_name}"
 
     print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds", flush=True)
     return jsonify({"error": "false", "url": location, "title": yt_title})
