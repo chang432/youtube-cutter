@@ -6,4 +6,6 @@ apt update
 
 apt install -y certbot python3-certbot-nginx
 
+cp /opt/nginx.conf /etc/nginx/nginx.conf
+
 nginx -g "daemon off;"
