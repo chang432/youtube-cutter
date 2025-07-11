@@ -1,6 +1,6 @@
 import boto3
 
-PO_TOKEN = "Mls0KbfTEyFBcjQR5fJ2FCIDHLwnEu4oTkho_SHoxQ5BD0q4Ai0IkfAUDTwrDwyBDZjjbnduXIGbA1hJw84LHPXGPG3WMJfuhiJwgHb3Wci-PaDy1Tyt16oTm8Ur" # CHANGE THIS
+PO_TOKEN = "MluNKJhkuNzcsY0QJO6eQI8rdiGnB_rWr4h8sCXgH-Ug13sKeFYWNl48_H-JrR33twDnFyq0oweB0oHiJ3gv3AX_5gI49CIpQxgFh9a_bR1NxZQFIH28aZnH9YJ9" # CHANGE THIS
 
 # Upload PO_TOKEN to SSM
 ssm = boto3.client("ssm")

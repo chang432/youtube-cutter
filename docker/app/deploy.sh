@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec > >(tee -a /var/log/container-flask/container-flask.log) 2>&1
+
 # Download dependencies
 apt update
 apt install -y vim

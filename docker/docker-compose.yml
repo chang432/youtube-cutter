@@ -9,6 +9,7 @@ services:
       - ~/.aws:/root/.aws
       - ${AUDIO_HOST_PATH:-/audio}:/audio
       - ${FFMPEG_HOST_PATH:-/tmp}:/opt/bin   # Only for local deployment. If remote, then just attach tmp (useless)
+      - ${PARTITION_PATH:-~/TEMP}/log/container-flask:/var/log/container-flask
     environment:
       - APP_ENV=${APP_ENV}
       - HOST_ENDPOINT=${HOST_ENDPOINT:-https://wav-helper.com}
@@ -26,6 +27,7 @@ services:
       - ${NGINX_HOST_CONFIG_PATH:-./nginx/default.cloud.conf}:/etc/nginx/conf.d/default.conf
       - ${LETSENCRYPT_HOST_PATH:-/tmp}:/etc/letsencrypt     # Only for cloud deployment.
       - ${AUDIO_HOST_PATH:-/audio}:/audio
+      - ${PARTITION_PATH:-~/TEMP}/log/container-nginx:/var/log/container-nginx
     depends_on:
       - flask
     networks:

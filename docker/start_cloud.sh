@@ -7,18 +7,20 @@ export APP_ENV="remote"
 export FFMPEG_HOST_PATH="/opt/bin"
 export LETSENCRYPT_HOST_PATH="./letsencrypt"
 
-PARTITION_NAME="HC_Volume_102861833" 
 FLOATING_IP="5.161.21.191"
+PARTITION_NAME="HC_Volume_102861833" 
+
+export PARTITION_PATH="/mnt/${PARTITION_NAME}"
 
 if [[ ! -e "/dev/disk/by-id/scsi-0${PARTITION_NAME}" ]]; then
     echo "Required external volume not attached, waiting..."
     exit 0 
 fi
 
-if [[ ! -d "/mnt/${PARTITION_NAME}" ]]; then
+if [[ ! -d "$PARTITION_PATH" ]]; then
     echo "External volume not detected, attempting to mount"
-    mkdir -p "/mnt/${PARTITION_NAME}"
-    mount -o discard,defaults "/dev/disk/by-id/scsi-0${PARTITION_NAME}" "/mnt/${PARTITION_NAME}"
+    mkdir -p "$PARTITION_PATH"
+    mount -o discard,defaults "/dev/disk/by-id/scsi-0${PARTITION_NAME}" "$PARTITION_PATH"
 fi
 
 if ! ip addr show dev eth0 | grep -q "$FLOATING_IP"; then
@@ -26,12 +28,12 @@ if ! ip addr show dev eth0 | grep -q "$FLOATING_IP"; then
     ip addr add "$FLOATING_IP" dev eth0
 fi
 
-if [[ -d "/mnt/${PARTITION_NAME}" && $(docker ps -q | wc -l) == 0 ]] && ip addr show dev eth0 | grep -q "$FLOATING_IP"; then
+if [[ -d "$PARTITION_PATH" && $(docker ps -q | wc -l) == 0 ]] && ip addr show dev eth0 | grep -q "$FLOATING_IP"; then
     echo "External volume detected, floating ip added, and containers are not running yet, starting up now!"
     
-    cp -r "/mnt/${PARTITION_NAME}/.aws" ~/.aws
+    cp -r "${PARTITION_PATH}/.aws" ~/.aws
 
-    cp -r "/mnt/${PARTITION_NAME}/letsencrypt" /opt/docker/letsencrypt
+    cp -r "${PARTITION_PATH}/letsencrypt" /opt/docker/letsencrypt
 
     if [[ ! -f "${FFMPEG_HOST_PATH}/ffmpeg" ]]; then
         # Pull down ffmpeg executable
