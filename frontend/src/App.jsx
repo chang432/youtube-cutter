@@ -642,6 +642,7 @@ function App() {
             />
             <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
+                <h1 className="text text-blue-600">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1>
                 <div className="flex flex-col justify-center items-center w-full" >
                     <button onClick={goHome} className="text-8xl mb-4">
                         wav.ninja

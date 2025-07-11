@@ -28,6 +28,5 @@ To restart containers on an existing VPS:
 =====================
 General:
 - If floating public ip changes, update the following regions:
--- frontend/src/App.jsx
 -- docker/start_cloud.sh
 -- A record for "wav-helper.com" hosted zone on aws
