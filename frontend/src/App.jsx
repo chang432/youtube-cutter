@@ -484,8 +484,8 @@ function App() {
         link.addEventListener("click", () => {
             setTimeout(() => {
                 axios.post(
-                    // "http://127.0.0.1/cleanup",
-                    "https://wav-helper.com/cleanup",
+                    "http://127.0.0.1/cleanup",
+                    // "https://wav-helper.com/cleanup",
                     {
                         yt_title: title
                     },
@@ -518,8 +518,8 @@ function App() {
         }
 
         axios({
-            // url: "http://127.0.0.1/handle_yt",
-            url: "https://wav-helper.com/handle_yt",
+            url: "http://127.0.0.1/handle_yt",
+            // url: "https://wav-helper.com/handle_yt",
             method: "post",
             responseType: "json",
             data: {
@@ -635,7 +635,7 @@ function App() {
             >
                 <FontAwesomeIcon icon={faCircleUp} className="fa-2xl" />
             </button>
-            <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1>
+            <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1>
             <ThemeSwitch
                 isDarkMode={isDarkMode}
                 setIsDarkMode={setIsDarkMode}
