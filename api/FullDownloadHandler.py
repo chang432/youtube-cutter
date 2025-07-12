@@ -9,7 +9,7 @@ import os
 import re
 import time
 
-DOWNLOAD_LIMIT = 2  # In hours
+DOWNLOAD_LIMIT = 1.5  # In hours
 
 BUCKET_NAME = "youtube-cutter-static-files-dev"
 

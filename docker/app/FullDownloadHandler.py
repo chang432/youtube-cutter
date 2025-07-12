@@ -10,7 +10,7 @@ import time
 
 HOST_ENDPOINT = os.getenv("HOST_ENDPOINT") 
 
-DOWNLOAD_LIMIT = 2  # In hours
+DOWNLOAD_LIMIT = 1.5  # In hours
 
 AUDIO_PATH="/audio"
 
