@@ -2,7 +2,7 @@ import os
 import traceback
 import boto3
 import requests
-# from api.DynamoDbHelper import DynamoDbHelper
+from api.DynamoDbHelper import DynamoDbHelper
 # from api.YtdlpHandler import YtdlpHandler
 
 sns = boto3.client('sns')
