@@ -22,6 +22,10 @@ for pdir in ${PARTITION_NAMES}; do
         mount -o discard,defaults "$cur_external_path" "$cur_local_path"
 
         PARTITION_PATH="$cur_local_path"
+
+        # set PARTITION_PATH as global env variable
+        echo "export PARTITION_PATH=${PARTITION_PATH}" > /opt/shared_env.sh
+        chmod +x /opt/shared_env.sh
         break
     fi
 done
