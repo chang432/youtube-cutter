@@ -2,28 +2,63 @@ import os
 import traceback
 import boto3
 import requests
-from api.DynamoDbHelper import DynamoDbHelper
-from api.YtdlpHandler import YtdlpHandler
+# from api.DynamoDbHelper import DynamoDbHelper
+# from api.YtdlpHandler import YtdlpHandler
 
 sns = boto3.client('sns')
 
-def check_pytube():
-    print("[MONITORING] Starting yt-dlp download test...")
-    
+def check_wav_helper():
+    print("[MONITORING] Starting wav helper test...")
     try:
-        url = "https://www.youtube.com/watch?v=oftolPu9qp4"
-        yt = YtdlpHandler(url)
-        destfilename = yt.yt_dlp_request(True)["destfilename"]
-        os.remove(destfilename)
-        print(f"[MONITORING] successfully tested download of {destfilename}")
+        wav_helper_url = "https://wav-helper.com"
+        yt_title = "hello_im_under_the_water.m4a"
+
+        # test handle_yt
+        handle_yt_data = {
+            "yt_id": "SfT4FMkh1-w",
+            "is_cut": "false",
+            "download_mp3": "true"
+        }
+
+        handle_yt_response = requests.post(f"{wav_helper_url}/handle_yt", json=handle_yt_data, verify=False)   
+
+        handle_yt_response_json = handle_yt_response.json()
+
+        if handle_yt_response_json["error"] == "true":
+            raise Exception(f"[ERROR]-[POST] {wav_helper_url}/handle_yt error on the server side...")
+        
+        get_audio_response = requests.get(f"{wav_helper_url}/audio/{yt_title}")
+        
+        if get_audio_response.status_code != 200:
+            raise Exception(f"[ERROR]-[GET] {wav_helper_url}/audio/{yt_title} error on the server side...")
     except:
-        print("[MONITORING] yt-dlp download test EXCEPTION OCCURRED!!!!!")
+        print("[MONITORING] check_wav_helper test EXCEPTION OCCURRED!!!!!")
         traceback.print_exc()
 
         sns.publish(
             TopicArn="arn:aws:sns:us-east-1:235154285215:wav-ninja-monitoring",
-            Message="WAV NINJA MONITORING FAILED FOR Yt-dlp TEST PLEASE LOOK INTO IT"
+            Message="WAV NINJA MONITORING FAILED FOR check_wav_helper TEST PLEASE LOOK INTO IT"
         )
+
+
+# def check_pytube():
+#     print("[MONITORING] Starting yt-dlp download test...")
+    
+#     try:
+#         url = "https://www.youtube.com/watch?v=oftolPu9qp4"
+#         yt = YtdlpHandler(url)
+#         destfilename = yt.yt_dlp_request(True)["destfilename"]
+#         os.remove(destfilename)
+#         print(f"[MONITORING] successfully tested download of {destfilename}")
+#     except:
+#         print("[MONITORING] yt-dlp download test EXCEPTION OCCURRED!!!!!")
+#         traceback.print_exc()
+
+#         sns.publish(
+#             TopicArn="arn:aws:sns:us-east-1:235154285215:wav-ninja-monitoring",
+#             Message="WAV NINJA MONITORING FAILED FOR Yt-dlp TEST PLEASE LOOK INTO IT"
+#         )
+
 
 def check_premium():
     webapp_url = "https://wav.ninja"      # Change url to this for dev //youtube-cutter-dev-703951066.us-east-1.elb.amazonaws.com
@@ -141,9 +176,11 @@ def check_ffmpeg_wasm_endpoints():
             Message="WAV NINJA MONITORING FAILED FOR testing ffmpeg wasm endpoint reachability... PLEASE LOOK INTO IT"
         )
 
+
 def handle(event, context):
     print("========== [MONITORING] Starting Execution ==========")
-    check_pytube()
+    # check_pytube()
+    check_wav_helper()
     check_premium()
     check_ffmpeg_wasm_endpoints()
     print("========== [MONITORING] Ending Execution ==========")
