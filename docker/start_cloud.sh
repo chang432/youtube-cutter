@@ -12,7 +12,7 @@ PARTITION_NAMES="HC_Volume_102861833 HC_Volume_102894653"
 
 export PARTITION_PATH=""
 
-for pdir in "$PARTITION_NAMES"; do
+for pdir in ${PARTITION_NAMES}; do
     cur_local_path="/mnt/${pdir}"
     cur_external_path="/dev/disk/by-id/scsi-0${pdir}"
 
