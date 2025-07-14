@@ -99,7 +99,7 @@ function App() {
 
     function convertYoutubeUrlToId(url) {
         const yt = url.match(
-            /(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)\/(?:watch\?v=|)([^\s&?]+)(?:[&\?]si=[^\s&]+)?/
+            /(?:https?:\/\/)?(?:www\.)?youtu(?:be)?\.(?:com|be)(?:\/live|)\/(?:watch\?v=|)([^\s&?]+)(?:[&\?]si=[^\s&]+)?/
         );
         let yt_id = yt[1];
 
