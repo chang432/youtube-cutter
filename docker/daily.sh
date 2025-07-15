@@ -28,7 +28,7 @@ fi
 # Update s3 metrics
 # Configurable variables
 S3_BUCKET="youtube-cutter-hetzner-vps"
-LOCAL_DIR="/var/log/metrics"
+LOCAL_DIR="${PARTITION_PATH}/log/metrics"
 YEAR=$(date +%Y)
 MONTH=$(date +%m)
 S3_FILE="${YEAR}_${MONTH}.log"
