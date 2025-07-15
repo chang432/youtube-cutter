@@ -38,7 +38,7 @@ def sanitize(title: str):
 is_mp3: ("MP3" or "WAV")
 is_cut: ("CUT" or "FULL")
 """
-def uploadMetrics(title, is_mp3, is_cut):
+def processMetrics(title, is_mp3, is_cut):
   # Collect metrics
   curr_time = datetime.now()
   # curr_month_year = str(curr_time.year)+"_"+str(curr_time.month)
@@ -123,7 +123,7 @@ class FullDownloadHandler(Resource):
 
     print(f"[CUSTOM] download from youtube complete of {output_file_name}!", flush=True)
 
-    uploadMetrics(yt_title, download_mp3, is_cut)
+    processMetrics(yt_title, download_mp3, is_cut)
 
     location = f"{HOST_ENDPOINT}/audio/{output_file_name}"
 
