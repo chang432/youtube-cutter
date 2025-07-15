@@ -16,8 +16,8 @@ for pdir in ${PARTITION_NAMES}; do
     cur_local_path="/mnt/${pdir}"
     cur_external_path="/dev/disk/by-id/scsi-0${pdir}"
 
-    if [[ -e "$cur_external_path" && ! -d "$cur_local_path" ]]; then
-        echo "[${pdir}] Required external volume attached and local partition path does not exist, attempting to mount..."
+    if [[ -e "$cur_external_path" ]]; then
+        echo "[${pdir}] Required external volume attached, attempting to mount..."
         mkdir -p "$cur_local_path"
         mount -o discard,defaults "$cur_external_path" "$cur_local_path"
 
