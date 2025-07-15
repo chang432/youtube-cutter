@@ -5,7 +5,6 @@ import WaveSurfer from "wavesurfer.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.js";
 import LoadingBar from "./components/LoadingBar";
 import Disclaimer from "./components/Disclaimer";
-import ThemeSwitch from "./components/ThemeSwitch";
 import { WaveSpinner } from "react-spinners-kit";
 import PremiumServices from "./components/PremiumServices";
 import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
@@ -35,7 +34,6 @@ function App() {
     const [waver, setWaver] = useState(null);
     const [waverRegion, setWaverRegion] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [isDarkMode, setIsDarkMode] = useState(false);
     const [thumbnailUrl, setThumbnailUrl] = useState("");
     const [audioFormat, setAudioFormat] = useState("MP3");
     const [showDisclaimer, setShowDisclaimer] = useState(false);
@@ -280,11 +278,10 @@ function App() {
 
     useEffect(() => {
         if (audioSrc) {
-            let wavColor = isDarkMode ? "white" : "black";
             // Instantiate WaveSurfer
             const wavesurfer = WaveSurfer.create({
                 container: waveSurferRef.current,
-                waveColor: wavColor,
+                waveColor: "black",
                 progressColor: "lightblack",
                 barWidth: 2,
                 barGap: 1,
@@ -366,7 +363,7 @@ function App() {
                 wavesurfer.destroy();
             };
         }
-    }, [audioSrc, isDarkMode]);
+    }, [audioSrc]);
 
     function getThumbnailFromUrl(ytl) {
         const yt = ytl.match(
@@ -620,7 +617,7 @@ function App() {
 
     return (
         <div
-            data-theme={`${isDarkMode ? "black" : "lofi"}`}
+            data-theme={"lofi"}
             className=" transition-colors duration-300 ease-in-out mx-auto "
         >
             <button
@@ -636,11 +633,6 @@ function App() {
                 <FontAwesomeIcon icon={faCircleUp} className="fa-2xl" />
             </button>
             <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1>
-            <ThemeSwitch
-                isDarkMode={isDarkMode}
-                setIsDarkMode={setIsDarkMode}
-                setIsPlaying={setIsPlaying}
-            />
             <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
                 <div className="flex flex-col justify-center items-center w-full" >
@@ -648,9 +640,7 @@ function App() {
                         wav.ninja
                         <img
                             src={ninja}
-                            className={`inline w-28 h-28 ${
-                                isDarkMode ? "invert" : ""
-                            } `}
+                            className="inline w-28 h-28"
                         ></img>
                     </button>
 
@@ -707,7 +697,7 @@ function App() {
                 )}
                 <WaveSpinner
                     size={90}
-                    color={`${isDarkMode ? "#fff" : "#000"}`}
+                    color="#000"
                     loading={showLoader}
                 />
                 <div
