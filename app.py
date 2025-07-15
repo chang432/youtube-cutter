@@ -45,9 +45,9 @@ app.config['FLASKS3_BUCKET_NAME'] = 'youtube-cutter-static-files-dev'
 s3 = FlaskS3(app)
 api = Api(app)
 
-api.add_resource(HelloApiHandler, '/flask/hello')
-api.add_resource(FullDownloadHandler, '/handle_full')
-api.add_resource(CleanupHandler, '/cleanup')
+# api.add_resource(HelloApiHandler, '/flask/hello')
+# api.add_resource(FullDownloadHandler, '/handle_full')
+# api.add_resource(CleanupHandler, '/cleanup')
 api.add_resource(KofiWebhookHandler, '/kofi_webhook')
 api.add_resource(PremiumVerificationHandler, '/verify_premium')
 api.add_resource(PremiumLoginHandler, '/login_premium')
