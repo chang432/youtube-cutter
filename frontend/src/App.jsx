@@ -3,12 +3,11 @@ import ninja from "./assets/wavninja-nobg.png";
 import axios from "axios";
 import WaveSurfer from "wavesurfer.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.js";
-import LoadingBar from "./components/LoadingBar";
-import Disclaimer from "./components/Disclaimer";
 import { WaveSpinner } from "react-spinners-kit";
 import PremiumServices from "./components/PremiumServices";
 import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
 import PremiumDialog from "./components/PremiumDialog";
+import DisclaimerDialog from "./components/DisclaimerDialog";
 // import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,9 +35,9 @@ function App() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [thumbnailUrl, setThumbnailUrl] = useState("");
     const [audioFormat, setAudioFormat] = useState("MP3");
-    const [showDisclaimer, setShowDisclaimer] = useState(false);
     const [fileName, setFileName] = useState(null);
     const [showPremiumDialog, setShowPremiumDialog] = useState(false);
+    const [showDisclaimerDialog, setShowDisclaimerDialog] = useState(false);
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -645,6 +644,7 @@ function App() {
                     </button>
 
                     { showPremiumDialog && <PremiumDialog setShowPremiumDialog={setShowPremiumDialog}/> }
+                    { showDisclaimerDialog && <DisclaimerDialog setShowDisclaimerDialog={setShowDisclaimerDialog}/> }
 
                     {displaySearchUI && (
                         <div className="flex flex-col justify-center items-center w-full">
@@ -770,10 +770,12 @@ function App() {
                         &#x2694;&nbsp;&nbsp;&nbsp;CUT&nbsp;&nbsp;&nbsp;&#x2694;
                     </button>
                 </div>
-                <Disclaimer 
-                    showDisclaimer={showDisclaimer}
-                    setShowDisclaimer={setShowDisclaimer}
-                />
+                <button className="w-auto fixed bottom-0 left-0 p-2 mx-auto" onClick={() => {setShowDisclaimerDialog(true)}}>
+                    disclaimer
+                </button>
+                <p className="w-auto fixed bottom-0 right-0 p-2 mx-auto">
+                    contact: wavninja.team@gmail.com
+                </p>
             </div>
         </div>
     );
