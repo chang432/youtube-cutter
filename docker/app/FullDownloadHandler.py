@@ -8,13 +8,15 @@ import shutil
 import re
 import time
 
+PID = os.getpid()
+
+LOCAL_METRICS_PATH = f"/var/log/metrics/metrics_{PID}.log"   # set in docker-compose.yml
+
 HOST_ENDPOINT = os.getenv("HOST_ENDPOINT") 
 
 DOWNLOAD_LIMIT = 1.5  # In hours
 
 AUDIO_PATH="/audio"
-
-LOCAL_METRICS_PATH = "/tmp/metrics.txt"
 
 APP_ENV = os.getenv("APP_ENV")
 
@@ -31,10 +33,44 @@ def sanitize(title: str):
         title = title.replace(char, '')
     return title.replace('\n','')
 
+
+""" 
+is_mp3: ("MP3" or "WAV")
+is_cut: ("CUT" or "FULL")
+"""
+def uploadMetrics(title, is_mp3, is_cut):
+  # Collect metrics
+  curr_time = datetime.now()
+  # curr_month_year = str(curr_time.year)+"_"+str(curr_time.month)
+  # metrics_file_key = f"metrics/{curr_month_year}.txt"
+  
+  extension = "WAV"
+  if is_mp3:
+    extension = "MP3"
+
+  download_type = "FULL"
+  if is_cut:
+    download_type = "CUT"
+
+  try:
+    with open(LOCAL_METRICS_PATH, 'a') as file:
+      clean_yt_title = title.replace("\n","")
+      file.write(f'[{download_type}]-[{extension}]-[{curr_time.strftime("%d-%H:%M")}]-{clean_yt_title}\n')
+  except ClientError as e:
+    if e.response['Error']['Code'] == "404":
+      # The key does not exist
+      print(f"[CUSTOM] metric file not found, creating new one")
+      clean_yt_title = title.replace("\n","")
+      with open(LOCAL_METRICS_PATH, 'w') as file:
+        file.write(f'[{download_type}]-[{extension}]-[{curr_time.strftime("%d-%H:%M")}]-{clean_yt_title}\n')
+  
+print(f"[CUSTOM] {LOCAL_METRICS_PATH} updated")
+
+
 class FullDownloadHandler(Resource):
   def post(self):
     start_time = time.time()
-    print("[CUSTOM] STARTING FullDownloadHandler.py", flush=True)
+    print(f"[CUSTOM] STARTING FullDownloadHandler.py on PID {PID}", flush=True)
 
     data = request.get_json()
     yt_id = data.get('yt_id')
@@ -87,7 +123,9 @@ class FullDownloadHandler(Resource):
 
     print(f"[CUSTOM] download from youtube complete of {output_file_name}!", flush=True)
 
+    uploadMetrics(yt_title, download_mp3, is_cut)
+
     location = f"{HOST_ENDPOINT}/audio/{output_file_name}"
 
-    print(f"[CUSTOM] FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds", flush=True)
+    print(f"[CUSTOM] FINISHING FullDownloadHandler.py on PID {PID}, took {(time.time() - start_time)} seconds", flush=True)
     return jsonify({"error": "false", "url": location, "title": yt_title})

@@ -9,6 +9,7 @@ services:
       - ~/.aws:/root/.aws
       - ${AUDIO_HOST_PATH:-/audio}:/audio
       - ${FFMPEG_HOST_PATH:-/tmp}:/opt/bin   # Only for local deployment. If remote, then just attach tmp (useless)
+      - ${PARTITION_PATH:-~/TEMP}/log/metrics:/var/log/metrics
       - ${PARTITION_PATH:-~/TEMP}/log/container-flask:/var/log/container-flask
     environment:
       - APP_ENV=${APP_ENV}
