@@ -8,6 +8,7 @@ import PremiumServices from "./components/PremiumServices";
 import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
 import PremiumDialog from "./components/PremiumDialog";
 import DisclaimerDialog from "./components/DisclaimerDialog";
+import MemberBadge from "./components/MemberBadge";
 // import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -620,17 +621,18 @@ function App() {
             className=" transition-colors duration-300 ease-in-out mx-auto "
         >
             <button
-                className="fixed top-4 left-6"
+                className="fixed top-5 left-6"
                 onClick={handleDonationClick}
             >
-                <FontAwesomeIcon icon={faMugHot} className="fa-2xl" />
+                <FontAwesomeIcon icon={faMugHot} className="h-8 w-8" />
             </button>
             <button
-                className="fixed top-4 left-20"
+                className="fixed top-5 left-20"
                 onClick={() => {setShowPremiumDialog(true)}}
             >
-                <FontAwesomeIcon icon={faCircleUp} className="fa-2xl" />
+                <FontAwesomeIcon icon={faCircleUp} className="h-8 w-8" />
             </button>
+            <MemberBadge isPremium={false}/>
             <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1>
             <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
