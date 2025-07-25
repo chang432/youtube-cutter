@@ -651,7 +651,7 @@ function App() {
                         ></img>
                     </button>
 
-                    { showProfileDialog && <ProfileDialog setShowProfileDialog={setShowProfileDialog} setpremiumEnabled={setpremiumEnabled} setShowLoader={setShowLoader}/> }
+                    { showProfileDialog && <ProfileDialog setShowProfileDialog={setShowProfileDialog} premiumEnabled={premiumEnabled} setpremiumEnabled={setpremiumEnabled} setShowLoader={setShowLoader}/> }
                     { showDisclaimerDialog && <DisclaimerDialog setShowDisclaimerDialog={setShowDisclaimerDialog}/> }
 
                     {displaySearchUI && (

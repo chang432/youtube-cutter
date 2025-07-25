@@ -97,7 +97,6 @@ const PremiumServices = ({
                 onClick={() => {
                     if (!expanded) {
                         setCollapseAnimationEnded(false);
-                        console.log(collapseAnimationEnded);
                     } 
                     setExpanded((prev) => !prev)
                 }}
@@ -120,7 +119,7 @@ const PremiumServices = ({
                 onTransitionEnd={(e) => {
                     // Only run logic when the max-height transition ends (not opacity)
                     if (e.propertyName === "max-height" && !expanded) {
-                        console.log("max-height transition ended");
+                        // console.log("max-height transition ended");
                         setCollapseAnimationEnded(true);
                     }
                 }}
