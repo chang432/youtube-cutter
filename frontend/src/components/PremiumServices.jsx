@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
 import FrequencySlider from "./FrequencySlider";
 import FfmpegWasmHelper from "./FfmpegWasmHelper";
-import axios from "axios";
 
-const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI, setShowPremiumDialog}) => {
+const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI, setShowProfileDialog, disablePremium, setDisablePremium}) => {
     const [speedSlowestHighlighted, setSpeedSlowestHighlighted] = useState(false);
     const [speedSlowHighlighted, setSpeedSlowHighlighted] = useState(false);
     const [speedNormalHighlighted, setSpeedNormalHighlighted] = useState(true);
@@ -16,8 +15,6 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
     const selectedSpeed = useRef("normal")
 
     const [reverseSelected, setReverseSelected] = useState(false);
-
-    const [disablePremium, setDisablePremium] = useState(true);
 
     const freqLimit = 24000;   // TODO: Change this to 1/2 the sample rate or some other dynamic val in the future?
     const [freqRange, setFreqRange] = useState([0, freqLimit]);
@@ -71,60 +68,10 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
         }
     }
 
-    async function passwordEnterPressed() {
-        let password = document.getElementById("premiumPasswordInput").value;
-
-        if (password.length != 14) {
-            alert("Invalid Password!");
-            return;
-        }
-
-        setShowLoader(true);
-        setDisplayCutterUI(false);
-
-        axios({
-            url: "http://127.0.0.1:5000/login_premium",
-            method: "post",
-            responseType: "json",
-            data: {
-                input_password: password,
-                testing: false
-            },
-        })
-        .then((res) => {
-            let output = res.data;
-            let authorized = output.authorized
-            setShowLoader(false);
-            setDisplayCutterUI(true);
-            if (!authorized) {
-                alert("Invalid Password!");
-            } else {
-                setDisablePremium(!authorized);
-            }
-        })
-    }
-
-    // Check if user already has valid JWT
-    useEffect(() => {
-        axios({
-            url: "http://127.0.0.1:5000/verify_premium",
-            method: "get"
-        }).then(() => {
-            console.log("VALID LOGIN TOKEN DETECTED");
-            setDisablePremium(false);
-        }).catch((error) => {
-            console.log("INVALID LOGIN TOKEN");
-            setDisablePremium(true);
-        })
-    }, [])
-
     return (
         <div className={`relative z-40`}>
             { disablePremium && <div className="z-50 absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 group">
                 <div className="flex flex-row justify-center items-center w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <input id="premiumPasswordInput" className="w-28 h-6 px-1 focus:outline-none border border-black" type="text" />
-                    <button className="h-6 ml-2" onClick={passwordEnterPressed}>Enter</button>
-                    <button className="h-6 ml-4 text-red-600" onClick={() => {setShowPremiumDialog(true)}}>?</button>
                 </div>
             </div> }
 

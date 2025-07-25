@@ -9,7 +9,7 @@ import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
 import ProfileDialog from "./components/ProfileDialog";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import MemberBadge from "./components/MemberBadge";
-// import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
+// import testAudioFile from "./assets/beat.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,7 +17,6 @@ import {
     faPause,
     faRotateLeft,
     faMugHot,
-    faCircleUp,
     faDownload
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -39,6 +38,7 @@ function App() {
     const [fileName, setFileName] = useState(null);
     const [showDisclaimerDialog, setShowDisclaimerDialog] = useState(false);
     const [showProfileDialog, setShowProfileDialog] = useState(false);
+    const [disablePremium, setDisablePremium] = useState(true);
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -110,12 +110,24 @@ function App() {
     }
 
     useEffect(() => {
+        // Check if user already has valid JWT
+        axios({
+            url: "http://127.0.0.1:5000/verify_premium",
+            method: "get"
+        }).then(() => {
+            console.log("VALID LOGIN TOKEN DETECTED");
+            setDisablePremium(false);
+        }).catch((error) => {
+            console.log("INVALID LOGIN TOKEN");
+            setDisablePremium(true);
+        })
+
         // developing use for going straight to the cutter ui without having to paste in a youtube url]
         if (developMode) {
             setDisplaySearchUI(false);
-            setFileName("bmf")
-            // setAudioSrc(testAudioFile);
-            // setOrigAudioSrc(testAudioFile);
+            // setFileName("bmf")
+            setAudioSrc(testAudioFile);
+            setOrigAudioSrc(testAudioFile);
             setDisplayCutterUI(true);
         }
     }, []);
@@ -639,7 +651,7 @@ function App() {
                         ></img>
                     </button>
 
-                    { showProfileDialog && <ProfileDialog setShowProfileDialog={setShowProfileDialog}/> }
+                    { showProfileDialog && <ProfileDialog setShowProfileDialog={setShowProfileDialog} setDisablePremium={setDisablePremium} setShowLoader={setShowLoader}/> }
                     { showDisclaimerDialog && <DisclaimerDialog setShowDisclaimerDialog={setShowDisclaimerDialog}/> }
 
                     {displaySearchUI && (
@@ -685,7 +697,7 @@ function App() {
                         </div>
                     )}
                 </div>
-                {displayCutterUI && <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowProfileDialog={setShowProfileDialog} /> }
+                {displayCutterUI && <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowProfileDialog={setShowProfileDialog} disablePremium={disablePremium} setDisablePremium={setDisablePremium} /> }
                 {displayCutterUI && (
                     <span className="mt-6" style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00

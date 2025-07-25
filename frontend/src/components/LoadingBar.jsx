@@ -20,7 +20,7 @@ const LoadingBar = (props) => {
   };
 
   return (
-    <div style={loaderStyle}>
+    <div style={loaderStyle} className="z-[9999]">
       {showLoader && <div style={iconStyle}></div>}
       <style>
         {`
