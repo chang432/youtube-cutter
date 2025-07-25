@@ -6,7 +6,7 @@ import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.js";
 import { WaveSpinner } from "react-spinners-kit";
 import PremiumServices from "./components/PremiumServices";
 import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
-import PremiumDialog from "./components/PremiumDialog";
+import ProfileDialog from "./components/ProfileDialog";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import MemberBadge from "./components/MemberBadge";
 // import testAudioFile from "./assets/bmf.mp3";         // Used for local testing, comment out when deploying
@@ -37,8 +37,8 @@ function App() {
     const [thumbnailUrl, setThumbnailUrl] = useState("");
     const [audioFormat, setAudioFormat] = useState("MP3");
     const [fileName, setFileName] = useState(null);
-    const [showPremiumDialog, setShowPremiumDialog] = useState(false);
     const [showDisclaimerDialog, setShowDisclaimerDialog] = useState(false);
+    const [showProfileDialog, setShowProfileDialog] = useState(false);
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -626,13 +626,7 @@ function App() {
             >
                 <FontAwesomeIcon icon={faMugHot} className="h-8 w-8" />
             </button>
-            <button
-                className="fixed top-5 left-20"
-                onClick={() => {setShowPremiumDialog(true)}}
-            >
-                <FontAwesomeIcon icon={faCircleUp} className="h-8 w-8" />
-            </button>
-            <MemberBadge isPremium={false}/>
+            <MemberBadge isPremium={false} setShowProfileDialog={setShowProfileDialog}/>
             <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1>
             <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
@@ -645,7 +639,7 @@ function App() {
                         ></img>
                     </button>
 
-                    { showPremiumDialog && <PremiumDialog setShowPremiumDialog={setShowPremiumDialog}/> }
+                    { showProfileDialog && <ProfileDialog setShowProfileDialog={setShowProfileDialog}/> }
                     { showDisclaimerDialog && <DisclaimerDialog setShowDisclaimerDialog={setShowDisclaimerDialog}/> }
 
                     {displaySearchUI && (
@@ -691,7 +685,7 @@ function App() {
                         </div>
                     )}
                 </div>
-                {displayCutterUI && <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowPremiumDialog={setShowPremiumDialog} /> }
+                {displayCutterUI && <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowProfileDialog={setShowProfileDialog} /> }
                 {displayCutterUI && (
                     <span className="mt-6" style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00
