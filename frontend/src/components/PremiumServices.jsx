@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import FrequencySlider from "./FrequencySlider";
 import FfmpegWasmHelper from "./FfmpegWasmHelper";
 
-const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI, setShowProfileDialog, disablePremium, setDisablePremium}) => {
+const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, displayCutterUI, setDisplayCutterUI, setShowProfileDialog, premiumEnabled, setpremiumEnabled}) => {
     const [speedSlowestHighlighted, setSpeedSlowestHighlighted] = useState(false);
     const [speedSlowHighlighted, setSpeedSlowHighlighted] = useState(false);
     const [speedNormalHighlighted, setSpeedNormalHighlighted] = useState(true);
@@ -38,7 +38,7 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
         try {
             setShowLoader(true);
             setDisplayCutterUI(false);
-            setDisablePremium(true);
+            setpremiumEnabled(false);
 
             let reverseFilterString = reverseSelected ? "areverse," : "";
 
@@ -62,7 +62,7 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
 
             setShowLoader(false);
             setDisplayCutterUI(true);
-            setDisablePremium(false);
+            setpremiumEnabled(true);
         } catch (error) {
             console.error("Caught error:", error.message);
         }
@@ -70,12 +70,12 @@ const PremiumServices = ({audioSrc, setAudioSrc, setShowLoader, origAudioSrc, di
 
     return (
         <div className={`relative z-40`}>
-            { disablePremium && <div className="z-50 absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 group">
+            { !premiumEnabled && <div className="z-50 absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 group">
                 <div className="flex flex-row justify-center items-center w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 </div>
             </div> }
 
-            <div className={`flex flex-col justify-center items-center w-fit py-5 px-10 space-y-9 ${disablePremium ? "opacity-30" : "" } border border-dotted border-black`}>
+            <div className={`flex flex-col justify-center items-center w-fit py-5 px-10 space-y-9 ${premiumEnabled ? "" : "opacity-30" } border border-dotted border-black`}>
                 <div className={`flex xs:flex-row flex-col items-center justify-center w-fit xs:space-x-20 space-y-10`}>
                     <div className="flex flex-col items-center space-y-5">
                         <h1>Frequency Cutoff (Hz)</h1>

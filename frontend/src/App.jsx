@@ -9,7 +9,7 @@ import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
 import ProfileDialog from "./components/ProfileDialog";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import MemberBadge from "./components/MemberBadge";
-// import testAudioFile from "./assets/beat.mp3";         // Used for local testing, comment out when deploying
+import testAudioFile from "./assets/beat.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,7 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
+    const developMode = true;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
 
     const [audioSrc, setAudioSrc] = useState("");
     const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
@@ -38,7 +38,7 @@ function App() {
     const [fileName, setFileName] = useState(null);
     const [showDisclaimerDialog, setShowDisclaimerDialog] = useState(false);
     const [showProfileDialog, setShowProfileDialog] = useState(false);
-    const [disablePremium, setDisablePremium] = useState(true);
+    const [premiumEnabled, setpremiumEnabled] = useState(false);
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -116,10 +116,10 @@ function App() {
             method: "get"
         }).then(() => {
             console.log("VALID LOGIN TOKEN DETECTED");
-            setDisablePremium(false);
+            setpremiumEnabled(true);
         }).catch((error) => {
             console.log("INVALID LOGIN TOKEN");
-            setDisablePremium(true);
+            setpremiumEnabled(false);
         })
 
         // developing use for going straight to the cutter ui without having to paste in a youtube url]
@@ -638,7 +638,7 @@ function App() {
             >
                 <FontAwesomeIcon icon={faMugHot} className="h-8 w-8" />
             </button>
-            <MemberBadge isPremium={false} setShowProfileDialog={setShowProfileDialog}/>
+            <MemberBadge premiumEnabled={premiumEnabled} setShowProfileDialog={setShowProfileDialog}/>
             <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1>
             <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
@@ -651,7 +651,7 @@ function App() {
                         ></img>
                     </button>
 
-                    { showProfileDialog && <ProfileDialog setShowProfileDialog={setShowProfileDialog} setDisablePremium={setDisablePremium} setShowLoader={setShowLoader}/> }
+                    { showProfileDialog && <ProfileDialog setShowProfileDialog={setShowProfileDialog} setpremiumEnabled={setpremiumEnabled} setShowLoader={setShowLoader}/> }
                     { showDisclaimerDialog && <DisclaimerDialog setShowDisclaimerDialog={setShowDisclaimerDialog}/> }
 
                     {displaySearchUI && (
@@ -697,7 +697,7 @@ function App() {
                         </div>
                     )}
                 </div>
-                {displayCutterUI && <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowProfileDialog={setShowProfileDialog} disablePremium={disablePremium} setDisablePremium={setDisablePremium} /> }
+                {displayCutterUI && <PremiumServices className="z-40" audioSrc={audioSrc} setAudioSrc={setAudioSrc} setShowLoader={setShowLoader} origAudioSrc={origAudioSrc} displayCutterUI={displayCutterUI} setDisplayCutterUI={setDisplayCutterUI} setShowProfileDialog={setShowProfileDialog} premiumEnabled={premiumEnabled} setpremiumEnabled={setpremiumEnabled} /> }
                 {displayCutterUI && (
                     <span className="mt-6" style={{ paddingBottom: "5px" }} id="current-time">
                         00:00:00

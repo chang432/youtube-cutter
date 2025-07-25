@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 
-const ProfileDialog = ({ setShowProfileDialog, setDisablePremium, setShowLoader }) => {
+const ProfileDialog = ({ setShowProfileDialog, setpremiumEnabled, setShowLoader }) => {
     const [showSteps, setShowSteps] = useState(false);
     const [showBenefits, setshowBenefits] = useState(false);
     const [showProfileDialogContents, setShowProfileDialogContents] = useState(true);
@@ -38,7 +38,7 @@ const ProfileDialog = ({ setShowProfileDialog, setDisablePremium, setShowLoader 
             if (!authorized) {
                 alert("Invalid Password!");
             } else {
-                setDisablePremium(!authorized);
+                setpremiumEnabled(authorized);
             }
         })
     }

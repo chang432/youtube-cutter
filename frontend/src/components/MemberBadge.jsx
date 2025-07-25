@@ -1,7 +1,7 @@
 import apprenticeImg from '../assets/user-apprentice.png';
 import ninjaImg from '../assets/user-ninja.png';
 
-const MemberBadge = ({ isPremium, setShowProfileDialog }) => {
+const MemberBadge = ({ premiumEnabled, setShowProfileDialog }) => {
     return (
         <div className="fixed top-3 right-4">
             <div
@@ -9,10 +9,10 @@ const MemberBadge = ({ isPremium, setShowProfileDialog }) => {
                 onClick={() => {setShowProfileDialog(true)}}
             >
                 <img
-                    src={isPremium ? ninjaImg : apprenticeImg}
+                    src={premiumEnabled ? ninjaImg : apprenticeImg}
                     className="h-8 w-8 object-cover rounded-full border border-black p-1"
                 />
-                <p className="ml-auto font-semibold">{isPremium ? "Premium" : "Free"}</p>
+                <p className="ml-auto font-semibold">{premiumEnabled ? "Premium" : "Free"}</p>
             </div>
         </div>
     );
