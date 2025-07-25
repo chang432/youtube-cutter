@@ -9,7 +9,7 @@ import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
 import ProfileDialog from "./components/ProfileDialog";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import MemberBadge from "./components/MemberBadge";
-import testAudioFile from "./assets/beat.mp3";         // Used for local testing, comment out when deploying
+// import testAudioFile from "./assets/beat.mp3";         // Used for local testing, comment out when deploying
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,7 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-    const developMode = true;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
+    const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
 
     const [audioSrc, setAudioSrc] = useState("");
     const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
@@ -125,7 +125,7 @@ function App() {
         // developing use for going straight to the cutter ui without having to paste in a youtube url]
         if (developMode) {
             setDisplaySearchUI(false);
-            // setFileName("bmf")
+            setFileName("beat")
             setAudioSrc(testAudioFile);
             setOrigAudioSrc(testAudioFile);
             setDisplayCutterUI(true);
@@ -493,8 +493,8 @@ function App() {
         link.addEventListener("click", () => {
             setTimeout(() => {
                 axios.post(
-                    // "http://127.0.0.1/cleanup",
-                    "https://wav-helper.com/cleanup",
+                    "http://127.0.0.1/cleanup",
+                    // "https://wav-helper.com/cleanup",
                     {
                         yt_title: title
                     },
@@ -527,8 +527,8 @@ function App() {
         }
 
         axios({
-            // url: "http://127.0.0.1/handle_yt",
-            url: "https://wav-helper.com/handle_yt",
+            url: "http://127.0.0.1/handle_yt",
+            // url: "https://wav-helper.com/handle_yt",
             method: "post",
             responseType: "json",
             data: {

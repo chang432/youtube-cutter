@@ -164,7 +164,7 @@ const FrequencySlider = ({freqRange, setFreqRange, freqLimit}) => {
                 }}
             >
                 <Slider
-                    className="flex flex-row justify-center items-center w-52" 
+                    className="flex flex-row justify-center items-center w-52"
                     range 
                     defaultValue={[0, freqLimit]}
                     max={freqLimit}
