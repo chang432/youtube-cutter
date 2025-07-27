@@ -671,7 +671,7 @@ function App() {
                     { showDisclaimerDialog && <DisclaimerDialog setShowDisclaimerDialog={setShowDisclaimerDialog}/> }
 
                     {displaySearchUI && (
-                        <div className="flex flex-col justify-center items-center w-full">
+                        <div className="flex flex-col justify-center items-center xs:w-full w-11/12">
                             <input
                                 type="text"
                                 value={fullDownloadYoutubeId}
