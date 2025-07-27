@@ -14,7 +14,7 @@ LOCAL_METRICS_PATH = f"/var/log/metrics/metrics_{PID}.log"   # set in docker-com
 
 HOST_ENDPOINT = os.getenv("HOST_ENDPOINT") 
 
-DOWNLOAD_LIMIT = 1.5  # In hours
+DOWNLOAD_LIMIT = 1  # In hours
 
 AUDIO_PATH="/audio"
 

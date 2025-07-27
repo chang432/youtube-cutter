@@ -10,6 +10,7 @@ import ProfileDialog from "./components/ProfileDialog";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 import MemberBadge from "./components/MemberBadge";
 // import testAudioFile from "./assets/beat.mp3";         // Used for local testing, comment out when deploying
+import { useAlert } from "./components/AlertProvider";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,6 +23,8 @@ import {
 
 function App() {
     const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
+
+    const { showAlert } = useAlert();
 
     const [audioSrc, setAudioSrc] = useState("");
     const [origAudioSrc, setOrigAudioSrc] = useState(audioSrc);
@@ -450,7 +453,7 @@ function App() {
             strIsNotNumber(times[1]) ||
             strIsNotNumber(times[2])
         ) {
-            alert(
+            showAlert(
                 "one of the hours, minutes, or seconds are not formatted correctly"
             );
             if (unformatting_start_time) {
@@ -515,7 +518,7 @@ function App() {
         try {
             youtube_id = convertYoutubeUrlToId(fullDownloadYoutubeId);
         } catch (error) {
-            alert(error);
+            showAlert(String(error));
             return;
         }
 
@@ -543,7 +546,7 @@ function App() {
                     console.log(output.error);
                     setShowLoader(false);
                     setDisplaySearchUI(true);
-                    alert(
+                    showAlert(
                         `Error...${output.message}`
                     );
                 } else if (isCut) {
@@ -565,7 +568,7 @@ function App() {
                 console.log(error);
                 setShowLoader(false);
                 setDisplaySearchUI(true);
-                alert(
+                showAlert(
                     `Server error...${error}`
                 );
             });
@@ -639,7 +642,7 @@ function App() {
                 <FontAwesomeIcon icon={faMugHot} className="h-8 w-8" />
             </button>
             <MemberBadge premiumEnabled={premiumEnabled} setShowProfileDialog={setShowProfileDialog}/>
-            <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1>
+            {/* <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1> */}
             <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
                 {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
                 <div className="flex flex-col justify-center items-center w-full" >

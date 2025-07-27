@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useAlert } from "./AlertProvider";
 import axios from "axios";
 
 const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled, setShowLoader }) => {
     const [showSteps, setShowSteps] = useState(false);
     const [showBenefits, setshowBenefits] = useState(false);
     const [showProfileDialogContents, setShowProfileDialogContents] = useState(true);
+    const { showAlert } = useAlert();
 
     function handleKofiTextClicked() {
         window.open("https://ko-fi.com/wavninja", "_blank");
@@ -14,7 +16,7 @@ const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled
         let password = document.getElementById("premiumPasswordInput").value;
 
         if (password.length != 14) {
-            alert("Invalid Password!");
+            showAlert("Invalid Password!");
             return;
         }
 
@@ -36,7 +38,7 @@ const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled
             setShowLoader(false);
             setShowProfileDialog(false);
             if (!authorized) {
-                alert("Invalid Password!");
+                showAlert("Invalid Password!");
             } else {
                 setpremiumEnabled(authorized);
             }
@@ -45,7 +47,7 @@ const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled
 
     return (
         <div>
-            <div className="fixed inset-0 z-[9998] bg-gray-300 opacity-50"></div>
+            <div className="fixed inset-0 z-[9998] bg-black opacity-50"></div>
             <div className="fixed inset-1/2 xs:w-1/2 w-3/4 h-fit transfrom -translate-x-1/2 -translate-y-1/2 z-[9999] border border-black bg-white flex flex-col justify-center items-center xs:py-10 py-2 xs:px-20 px-4 text-center leading-tight xs:text-lg text-xs">
 
                 { premiumEnabled && <div className="flex flex-col items-center text-center w-full">
