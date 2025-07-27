@@ -23,7 +23,10 @@ import {
 
 function App() {
     const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
-
+    // const backendUrl = "http://127.0.0.1";
+    // const backendUrl = "https://wav-helper.com";
+    const backendUrl = "https://178.156.152.241";
+    
     const { showAlert } = useAlert();
 
     const [audioSrc, setAudioSrc] = useState("");
@@ -503,7 +506,7 @@ function App() {
         link.addEventListener("click", () => {
             setTimeout(() => {
                 axios.post(
-                    "http://127.0.0.1/cleanup",
+                    backendUrl + "/cleanup",
                     // "https://wav-helper.com/cleanup",
                     {
                         yt_title: title
@@ -539,7 +542,7 @@ function App() {
         }
 
         axios({
-            url: "http://127.0.0.1/handle_yt",
+            url: backendUrl + "/handle_yt",
             // url: "https://wav-helper.com/handle_yt",
             method: "post",
             responseType: "json",
