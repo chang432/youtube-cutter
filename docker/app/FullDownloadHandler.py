@@ -8,13 +8,16 @@ import shutil
 import re
 import time
 
+# Import for JWT
+from flask_jwt_extended import verify_jwt_in_request
+
 PID = os.getpid()
 
 LOCAL_METRICS_PATH = f"/var/log/metrics/metrics_{PID}.log"   # set in docker-compose.yml
 
 HOST_ENDPOINT = os.getenv("HOST_ENDPOINT") 
 
-DOWNLOAD_LIMIT = 1  # In hours
+DOWNLOAD_LIMIT = 60  # In minutes
 
 AUDIO_PATH="/audio"
 
@@ -77,6 +80,9 @@ class FullDownloadHandler(Resource):
     is_cut = data.get('is_cut')
     download_mp3 = data.get('download_mp3')
 
+    # print("headers: " + str(dict(request.headers)), flush=True)
+    # print("cookies: " + str(request.cookies), flush=True)
+
     print(f"[CUSTOM] yt_id is {yt_id}, is_cut is {is_cut}", flush=True)
 
     url = "https://youtube.com/watch?v=" + yt_id
@@ -84,11 +90,21 @@ class FullDownloadHandler(Resource):
 
     yt_info = yt_object.yt_dlp_request(False)
 
-    # set a limit on video length for cuts
-    duration_hours = yt_info["duration"] / 3600
-    print(f"duration in hours is {duration_hours}", flush=True)
-    if duration_hours > DOWNLOAD_LIMIT:
-      return {"error": "true", "message": f"this video is over the limit of {DOWNLOAD_LIMIT} hours"}
+    # Check for JWT token in request to determine if user is premium
+    is_premium = False
+    try:
+      verify_jwt_in_request()
+      # If a valid JWT is present, treat as premium
+      is_premium = True
+      print("[CUSTOM] JWT detected, premium user - removing download limit", flush=True)
+    except Exception as e:
+      print(f"[CUSTOM] JWT not detected: {e}, enforcing download limit", flush=True)
+
+    # set a limit on video length for cuts, unless premium
+    duration_minutes = yt_info["duration"] / 60
+    print(f"duration in minutes is {duration_minutes}", flush=True)
+    if not is_premium and duration_minutes > DOWNLOAD_LIMIT:
+      return {"error": "true", "message": f"This video is over the limit of {DOWNLOAD_LIMIT} minutes, please donate to remove the limit!"}
 
     yt_title = sanitize(yt_info["title"])
 

@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request, make_response, jsonify
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, set_access_cookies
 from api.DynamoDbHelper import DynamoDbHelper
 import datetime
 
@@ -20,14 +20,12 @@ class PremiumLoginHandler(Resource):
 
     if (ddb_helper.checkItem(input_access_key=password)):
       print("Password exists! Now creating and configuring access token...")
-      response = make_response(jsonify({ 'authorized': True }))
 
       token = create_access_token(identity=password, expires_delta=datetime.timedelta(days=30))
       
-      # Set secure HTTP-only cookie
-      response.set_cookie(
-          "access_token_cookie", token, httponly=True, secure=True, samesite="Strict"
-      )
+      response = make_response(jsonify({ 'authorized': True }))
+      
+      set_access_cookies(response, token)
     else:
       print("Password does not exist...")
 

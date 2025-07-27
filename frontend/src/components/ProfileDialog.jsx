@@ -141,6 +141,9 @@ const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled
                             <p>
                                 Premium features last for a month starting from the date of donation. If you are a monthly donor, you will keep benefits for as long as you are subscribed.
                             </p>
+                            <p>
+                                Contact us at wavninja@gmail.com if there are any issues!
+                            </p>
                         </div>
                     )}
 

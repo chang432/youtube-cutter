@@ -43,6 +43,13 @@ function App() {
     const [showProfileDialog, setShowProfileDialog] = useState(false);
     const [premiumEnabled, setpremiumEnabled] = useState(false);
 
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
 
@@ -512,6 +519,8 @@ function App() {
     }
 
     async function handleFullVideoClick(isCut = false, downloadMp3 = false) {
+        var csrfToken = getCookie("csrf_access_token");
+        console.log("csrf token: " + csrfToken);
         console.log("Displaying full video");
         let youtube_id = "";
 
@@ -534,11 +543,15 @@ function App() {
             // url: "https://wav-helper.com/handle_yt",
             method: "post",
             responseType: "json",
+            withCredentials: true,
             data: {
                 yt_id: youtube_id,
                 is_cut: isCut,
                 download_mp3: downloadMp3
             },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            }
         })
             .then((res) => {
                 const output = res.data;
