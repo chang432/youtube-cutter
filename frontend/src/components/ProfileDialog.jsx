@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useAlert } from "./AlertProvider";
 import axios from "axios";
+import JwtStorageHelper from "./JwtStorageHelper";
 
 const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled, setShowLoader }) => {
     const [showSteps, setShowSteps] = useState(false);
     const [showBenefits, setshowBenefits] = useState(false);
     const [showProfileDialogContents, setShowProfileDialogContents] = useState(true);
     const { showAlert } = useAlert();
+
+    const jwtStorageHelper = new JwtStorageHelper();
 
     function handleKofiTextClicked() {
         window.open("https://ko-fi.com/wavninja", "_blank");
@@ -41,6 +44,7 @@ const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled
                 showAlert("Invalid Password!");
             } else {
                 setpremiumEnabled(authorized);
+                jwtStorageHelper.setToken(output.access_token);
             }
         })
     }

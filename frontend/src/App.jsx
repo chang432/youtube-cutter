@@ -11,6 +11,7 @@ import DisclaimerDialog from "./components/DisclaimerDialog";
 import MemberBadge from "./components/MemberBadge";
 // import testAudioFile from "./assets/beat.mp3";         // Used for local testing, comment out when deploying
 import { useAlert } from "./components/AlertProvider";
+import JwtStorageHelper from "./components/JwtStorageHelper";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,7 +26,8 @@ function App() {
     const developMode = false;     // Set to true to skip the youtube url input and go straight to cutter ui with a local audio file
     // const backendUrl = "http://127.0.0.1";
     const backendUrl = "https://wav-helper.com";
-    
+    const jwtStorageHelper = new JwtStorageHelper();
+
     const { showAlert } = useAlert();
 
     const [audioSrc, setAudioSrc] = useState("");
@@ -44,13 +46,6 @@ function App() {
     const [showDisclaimerDialog, setShowDisclaimerDialog] = useState(false);
     const [showProfileDialog, setShowProfileDialog] = useState(false);
     const [premiumEnabled, setpremiumEnabled] = useState(false);
-
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    }
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -125,7 +120,10 @@ function App() {
         // Check if user already has valid JWT
         axios({
             url: "http://127.0.0.1:5000/verify_premium",
-            method: "get"
+            method: "get",
+            headers: {
+                "Authorization": "Bearer " + jwtStorageHelper.getToken()
+            }
         }).then(() => {
             console.log("VALID LOGIN TOKEN DETECTED");
             setpremiumEnabled(true);
@@ -521,8 +519,8 @@ function App() {
     }
 
     async function handleFullVideoClick(isCut = false, downloadMp3 = false) {
-        var csrfToken = getCookie("csrf_access_token");
-        console.log("csrf token: " + csrfToken);
+        const jwtToken = jwtStorageHelper.getToken();
+        console.log("JWT: " + jwtToken);
         console.log("Displaying full video");
         let youtube_id = "";
 
@@ -552,7 +550,7 @@ function App() {
                 download_mp3: downloadMp3
             },
             headers: {
-                'X-CSRF-TOKEN': csrfToken
+                "Authorization": "Bearer " + jwtToken
             }
         })
             .then((res) => {
@@ -642,7 +640,9 @@ function App() {
     }
 
     function handleDonationClick() {
-        window.open("https://ko-fi.com/wavninja", "_blank");
+        const jwtToken = jwtStorageHelper.getToken();
+        console.log("JWT: " + jwtToken);
+        // window.open("https://ko-fi.com/wavninja", "_blank");
     }
 
     return (

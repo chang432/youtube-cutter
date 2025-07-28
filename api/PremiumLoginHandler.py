@@ -23,9 +23,7 @@ class PremiumLoginHandler(Resource):
 
       token = create_access_token(identity=password, expires_delta=datetime.timedelta(days=30))
       
-      response = make_response(jsonify({ 'authorized': True }))
-      
-      set_access_cookies(response, token)
+      response = make_response(jsonify({ 'authorized': True, 'access_token': token }))
     else:
       print("Password does not exist...")
 
