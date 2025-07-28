@@ -80,8 +80,8 @@ class FullDownloadHandler(Resource):
     is_cut = data.get('is_cut')
     download_mp3 = data.get('download_mp3')
 
-    # print("headers: " + str(dict(request.headers)), flush=True)
-    # print("cookies: " + str(request.cookies), flush=True)
+    print("headers: " + str(dict(request.headers)), flush=True)
+    print("cookies: " + str(request.cookies), flush=True)
 
     print(f"[CUSTOM] yt_id is {yt_id}, is_cut is {is_cut}", flush=True)
 
