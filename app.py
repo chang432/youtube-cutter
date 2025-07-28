@@ -34,7 +34,7 @@ app.config["JWT_SECRET_KEY"] = jwt_secret_key
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]  # Store JWT in secure HTTP-only cookies
 app.config["JWT_COOKIE_SECURE"] = True  # Only send cookies over HTTPS
 app.config["JWT_COOKIE_HTTPONLY"] = True  # Prevent JavaScript access (XSS protection)
-app.config["JWT_COOKIE_SAMESITE"] = "Strict"  # Prevent CSRF
+app.config["JWT_COOKIE_SAMESITE"] = "None"  
 
 jwt = JWTManager(app)
 
