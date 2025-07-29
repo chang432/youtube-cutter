@@ -45,9 +45,15 @@ class KofiWebhookHandler(Resource):
 
       if verification_token != correct_verification_token:
         raise Exception("Verification token does not match")
+      
+      if is_subscription_payment and not is_first_subscription_payment:
+        print(f"subscription payment detected for {email}! Updating timestamp now...")
+        curr_dt = datetime.now(timezone.utc)
+        curr_dt_str = curr_dt.strftime("%Y-%m-%d")
 
-      if is_first_subscription_payment:
-        print(f"First subscription detected for {email}! Setting up now...")
+        ddb_helper.updateItem(email=email, new_timestamp=curr_dt_str)
+      else:
+        print(f"First subscription or one time payment detected for {email}! Setting up now...")
 
         # Generate random password
         chars = string.ascii_uppercase + string.digits  # A-Z, 0-9
@@ -65,13 +71,6 @@ class KofiWebhookHandler(Resource):
           BODY_TEXT = "Thank you for supporting us!\nPlease use the following password to access premium features: " + password + "\n\n- Wav Ninja Team"
 
           SmtpHelper.sendEmail(destinationEmail=email, emailTitle=SUBJECT, emailBody=BODY_TEXT)
-      
-      elif is_subscription_payment:
-        print(f"subscription payment detected for {email}! Updating timestamp now...")
-        curr_dt = datetime.now(timezone.utc)
-        curr_dt_str = curr_dt.strftime("%Y-%m-%d")
-
-        ddb_helper.updateItem(email=email, new_timestamp=curr_dt_str)
               
       print("[CUSTOM] KofiWebhookHandler.py COMPLETE")
 
