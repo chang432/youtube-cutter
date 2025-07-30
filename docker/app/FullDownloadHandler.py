@@ -119,7 +119,7 @@ class FullDownloadHandler(Resource):
       else:
         converted_file = f"{AUDIO_PATH}/{yt_id}.wav"
 
-      print(f"{download_mp3}, {converted_file}", flush=True)
+      print(f"Converting from mp4 to {converted_file}", flush=True)
       ffmpeg_command = f'{FFMPEG_EXEC} -loglevel error -i "{new_file}" -write_xing 0 -y "{converted_file}"'
 
       try:
