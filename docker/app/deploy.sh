@@ -8,4 +8,4 @@ apt install -y vim
 apt install -y curl
 
 # Start server
-gunicorn -w 4 --timeout 120 -b 0.0.0.0:8000 wsgi:app
+gunicorn -w 4 --timeout 180 -b 0.0.0.0:8000 wsgi:app
