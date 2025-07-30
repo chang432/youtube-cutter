@@ -69,7 +69,7 @@ const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled
                     </h1>
                     <div id="notes-content" className="text-left w-full space-y-4">
                         <p>
-                            - 1 hour download/cut limit removed.
+                            - 1 hour download/cut limit changed to 3 hours.
                         </p>
                         <p>
                             - Access to additional editing tools while cutting to modify speed, frequency, and audio reversal.
@@ -108,7 +108,7 @@ const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled
                     {showBenefits && (
                         <div id="notes-content" className="text-left mb-10 w-full space-y-4">
                             <p>
-                                - 1 hour download/cut limit removed.
+                                - 1 hour download/cut limit changed to 3 hours.
                             </p>
                             <p>
                                 - Access to additional editing tools while cutting to modify speed, frequency, and audio reversal.
