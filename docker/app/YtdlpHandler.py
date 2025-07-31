@@ -11,10 +11,16 @@ class YtdlpHandler:
         ssm_client = boto3.client("ssm")
 
         self.url = url
-        self.po_token = ssm_client.get_parameter(Name="youtube-cutter-prod-po-token")
-        
+        # self.po_token = ssm_client.get_parameter(Name="youtube-cutter-prod-po-token")
+
+        # s3_client.download_file("youtube-cutter-hetzner-vps", "yt-credentials/po-token.txt", "/tmp/po-token.txt")
+        # with open("/tmp/po-token.txt", "r") as file:
+        #     self.po_token = file.read()
+        #     print("PO TOKEN IS: ", self.po_token)
+
         # Need to move cookies to tmp folder because that is the only area that is non read only for lambdas
-        s3_client.download_file("youtube-cutter-private-prod", "youtube-credentials/cookies.txt", "/tmp/cookies.txt")
+        if not os.path.exists("/tmp/cookies.txt"):
+            s3_client.download_file("youtube-cutter-hetzner-vps", "yt-credentials/cookies.txt", "/tmp/cookies.txt")
 
     def yt_dlp_monitor(self, d):
         YtdlpHandler.destination  = d.get('info_dict').get('_filename')
@@ -27,7 +33,8 @@ class YtdlpHandler:
             'quiet': True, 
             'paths': {'home': '/tmp/'}, 
             'progress_hooks': [self.yt_dlp_monitor],
-            'extractor_args': {'youtube': 'player_client=web_creator;po_token=web_creator+'+self.po_token["Parameter"]["Value"]},
+            # 'extractor_args': {'youtube': 'player_client=web_creator;po_token=web_creator+'+self.po_token},
+            'extractor_args': {'youtube': 'player_client=web_creator'},
             'cookiefile': '/tmp/cookies.txt',
             'verbose': False,
             'cachedir': '/tmp',
