@@ -1,26 +1,38 @@
 import yt_dlp
-import shutil
 import boto3
 import os
+from datetime import datetime, timedelta
 
 class YtdlpHandler:
     destination = None
 
     def __init__(self, url) -> None:
         s3_client = boto3.client("s3")
-        ssm_client = boto3.client("ssm")
 
         self.url = url
-        # self.po_token = ssm_client.get_parameter(Name="youtube-cutter-prod-po-token")
 
-        # s3_client.download_file("youtube-cutter-hetzner-vps", "yt-credentials/po-token.txt", "/tmp/po-token.txt")
-        # with open("/tmp/po-token.txt", "r") as file:
-        #     self.po_token = file.read()
-        #     print("PO TOKEN IS: ", self.po_token)
+        last_downloaded = datetime.now() - timedelta(days=60)  # Default to always download cookie if no datetime file exists
+        if os.path.exists("/tmp/last_downloaded_cookies.txt"):
+            with open("/tmp/last_downloaded_cookies.txt", "r") as last_downloaded_file:
+                last_downloaded = datetime.strptime(last_downloaded_file.read().strip(), "%Y-%m-%d %H:%M:%S.%f")
 
-        # Need to move cookies to tmp folder because that is the only area that is non read only for lambdas
-        if not os.path.exists("/tmp/cookies.txt"):
-            s3_client.download_file("youtube-cutter-hetzner-vps", "yt-credentials/cookies.txt", "/tmp/cookies.txt")
+        try:
+            s3_client.get_object(
+                Bucket="youtube-cutter-hetzner-vps",
+                Key="yt-credentials/cookies.txt",
+                IfModifiedSince=last_downloaded
+            )
+
+            with open("/tmp/last_downloaded_cookies.txt", "w") as last_downloaded_file:
+                last_downloaded_file.write(str(datetime.now()))
+
+            print("[CUSTOM] cookies.txt modified, downloading new version.")
+        except s3_client.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == '304':
+                print("[CUSTOM] cookies.txt has not been modified, using cached version.")
+            else:
+                raise
+
 
     def yt_dlp_monitor(self, d):
         YtdlpHandler.destination  = d.get('info_dict').get('_filename')
