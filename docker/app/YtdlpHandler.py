@@ -3,6 +3,9 @@ import boto3
 import os
 from datetime import datetime, timedelta
 
+BUCKET_NAME = "youtube-cutter-hetzner-vps"
+COOKIES_KEY = "yt-credentials/cookies.txt"
+
 class YtdlpHandler:
     destination = None
 
@@ -18,9 +21,15 @@ class YtdlpHandler:
 
         try:
             s3_client.get_object(
-                Bucket="youtube-cutter-hetzner-vps",
-                Key="yt-credentials/cookies.txt",
+                Bucket=BUCKET_NAME,
+                Key=COOKIES_KEY,
                 IfModifiedSince=last_downloaded
+            )
+
+            s3_client.download_file(
+                Bucket=BUCKET_NAME,
+                Key=COOKIES_KEY,
+                Filename="/tmp/cookies.txt"
             )
 
             with open("/tmp/last_downloaded_cookies.txt", "w") as last_downloaded_file:
