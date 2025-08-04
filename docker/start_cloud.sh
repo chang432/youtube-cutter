@@ -25,6 +25,12 @@ for pdir in ${PARTITION_NAMES}; do
 
         # set PARTITION_PATH as global env variable
         echo "export PARTITION_PATH=${PARTITION_PATH}" > /opt/shared_env.sh
+
+        # Configure logging alias 
+        echo "alias flask-logs='tail -f -n 100 /mnt/${pdir}/log/container-flask/container-flask.log'" >> ~/.bashrc
+        echo "alias nginx-logs='tail -f -n 100 /mnt/${pdir}/log/container-nginx/container-nginx.log'" >> ~/.bashrc
+        source ~/.bashrc
+
         chmod +x /opt/shared_env.sh
         break
     fi
