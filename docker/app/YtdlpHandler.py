@@ -1,13 +1,16 @@
+from botocore.parsers import LOG
 import yt_dlp
 import boto3
 import os
+import shutil
 from datetime import datetime, timedelta
 from CustomLogger import CustomLogger
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
 COOKIES_KEY = "yt-credentials/cookies.txt"
 
-LOGGER = CustomLogger(os.getpid(), "DEFAULT")
+PID = os.getpid()
+LOGGER = CustomLogger(PID, "DEFAULT")
 
 class YtdlpHandler:
     destination = None
@@ -18,6 +21,7 @@ class YtdlpHandler:
         LOGGER.set_yt_id(yt_id)
 
         self.url = url
+        self.yt_id = yt_id
 
         last_downloaded = datetime.now() - timedelta(days=60)  # Default to always download cookie if no datetime file exists
         if os.path.exists("/tmp/last_downloaded_cookies.txt"):
@@ -49,14 +53,15 @@ class YtdlpHandler:
 
 
     def yt_dlp_monitor(self, d):
-        YtdlpHandler.destination  = d.get('info_dict').get('_filename')
+        YtdlpHandler.destination = d.get('info_dict').get('_filename')
 
     def yt_dlp_request(self, shouldDownload=False):
 
         yt_dlp_opts = {
             'format': 'm4a/bestaudio/best', 
             'quiet': True, 
-            'paths': {'home': '/tmp/'}, 
+            'paths': {'home': '/audio/'}, 
+            'outtmpl': f'{self.yt_id}.m4a',
             'progress_hooks': [self.yt_dlp_monitor],
             # 'extractor_args': {'youtube': 'player_client=web_creator;po_token=web_creator+'+self.po_token},
             'extractor_args': {'youtube': 'player_client=web_creator'},
@@ -71,5 +76,8 @@ class YtdlpHandler:
             output = ydl.extract_info(self.url, download=shouldDownload)
         title = output.get('title', None)
         duration = output.get('duration', None)  # Duration in seconds
-        # print(video_title, video_duration)
-        return { 'title':title, 'duration':duration, 'destfilename':YtdlpHandler.destination }
+
+        if shouldDownload:
+            LOGGER.log(f"yt_dlp_request complete, destination -> {YtdlpHandler.destination}")
+
+        return { 'title':title, 'duration':duration, 'destfilepath':YtdlpHandler.destination }

@@ -114,11 +114,7 @@ class FullDownloadHandler(Resource):
 
     yt_title = sanitize(yt_info["title"])
 
-    destination_filename = yt_object.yt_dlp_request(True)['destfilename']
-
-    new_file = f"{AUDIO_PATH}/{yt_id}.m4a"
-    LOGGER.log(f"Moving {destination_filename} -> {new_file}")
-    shutil.move(destination_filename, new_file)
+    dst_filepath = yt_object.yt_dlp_request(True)['destfilepath']
 
     if not is_cut:      
       if download_mp3:
@@ -127,7 +123,7 @@ class FullDownloadHandler(Resource):
         converted_file = f"{AUDIO_PATH}/{yt_id}.wav"
 
       LOGGER.log(f"Converting from mp4 to {converted_file}")
-      ffmpeg_command = f'{FFMPEG_EXEC} -loglevel error -i "{new_file}" -write_xing 0 -y "{converted_file}"'
+      ffmpeg_command = f'{FFMPEG_EXEC} -loglevel error -i "{dst_filepath}" -write_xing 0 -y "{converted_file}"'
 
       try:
         subprocess.check_output(ffmpeg_command, shell=True)
@@ -135,16 +131,16 @@ class FullDownloadHandler(Resource):
       except Exception as e:
         LOGGER.log(f"Error occurred while converting to {converted_file}: {e}")
 
-      os.remove(new_file)
-      new_file = converted_file
+      os.remove(dst_filepath)
+      dst_filepath = converted_file
 
     output_file_name = f"{yt_title}.m4a"
     if not is_cut:
       output_file_name = f"{yt_title}.mp3" if download_mp3 else f"{yt_title}.wav"
     
-    os.rename(new_file, f"{AUDIO_PATH}/{output_file_name}")
+    os.rename(dst_filepath, f"{AUDIO_PATH}/{output_file_name}")
 
-    LOGGER.log(f"download from youtube complete of {output_file_name}!")
+    LOGGER.log(f"Download from youtube complete -> {output_file_name}!")
 
     processMetrics(yt_title, download_mp3, is_cut)
 
