@@ -7,6 +7,7 @@ import os
 import shutil
 import re
 import time
+from CustomLogger import CustomLogger
 
 # Import for JWT
 from flask_jwt_extended import verify_jwt_in_request
@@ -24,6 +25,8 @@ AUDIO_PATH="/audio"
 APP_ENV = os.getenv("APP_ENV")
 
 FFMPEG_EXEC = "/opt/bin/ffmpeg"
+
+LOGGER = CustomLogger(PID, "DEFAULT")
 
 def sanitize(title: str):
     title = re.sub(r'[^\x00-\x7f]',r'', title)
@@ -62,31 +65,34 @@ def processMetrics(title, is_mp3, is_cut):
   except ClientError as e:
     if e.response['Error']['Code'] == "404":
       # The key does not exist
-      print(f"[CUSTOM] metric file not found, creating new one")
+      LOGGER.log(f"metric file not found, creating new one")
       clean_yt_title = title.replace("\n","")
       with open(LOCAL_METRICS_PATH, 'w') as file:
         file.write(f'[{download_type}]-[{extension}]-[{curr_time.strftime("%d-%H:%M")}]-{clean_yt_title}\n')
   
-print(f"[CUSTOM] {LOCAL_METRICS_PATH} updated")
+  LOGGER.log(f"{LOCAL_METRICS_PATH} updated")
 
 
 class FullDownloadHandler(Resource):
   def post(self):
     start_time = time.time()
-    print(f"[CUSTOM] STARTING FullDownloadHandler.py on PID {PID}", flush=True)
 
     data = request.get_json()
     yt_id = data.get('yt_id')
     is_cut = data.get('is_cut')
     download_mp3 = data.get('download_mp3')
 
-    # print("headers: " + str(dict(request.headers)), flush=True)
-    # print("cookies: " + str(request.cookies), flush=True)
+    LOGGER.set_yt_id(yt_id)
 
-    print(f"[CUSTOM] yt_id is {yt_id}, is_cut is {is_cut}", flush=True)
+    LOGGER.log("========== Starting FullDownloadHandler.py ==========")
+
+    # LOGGER.log("headers: " + str(dict(request.headers)))
+    # LOGGER.log("cookies: " + str(request.cookies))
+
+    LOGGER.log(f"is_cut -> {is_cut}")
 
     url = "https://youtube.com/watch?v=" + yt_id
-    yt_object = YtdlpHandler(url)
+    yt_object = YtdlpHandler(url, yt_id)
 
     yt_info = yt_object.yt_dlp_request(False)
 
@@ -96,13 +102,13 @@ class FullDownloadHandler(Resource):
       verify_jwt_in_request()
       # If a valid JWT is present, treat as premium
       is_premium = True
-      print("[CUSTOM] JWT detected, premium user - removing download limit", flush=True)
+      LOGGER.log("JWT detected, premium user - removing download limit")
     except Exception as e:
-      print(f"[CUSTOM] JWT not detected: {e}, enforcing download limit", flush=True)
+      LOGGER.log(f"JWT not detected: {e}, enforcing download limit")
 
     # set a limit on video length for cuts, unless premium
     duration_minutes = yt_info["duration"] / 60
-    print(f"duration in minutes is {duration_minutes}", flush=True)
+    LOGGER.log(f"duration in minutes -> {duration_minutes}")
     if not is_premium and duration_minutes > DOWNLOAD_LIMIT:
       return {"error": "true", "message": f"This video is over the limit of {DOWNLOAD_LIMIT} minutes, please donate to remove the limit!"}
 
@@ -111,6 +117,7 @@ class FullDownloadHandler(Resource):
     destination_filename = yt_object.yt_dlp_request(True)['destfilename']
 
     new_file = f"{AUDIO_PATH}/{yt_id}.m4a"
+    LOGGER.log(f"Moving {destination_filename} -> {new_file}")
     shutil.move(destination_filename, new_file)
 
     if not is_cut:      
@@ -119,14 +126,14 @@ class FullDownloadHandler(Resource):
       else:
         converted_file = f"{AUDIO_PATH}/{yt_id}.wav"
 
-      print(f"Converting from mp4 to {converted_file}", flush=True)
+      LOGGER.log(f"Converting from mp4 to {converted_file}")
       ffmpeg_command = f'{FFMPEG_EXEC} -loglevel error -i "{new_file}" -write_xing 0 -y "{converted_file}"'
 
       try:
         subprocess.check_output(ffmpeg_command, shell=True)
-        print(f'[CUSTOM] File successfully converted to {converted_file}', flush=True)
+        LOGGER.log(f'File successfully converted to {converted_file}')
       except Exception as e:
-        print(f"[CUSTOM] Error occurred while converting to {converted_file}: {e}", flush=True)
+        LOGGER.log(f"Error occurred while converting to {converted_file}: {e}")
 
       os.remove(new_file)
       new_file = converted_file
@@ -137,11 +144,11 @@ class FullDownloadHandler(Resource):
     
     os.rename(new_file, f"{AUDIO_PATH}/{output_file_name}")
 
-    print(f"[CUSTOM] download from youtube complete of {output_file_name}!", flush=True)
+    LOGGER.log(f"download from youtube complete of {output_file_name}!")
 
     processMetrics(yt_title, download_mp3, is_cut)
 
     location = f"{HOST_ENDPOINT}/audio/{output_file_name}"
 
-    print(f"[CUSTOM] FINISHING FullDownloadHandler.py on PID {PID}, took {(time.time() - start_time)} seconds", flush=True)
+    LOGGER.log(f"========== FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds ==========")
     return jsonify({"error": "false", "url": location, "title": yt_title})

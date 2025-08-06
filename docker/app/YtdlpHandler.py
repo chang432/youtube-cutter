@@ -2,15 +2,20 @@ import yt_dlp
 import boto3
 import os
 from datetime import datetime, timedelta
+from CustomLogger import CustomLogger
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
 COOKIES_KEY = "yt-credentials/cookies.txt"
 
+LOGGER = CustomLogger(os.getpid(), "DEFAULT")
+
 class YtdlpHandler:
     destination = None
 
-    def __init__(self, url) -> None:
+    def __init__(self, url, yt_id=None) -> None:
         s3_client = boto3.client("s3")
+
+        LOGGER.set_yt_id(yt_id)
 
         self.url = url
 
@@ -35,17 +40,16 @@ class YtdlpHandler:
             with open("/tmp/last_downloaded_cookies.txt", "w") as last_downloaded_file:
                 last_downloaded_file.write(str(datetime.now()))
 
-            print("[CUSTOM] cookies.txt modified, downloading new version.")
+            LOGGER.log("cookies.txt modified, downloading new version.")
         except s3_client.exceptions.ClientError as e:
             if e.response['Error']['Code'] == '304':
-                print("[CUSTOM] cookies.txt has not been modified, using cached version.")
+                LOGGER.log("cookies.txt has not been modified, using cached version.")
             else:
                 raise
 
 
     def yt_dlp_monitor(self, d):
         YtdlpHandler.destination  = d.get('info_dict').get('_filename')
-        print("FILE NAME IS: ", YtdlpHandler.destination)
 
     def yt_dlp_request(self, shouldDownload=False):
 
