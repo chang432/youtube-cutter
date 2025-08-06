@@ -29,7 +29,6 @@ for pdir in ${PARTITION_NAMES}; do
         # Configure logging alias 
         echo "alias flask-logs='tail -f -n 100 /mnt/${pdir}/log/container-flask/container-flask.log'" >> ~/.bashrc
         echo "alias nginx-logs='tail -f -n 100 /mnt/${pdir}/log/container-nginx/container-nginx.log'" >> ~/.bashrc
-        source ~/.bashrc
 
         chmod +x /opt/shared_env.sh
         break
