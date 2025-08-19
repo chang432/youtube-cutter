@@ -3,7 +3,6 @@ from flask_s3 import FlaskS3
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from api.HelloApiHandler import HelloApiHandler
-from api.FullDownloadHandler import FullDownloadHandler
 from api.CleanupHandler import CleanupHandler
 from api.KofiWebhookHandler import KofiWebhookHandler
 from api.PremiumLoginHandler import PremiumLoginHandler
@@ -42,7 +41,6 @@ s3 = FlaskS3(app)
 api = Api(app)
 
 # api.add_resource(HelloApiHandler, '/flask/hello')
-# api.add_resource(FullDownloadHandler, '/handle_full')
 # api.add_resource(CleanupHandler, '/cleanup')
 api.add_resource(KofiWebhookHandler, '/kofi_webhook')
 api.add_resource(PremiumVerificationHandler, '/verify_premium')
