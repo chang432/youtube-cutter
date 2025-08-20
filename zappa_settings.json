@@ -75,6 +75,7 @@
             "SecurityGroupIds": [
                 "sg-0ba3d11bf496cdff6"
             ]
-        }
+        },
+        "slim_handler": true
     }
 }
