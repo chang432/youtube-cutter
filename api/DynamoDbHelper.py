@@ -14,12 +14,27 @@ class DynamoDbHelper:
 
     # Returns whether the input access_key exists in the table
     def checkItem(self, input_access_key):
-        res = self.table.query(
+        print(f"Checking if access key {input_access_key} exists in {self.table}...")
+
+        items = []
+        resp = self.table.query(
             IndexName="access_key-index",
             KeyConditionExpression=Key("access_key").eq(input_access_key)
         )
+        # print(resp)
+        items.extend(resp.get("Items", []))
 
-        if res["Items"]:
+        # Pagination
+        while "LastEvaluatedKey" in resp:
+            resp = self.table.query(
+                ExclusiveStartKey=resp["LastEvaluatedKey"],
+                IndexName="access_key-index",
+                KeyConditionExpression=Key("access_key").eq(input_access_key)
+            )
+            items.extend(resp.get("Items", []))
+
+        # print(items)
+        if items:
             return True
     
         return False
