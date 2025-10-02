@@ -640,9 +640,9 @@ function App() {
     }
 
     function handleDonationClick() {
-        const jwtToken = jwtStorageHelper.getToken();
-        console.log("JWT: " + jwtToken);
-        // window.open("https://ko-fi.com/wavninja", "_blank");
+        // const jwtToken = jwtStorageHelper.getToken();
+        // console.log("JWT: " + jwtToken);
+        window.open("https://ko-fi.com/wavninja", "_blank");
     }
 
     return (
