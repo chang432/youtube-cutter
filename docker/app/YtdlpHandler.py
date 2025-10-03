@@ -4,13 +4,13 @@ import boto3
 import os
 import shutil
 from datetime import datetime, timedelta
-from CustomLogger import CustomLogger
+from Logger import Logger
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
 COOKIES_KEY = "yt-credentials/cookies.txt"
 
 PID = os.getpid()
-LOGGER = CustomLogger(PID, "DEFAULT")
+LOGGER = Logger(PID, "DEFAULT")
 
 class YtdlpHandler:
     destination = None

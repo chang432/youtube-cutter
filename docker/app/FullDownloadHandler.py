@@ -7,7 +7,7 @@ import os
 import shutil
 import re
 import time
-from CustomLogger import CustomLogger
+from Logger import Logger
 
 # Import for JWT
 from flask_jwt_extended import verify_jwt_in_request
@@ -26,7 +26,7 @@ APP_ENV = os.getenv("APP_ENV")
 
 FFMPEG_EXEC = "/opt/bin/ffmpeg"
 
-LOGGER = CustomLogger(PID, "DEFAULT")
+LOGGER = Logger(PID, "DEFAULT")
 
 def sanitize(title: str):
     title = re.sub(r'[^\x00-\x7f]',r'', title)
