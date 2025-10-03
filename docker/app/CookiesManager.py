@@ -1,8 +1,8 @@
 import os
 import boto3
 import json
-import Logger
-from datetime import datetime
+from Logger import Logger
+from datetime import datetime, timezone
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
 COOKIES_PREFIX = "yt-credentials-test"
@@ -37,7 +37,7 @@ class CookiesManager:
                         cookies_status.append({
                             "name": file_name,
                             "valid": True,
-                            "lastModified": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+                            "lastModified": str(datetime.now(timezone.utc))
                         })
 
                 # Write cookies_status to JSON file
@@ -48,7 +48,7 @@ class CookiesManager:
     
     def refresh_cookies(self):
         """
-        Refresh any cookies that have been changed in s3
+        Pulls down any cookies that have been changed in s3
         """
         json_file_path = os.path.join(self.cookies_staging, "cookies_status.json")
 
@@ -69,12 +69,13 @@ class CookiesManager:
                 s3_last_modified = s3_metadata["LastModified"]
 
                 # Compare dates
-                local_last_modified = datetime.strptime(cookie["lastModified"], "%Y-%m-%d %H:%M:%S.%f")
+                local_last_modified = datetime.fromisoformat(cookie["lastModified"])
+                Logger.log(f"Comparing S3 last modified ({s3_last_modified}) with local last modified ({local_last_modified}) for {file_name}")
                 if s3_last_modified > local_last_modified:
                     # Download updated file
-                    print(f"Pulling updated cookie {file_name} from s3 because (s3: {s3_last_modified} > local: {local_last_modified})")
+                    Logger.log(f"Pulling updated cookie {file_name} from s3 because (s3: {s3_last_modified} > local: {local_last_modified})")
                     self.s3_client.download_file(BUCKET_NAME, s3_key, local_file_path)
-                    cookie["lastModified"] = s3_last_modified
+                    cookie["lastModified"] = str(s3_last_modified)
                     cookie["valid"] = True
             except Exception as e:
                 print(f"Error checking refresh status or refreshing {file_name}: {e}")
@@ -82,10 +83,10 @@ class CookiesManager:
         # Update cookies_status.json
         with open(json_file_path, "w") as json_file:
             json.dump(cookies_status, json_file, indent=4)
-        
 
-    def testing(self):
-        return "This is a test function in cookiesManager.py"
+
+    # def check_cookies_validity(self):
+    #     return "This is a test function in cookiesManager.py"
 
 if __name__ == "__main__":
     print("hello")
