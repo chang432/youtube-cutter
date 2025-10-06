@@ -7,13 +7,13 @@ from YtdlpHandler import YtdlpHandler
 import random
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
-COOKIES_PREFIX = "yt-credentials-test"
+COOKIES_PREFIX = "yt-credentials"
 
 class CookiesManager:
 
     s3_client = boto3.client('s3')
 
-    def __init__(self, staging_path="/tmp"):
+    def __init__(self, staging_path="/tmp/cookies"):
         self.cookies_staging = f"{staging_path}/cookies_staging"
         self.init_cookies_staging()
 
@@ -72,7 +72,6 @@ class CookiesManager:
         if not os.path.exists(cookie_path):
             raise FileNotFoundError(f"Cookie named {cookie_name} does not exist. Please initialize first.")
         return cookie_path
-    
     
     def resync_cookies(self):
         """

@@ -3,9 +3,6 @@ import yt_dlp
 import os
 from Logger import Logger
 
-BUCKET_NAME = "youtube-cutter-hetzner-vps"
-COOKIES_KEY = "yt-credentials/cookies.txt"
-
 PID = os.getpid()
 LOGGER = Logger(PID, "DEFAULT")
 
