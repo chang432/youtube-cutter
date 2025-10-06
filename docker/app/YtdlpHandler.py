@@ -1,9 +1,6 @@
 from botocore.parsers import LOG
 import yt_dlp
-import boto3
 import os
-import shutil
-from datetime import datetime, timedelta
 from Logger import Logger
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
@@ -15,47 +12,19 @@ LOGGER = Logger(PID, "DEFAULT")
 class YtdlpHandler:
     destination = None
 
-    def __init__(self, url, yt_id=None) -> None:
-        s3_client = boto3.client("s3")
-
-        LOGGER.set_yt_id(yt_id)
-
+    def __init__(self, url, cookie_path) -> None:
         self.url = url
-        self.yt_id = yt_id
+        self.yt_id = url.split("watch?v=")[-1]
+        self.cookie_path = cookie_path
 
-        last_downloaded = datetime.now() - timedelta(days=60)  # Default to always download cookie if no datetime file exists
-        if os.path.exists("/tmp/last_downloaded_cookies.txt"):
-            with open("/tmp/last_downloaded_cookies.txt", "r") as last_downloaded_file:
-                last_downloaded = datetime.strptime(last_downloaded_file.read().strip(), "%Y-%m-%d %H:%M:%S.%f")
-
-        try:
-            s3_client.get_object(
-                Bucket=BUCKET_NAME,
-                Key=COOKIES_KEY,
-                IfModifiedSince=last_downloaded
-            )
-
-            s3_client.download_file(
-                Bucket=BUCKET_NAME,
-                Key=COOKIES_KEY,
-                Filename="/tmp/cookies.txt"
-            )
-
-            with open("/tmp/last_downloaded_cookies.txt", "w") as last_downloaded_file:
-                last_downloaded_file.write(str(datetime.now()))
-
-            LOGGER.log("cookies.txt modified, downloading new version.")
-        except s3_client.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == '304':
-                LOGGER.log("cookies.txt has not been modified, using cached version.")
-            else:
-                raise
+        LOGGER.set_yt_id(self.yt_id)
 
 
     def yt_dlp_monitor(self, d):
         YtdlpHandler.destination = d.get('info_dict').get('_filename')
 
     def yt_dlp_request(self, shouldDownload=False):
+        LOGGER.log(f"Attempting to download using cookie {self.cookie_path}")
 
         yt_dlp_opts = {
             'format': 'm4a/bestaudio/best', 
@@ -66,7 +35,7 @@ class YtdlpHandler:
             # 'extractor_args': {'youtube': 'player_client=web_creator;po_token=web_creator+'+self.po_token},
             'extractor_args': {'youtube': 'player_client=web_creator'},
             # 'extractor_args': {'youtube': 'player_client=web_embedded,web,tv'},
-            'cookiefile': '/tmp/cookies.txt',
+            'cookiefile': self.cookie_path,
             'verbose': False,
             'cachedir': '/tmp',
             'nocachedir': True,

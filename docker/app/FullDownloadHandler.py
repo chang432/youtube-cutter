@@ -2,6 +2,7 @@ from flask_restful import Api, Resource, reqparse
 from flask import Flask, render_template, send_file, request, jsonify
 from datetime import datetime
 from YtdlpHandler import YtdlpHandler
+from CookiesManager import CookiesManager
 import subprocess
 import os
 import shutil
@@ -91,8 +92,9 @@ class FullDownloadHandler(Resource):
 
     LOGGER.log(f"is_cut -> {is_cut}")
 
+    cookies_manager = CookiesManager()
     url = "https://youtube.com/watch?v=" + yt_id
-    yt_object = YtdlpHandler(url, yt_id)
+    yt_object = YtdlpHandler(url, cookies_manager.retrieve_valid_cookie_path())
 
     yt_info = yt_object.yt_dlp_request(False)
 

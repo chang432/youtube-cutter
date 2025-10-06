@@ -3,6 +3,8 @@ import boto3
 import json
 from Logger import Logger
 from datetime import datetime, timezone
+from YtdlpHandler import YtdlpHandler
+import random
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
 COOKIES_PREFIX = "yt-credentials-test"
@@ -44,9 +46,35 @@ class CookiesManager:
                 json_file_path = os.path.join(self.cookies_staging, "cookies_status.json")
                 with open(json_file_path, "w") as json_file:
                     json.dump(cookies_status, json_file, indent=4)
+            
+            self.check_cookies_validity()
+
+    
+    def retrieve_valid_cookie_path(self):
+        json_file_path = os.path.join(self.cookies_staging, "cookies_status.json")
+
+        if not os.path.exists(json_file_path):
+            raise FileNotFoundError("cookies_status.json not found in staging directory.")
+
+        with open(json_file_path, "r") as json_file:
+            cookies_status = json.load(json_file)
+
+        valid_cookies = [cookie for cookie in cookies_status if cookie["valid"]]
+
+        if not valid_cookies:
+            raise ValueError("No valid cookies found in cookies_status.json")
+
+        chosen_cookie = random.choice(valid_cookies)
+        return os.path.join(self.cookies_staging, chosen_cookie["name"])
+
+    def retrieve_cookie_path(self, cookie_name):
+        cookie_path = self.cookies_staging + "/" + cookie_name
+        if not os.path.exists(cookie_path):
+            raise FileNotFoundError(f"Cookie named {cookie_name} does not exist. Please initialize first.")
+        return cookie_path
     
     
-    def refresh_cookies(self):
+    def resync_cookies(self):
         """
         Pulls down any cookies that have been changed in s3
         """
@@ -85,8 +113,35 @@ class CookiesManager:
             json.dump(cookies_status, json_file, indent=4)
 
 
-    # def check_cookies_validity(self):
-    #     return "This is a test function in cookiesManager.py"
+    def check_cookies_validity(self):
+        json_file_path = os.path.join(self.cookies_staging, "cookies_status.json")
+
+        cookies_status = []
+        with open(json_file_path, "r") as json_file:
+            cookies_status = json.load(json_file)
+
+        if not cookies_status:
+            raise ValueError("No cookies found in cookies_status.json")
+
+        for cookie in cookies_status:
+            file_name = cookie["name"]
+            Logger.log(f"Checking validity of " + file_name)
+            local_file_path = os.path.join(self.cookies_staging, file_name)
+            
+            try:
+                yt_object = YtdlpHandler("https://youtube.com/watch?v=Bu8bH2P37kY", local_file_path)
+
+                yt_object.yt_dlp_request(shouldDownload=True)
+                Logger.log(f"Testing passed, setting {file_name} status to valid")
+                cookie["valid"] = True
+            except Exception as e:
+                Logger.log(f"Testing failed, setting {file_name} status is invalid\nerror in YtdlpHandler: {e}")
+                cookie["valid"] = False
+        
+        # Write cookies_status to JSON file
+        with open(json_file_path, "w") as json_file:
+            json.dump(cookies_status, json_file, indent=4)
+                    
 
 if __name__ == "__main__":
     print("hello")
