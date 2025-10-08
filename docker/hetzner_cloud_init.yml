@@ -7,6 +7,7 @@ runcmd:
   - apt install -y docker.io
   - apt install -y docker-compose
   - apt install -y unzip
+  - apt install -y python3.12-venv
 
   - echo "[CUSTOM] Pulling down aws cli"
   - curl -o "awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
@@ -21,6 +22,9 @@ runcmd:
   - git clone https://github.com/chang432/youtube-cutter.git
   - mv youtube-cutter/docker ./
   - rm -rf youtube-cutter
+  - cd docker
+  - python3 -m venv venv
+  - source venv/bin/activate && python3 -m pip install -r requirements.txt
 
   - reboot
 

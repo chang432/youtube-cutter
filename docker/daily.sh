@@ -2,9 +2,13 @@
 
 # Configure PARTITION_PATH var set in start_cloud.sh
 source /opt/shared_env.sh
+
+source /opt/docker/venv/bin/activate
+
 echo "PARTITION_PATH: ${PARTITION_PATH}"
 
 echo "Syncing and checking validity of cookies..."
+cd /opt/docker/app
 python3 -c "from CookiesManager import CookiesManager; cm = CookiesManager(); cm.resync_cookies(); cm.check_cookies_validity()"
 
 # Refresh cleanup.log
