@@ -73,6 +73,25 @@ class CookiesManager:
             raise FileNotFoundError(f"Cookie named {cookie_name} does not exist. Please initialize first.")
         return cookie_path
     
+    def disable_cookie(self, cookie_name):
+        Logger.log(f"Disabling cookie {cookie_name} in cookies_status.json")
+        json_file_path = os.path.join(self.cookies_staging, "cookies_status.json")
+
+        if not os.path.exists(json_file_path):
+            raise FileNotFoundError("cookies_status.json not found in staging directory.")
+
+        with open(json_file_path, "r") as json_file:
+            cookies_status = json.load(json_file)
+
+        for cookie in cookies_status:
+            if cookie["name"] == cookie_name:
+                cookie["valid"] = False
+                break
+
+        # Write updated cookies_status back to JSON file
+        with open(json_file_path, "w") as json_file:
+            json.dump(cookies_status, json_file, indent=4)
+    
     def resync_cookies(self):
         """
         Pulls down any cookies that have been changed in s3

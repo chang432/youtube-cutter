@@ -23,4 +23,4 @@ class Logger:
     def log(content, level=LogLevel.INFO.value):
         """ Default Loggger """
         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        print(f"[{level.upper()}]-[{timestamp}]: {content}")
+        print(f"[{level.upper()}]-[{timestamp}]: {content}", flush=True)

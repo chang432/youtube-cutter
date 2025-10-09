@@ -94,7 +94,7 @@ class FullDownloadHandler(Resource):
 
     cookies_manager = CookiesManager()
     url = "https://youtube.com/watch?v=" + yt_id
-    yt_object = YtdlpHandler(url, cookies_manager.retrieve_valid_cookie_path())
+    yt_object = YtdlpHandler(url, cookies_manager)
 
     yt_info = yt_object.yt_dlp_request(False)
 
