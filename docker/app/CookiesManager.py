@@ -147,7 +147,7 @@ class CookiesManager:
             local_file_path = os.path.join(self.cookies_staging, file_name)
             
             try:
-                yt_object = YtdlpHandler("https://youtube.com/watch?v=Bu8bH2P37kY", local_file_path)
+                yt_object = YtdlpHandler("https://youtube.com/watch?v=Bu8bH2P37kY", self, local_file_path)
 
                 yt_object.yt_dlp_request(shouldDownload=True)
                 Logger.log(f"Testing passed, setting {file_name} status to valid")

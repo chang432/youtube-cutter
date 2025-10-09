@@ -9,11 +9,11 @@ LOGGER = Logger(PID, "DEFAULT")
 class YtdlpHandler:
     destination = None
 
-    def __init__(self, url, cookies_manager) -> None:
+    def __init__(self, url, cookies_manager, cookie_path) -> None:
         self.url = url
         self.yt_id = url.split("watch?v=")[-1]
         self.cookies_manager = cookies_manager
-        self.cookie_path = self.cookies_manager.retrieve_valid_cookie_path()
+        self.cookie_path = cookie_path
 
         LOGGER.set_yt_id(self.yt_id)
 
