@@ -47,8 +47,9 @@ class YtdlpHandler:
                 title = output.get('title', None)
                 duration = output.get('duration', None)  # Duration in seconds
         except Exception as e:
-            LOGGER.yt_log(f"yt_dlp_request failed, disabling cookie {os.path.basename(self.cookie_path)} in cookies_status.json: {e}")
-            self.cookies_manager.disable_cookie(os.path.basename(self.cookie_path))
+            LOGGER.yt_log(f"yt_dlp_request failed: {e}")
+            # LOGGER.yt_log(f"yt_dlp_request failed, disabling cookie {os.path.basename(self.cookie_path)} in cookies_status.json: {e}")
+            # self.cookies_manager.disable_cookie(os.path.basename(self.cookie_path))
             raise e
         
         if shouldDownload:
