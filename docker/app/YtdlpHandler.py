@@ -4,7 +4,6 @@ import os
 from Logger import Logger
 
 PID = os.getpid()
-LOGGER = Logger(PID, "DEFAULT")
 
 class YtdlpHandler:
     destination = None
@@ -15,14 +14,11 @@ class YtdlpHandler:
         self.cookies_manager = cookies_manager
         self.cookie_path = cookie_path
 
-        LOGGER.set_yt_id(self.yt_id)
-
-
     def yt_dlp_monitor(self, d):
         YtdlpHandler.destination = d.get('info_dict').get('_filename')
 
     def yt_dlp_request(self, shouldDownload=False):
-        LOGGER.yt_log(f"Attempting to download using cookie {self.cookie_path}")
+        Logger.log(f"Attempting to download using cookie {self.cookie_path}", PID, self.yt_id)
 
         yt_dlp_opts = {
             'format': 'm4a/bestaudio/best', 
@@ -47,12 +43,11 @@ class YtdlpHandler:
                 title = output.get('title', None)
                 duration = output.get('duration', None)  # Duration in seconds
         except Exception as e:
-            LOGGER.yt_log(f"yt_dlp_request failed: {e}")
-            # LOGGER.yt_log(f"yt_dlp_request failed, disabling cookie {os.path.basename(self.cookie_path)} in cookies_status.json: {e}")
+            Logger.log(f"yt_dlp_request failed, finding a new cookie to use: {e}", PID, self.yt_id)
             # self.cookies_manager.disable_cookie(os.path.basename(self.cookie_path))
             raise e
         
         if shouldDownload:
-            LOGGER.yt_log(f"yt_dlp_request complete, destination -> {YtdlpHandler.destination}")
+            Logger.log(f"yt_dlp_request complete, destination -> {YtdlpHandler.destination}", PID, self.yt_id)
 
         return { 'title':title, 'duration':duration, 'destfilepath':YtdlpHandler.destination }

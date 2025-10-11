@@ -14,6 +14,7 @@ from Logger import Logger
 from flask_jwt_extended import verify_jwt_in_request
 
 PID = os.getpid()
+YT_ID = None
 
 LOCAL_METRICS_PATH = f"/var/log/metrics/metrics_{PID}.log"   # set in docker-compose.yml
 
@@ -27,7 +28,7 @@ APP_ENV = os.getenv("APP_ENV")
 
 FFMPEG_EXEC = "/opt/bin/ffmpeg"
 
-LOGGER = Logger(PID, "DEFAULT")
+Logger = Logger(PID, "DEFAULT")
 
 def sanitize(title: str):
     title = re.sub(r'[^\x00-\x7f]',r'', title)
@@ -66,16 +67,18 @@ def processMetrics(title, is_mp3, is_cut):
   except ClientError as e:
     if e.response['Error']['Code'] == "404":
       # The key does not exist
-      LOGGER.log(f"metric file not found, creating new one")
+      Logger.log(f"metric file not found, creating new one", PID, YT_ID)
       clean_yt_title = title.replace("\n","")
       with open(LOCAL_METRICS_PATH, 'w') as file:
         file.write(f'[{download_type}]-[{extension}]-[{curr_time.strftime("%d-%H:%M")}]-{clean_yt_title}\n')
   
-  LOGGER.log(f"{LOCAL_METRICS_PATH} updated")
+  Logger.log(f"{LOCAL_METRICS_PATH} updated", PID, YT_ID)
 
 
 class FullDownloadHandler(Resource):
   def post(self):
+    global YT_ID
+
     start_time = time.time()
 
     data = request.get_json()
@@ -83,17 +86,17 @@ class FullDownloadHandler(Resource):
     is_cut = data.get('is_cut')
     download_mp3 = data.get('download_mp3')
 
-    LOGGER.set_yt_id(yt_id)
+    YT_ID = yt_id
 
-    LOGGER.log("========== Starting FullDownloadHandler.py ==========")
+    Logger.log("========== Starting FullDownloadHandler.py ==========", PID, YT_ID)
 
-    # LOGGER.log("headers: " + str(dict(request.headers)))
-    # LOGGER.log("cookies: " + str(request.cookies))
+    # Logger.log("headers: " + str(dict(request.headers)))
+    # Logger.log("cookies: " + str(request.cookies))
 
-    LOGGER.log(f"is_cut -> {is_cut}")
+    Logger.log(f"is_cut -> {is_cut}")
 
     cookies_manager = CookiesManager()
-    cookies_path = cookies_manager.retrieve_valid_cookie_path()
+    cookies_path = cookies_manager.retrieve_current_cookie_path()
     url = "https://youtube.com/watch?v=" + yt_id
     yt_object = YtdlpHandler(url, cookies_manager, cookies_path)
 
@@ -105,13 +108,13 @@ class FullDownloadHandler(Resource):
       verify_jwt_in_request()
       # If a valid JWT is present, treat as premium
       is_premium = True
-      LOGGER.log("JWT detected, premium user - removing download limit")
+      Logger.log("JWT detected, premium user - removing download limit", PID, YT_ID)
     except Exception as e:
-      LOGGER.log(f"JWT not detected: {e}, enforcing download limit")
+      Logger.log(f"JWT not detected: {e}, enforcing download limit", PID, YT_ID)
 
     # set a limit on video length for cuts, unless premium
     duration_minutes = yt_info["duration"] / 60
-    LOGGER.log(f"duration in minutes -> {duration_minutes}")
+    Logger.log(f"duration in minutes -> {duration_minutes}", PID, YT_ID)
     if not is_premium and duration_minutes > DOWNLOAD_LIMIT:
       return {"error": "true", "message": f"This video is over the limit of {DOWNLOAD_LIMIT} minutes, please donate to remove the limit!"}
 
@@ -125,14 +128,14 @@ class FullDownloadHandler(Resource):
       else:
         converted_file = f"{AUDIO_PATH}/{yt_id}.wav"
 
-      LOGGER.log(f"Converting from mp4 to {converted_file}")
+      Logger.log(f"Converting from mp4 to {converted_file}", PID, YT_ID)
       ffmpeg_command = f'{FFMPEG_EXEC} -loglevel error -i "{dst_filepath}" -write_xing 0 -y "{converted_file}"'
 
       try:
         subprocess.check_output(ffmpeg_command, shell=True)
-        LOGGER.log(f'File successfully converted to {converted_file}')
+        Logger.log(f'File successfully converted to {converted_file}', PID, YT_ID)
       except Exception as e:
-        LOGGER.log(f"Error occurred while converting to {converted_file}: {e}")
+        Logger.log(f"Error occurred while converting to {converted_file}: {e}", PID, YT_ID)
 
       os.remove(dst_filepath)
       dst_filepath = converted_file
@@ -143,11 +146,11 @@ class FullDownloadHandler(Resource):
     
     os.rename(dst_filepath, f"{AUDIO_PATH}/{output_file_name}")
 
-    LOGGER.log(f"Download from youtube complete -> {output_file_name}!")
+    Logger.log(f"Download from youtube complete -> {output_file_name}!", PID, YT_ID)
 
     processMetrics(yt_title, download_mp3, is_cut)
 
     location = f"{HOST_ENDPOINT}/audio/{output_file_name}"
 
-    LOGGER.log(f"========== FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds ==========")
+    Logger.log(f"========== FINISHING FullDownloadHandler.py, took {(time.time() - start_time)} seconds ==========", PID, YT_ID)
     return jsonify({"error": "false", "url": location, "title": yt_title})
