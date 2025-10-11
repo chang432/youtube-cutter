@@ -39,7 +39,6 @@ packaging==25.0
 pathspec==0.12.1
 placebo==0.9.0
 pluggy==1.6.0
-portalocker==3.2.0
 pycryptodomex==3.23.0
 pydantic==2.11.7
 pydantic_core==2.33.2

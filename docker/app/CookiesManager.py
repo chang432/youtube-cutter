@@ -3,8 +3,7 @@ import boto3
 import json
 from datetime import datetime, timezone
 from YtdlpHandler import YtdlpHandler
-import random
-import portalocker
+from Logger import Logger
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
 COOKIES_PREFIX = "yt-credentials"
@@ -82,25 +81,6 @@ class CookiesManager:
             raise FileNotFoundError(f"Cookie named {cookie_name} does not exist. Please initialize first.")
         return cookie_path
     
-    def disable_cookie(self, cookie_name):
-        Logger.log(f"Disabling cookie {cookie_name} in cookies_status.json")
-        json_file_path = os.path.join(self.cookies_staging, "cookies_status.json")
-
-        if not os.path.exists(json_file_path):
-            raise FileNotFoundError("cookies_status.json not found in staging directory.")
-
-        with open(json_file_path, "r") as json_file:
-            cookies_status = json.load(json_file)
-
-        for cookie in cookies_status:
-            if cookie["name"] == cookie_name:
-                cookie["valid"] = False
-                break
-
-        # Write updated cookies_status back to JSON file
-        with open(json_file_path, "w") as json_file:
-            json.dump(cookies_status, json_file, indent=4)
-    
     def resync_cookies(self):
         """
         Pulls down any cookies that have been changed in s3
@@ -144,33 +124,32 @@ class CookiesManager:
         """
         Goes through all cookies in cookies_status.json and choose the first valid one as the current cookie.
         """
-        with portalocker.Lock(cookies_status_path, 'w', timeout=0) as json_file:
-            Logger.log(f"[CookiesManager] Evaluating current cookies to find a valid one to use...")
-            cookies_status_path = os.path.join(self.cookies_staging, "cookies_status.json")
+        Logger.log(f"[CookiesManager] Evaluating current cookies to find a valid one to use...")
+        cookies_status_path = os.path.join(self.cookies_staging, "cookies_status.json")
 
-            cookies_status = []
-            with open(cookies_status_path, "r") as json_file:
-                cookies_status = json.load(json_file)
+        cookies_status = []
+        with open(cookies_status_path, "r") as json_file:
+            cookies_status = json.load(json_file)
 
-            if not cookies_status:
-                raise ValueError("No cookies found in cookies_status.json")
+        if not cookies_status:
+            raise ValueError("No cookies found in cookies_status.json")
 
-            for cookie in cookies_status["cookies"]:
-                file_name = cookie["name"]
-                local_file_path = os.path.join(self.cookies_staging, file_name)
-                
-                try:
-                    yt_object = YtdlpHandler("https://youtube.com/watch?v=Bu8bH2P37kY", self, local_file_path)
+        for cookie in cookies_status["cookies"]:
+            file_name = cookie["name"]
+            local_file_path = os.path.join(self.cookies_staging, file_name)
+            
+            try:
+                yt_object = YtdlpHandler("https://youtube.com/watch?v=Bu8bH2P37kY", self, local_file_path)
 
-                    yt_object.yt_dlp_request(shouldDownload=True)
-                    # Logger.log(f"Testing passed, setting {file_name} as current cookie + status to valid")
-                    cookies_status["current_cookie"] = file_name
-                    cookie["valid"] = True
-                    break
-                except Exception as e:
-                    # Logger.log(f"Testing failed, setting {file_name} status as invalid\nerror in YtdlpHandler: {e}")
-                    cookie["valid"] = False
-                
-            json.dump(cookies_status, json_file, indent=4)
+                yt_object.yt_dlp_request(shouldDownload=True)
+                # Logger.log(f"Testing passed, setting {file_name} as current cookie + status to valid")
+                cookies_status["current_cookie"] = file_name
+                cookie["valid"] = True
+                break
+            except Exception as e:
+                # Logger.log(f"Testing failed, setting {file_name} status as invalid\nerror in YtdlpHandler: {e}")
+                cookie["valid"] = False
+            
+        json.dump(cookies_status, json_file, indent=4)
                     
 
