@@ -4,6 +4,6 @@ echo "========== $(date) STARTING COOKIE UPDATER =========="
 
 cd /opt/docker/app
 
-python3 cookies_updater.py
+/opt/docker/venv/bin/python3 CookiesManager.py
 
 echo "========== $(date) COOKIE UPDATER FINISHED =========="
