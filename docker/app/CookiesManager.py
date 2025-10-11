@@ -58,11 +58,8 @@ class CookiesManager:
             
             self.update_current_cookie()
 
-    
-    def retrieve_current_cookie_path(self):
-        """
-        Retrieves the current valid cookie path from cookies_status.json
-        """
+
+    def get_cookies_status(self):
         cookies_status_path = os.path.join(self.cookies_staging, "cookies_status.json")
 
         if not os.path.exists(cookies_status_path):
@@ -70,6 +67,15 @@ class CookiesManager:
 
         with open(cookies_status_path, "r") as json_file:
             cookies_status = json.load(json_file)
+        
+        return cookies_status
+
+    
+    def retrieve_current_cookie_path(self):
+        """
+        Retrieves the current valid cookie path from cookies_status.json
+        """
+        cookies_status = self.get_cookies_status()
 
         current_cookie = cookies_status["current_cookie"].get("path", None)
 
@@ -83,13 +89,7 @@ class CookiesManager:
         """
         Sync cookies from S3 and update state of each cookie. 
         """
-        json_file_path = os.path.join(self.cookies_staging, "cookies_status.json")
-
-        if not os.path.exists(json_file_path):
-            raise FileNotFoundError("cookies_status.json not found in staging directory.")
-
-        with open(json_file_path, "r") as json_file:
-            cookies_status = json.load(json_file)
+        cookies_status = self.get_cookies_status()
 
         local_cookie_names = [cookie["name"] for cookie in cookies_status["cookies"]]
 
@@ -127,40 +127,37 @@ class CookiesManager:
                 })
 
         # Update cookies_status.json
-        with open(json_file_path, "w") as json_file:
+        with open(os.path.join(self.cookies_staging, "cookies_status.json"), "w") as json_file:
             json.dump(cookies_status, json_file, indent=4)
 
 
-    def update_current_cookie(self):
+    def swap_cookie(self):
         """
-        Goes through all cookies in cookies_status.json and choose the first valid one as the current cookie.
+        Choose next valid cookie in the list and set it as current.
         """
-        Logger.log(f"[CookiesManager] Evaluating current cookies to find a valid one to use...")
-        cookies_status_path = os.path.join(self.cookies_staging, "cookies_status.json")
+        Logger.log(f"Swapping to next valid cookie", "CookieManager")
+        cookies_status = self.get_cookies_status()
+        cookies_len = len(cookies_status["cookies"])
 
-        cookies_status = []
-        with open(cookies_status_path, "r") as json_file:
-            cookies_status = json.load(json_file)
+        cur_idx = cookies_status["current_cookie"]["index"]
+        next_idx = (cur_idx + 1) % cookies_len
+        valid_cookie_found = False
 
-        if not cookies_status:
-            raise ValueError("No cookies found in cookies_status.json")
+        while next_idx != cur_idx:
+            next_cookie = cookies_status["cookies"][next_idx]
+            if next_cookie["valid"]:
+                cookies_status["current_cookie"]["index"] = next_idx
+                cookies_status["current_cookie"]["path"] = os.path.join(self.cookies_staging, next_cookie["name"])
+                valid_cookie_found = True
+            next_idx = (next_idx + 1) % cookies_len
 
-        for cookie in cookies_status["cookies"]:
-            file_name = cookie["name"]
-            local_file_path = os.path.join(self.cookies_staging, file_name)
-            
-            try:
-                yt_object = YtdlpHandler("https://youtube.com/watch?v=Bu8bH2P37kY", self, local_file_path)
+        if not valid_cookie_found:
+            Logger.log("No valid cookies available to swap to.", "CookieManager")
+            raise ValueError("No valid cookies available to swap to.")
 
-                yt_object.yt_dlp_request(shouldDownload=True)
-                # Logger.log(f"Testing passed, setting {file_name} as current cookie + status to valid")
-                cookies_status["current_cookie"] = file_name
-                cookie["valid"] = True
-                break
-            except Exception as e:
-                # Logger.log(f"Testing failed, setting {file_name} status as invalid\nerror in YtdlpHandler: {e}")
-                cookie["valid"] = False
-            
-        json.dump(cookies_status, json_file, indent=4)
-                    
+        with open(os.path.join(self.cookies_staging, "cookies_status.json"), "w") as json_file:
+            json.dump(cookies_status, json_file, indent=4)
 
+            Logger.log(f"Swapped to cookie: {cookies_status['current_cookie']['path']}", "CookieManager")
+            return
+        
