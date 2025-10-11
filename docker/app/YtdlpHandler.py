@@ -8,10 +8,9 @@ PID = os.getpid()
 class YtdlpHandler:
     destination = None
 
-    def __init__(self, url, cookies_manager, cookie_path) -> None:
+    def __init__(self, url, cookie_path) -> None:
         self.url = url
         self.yt_id = url.split("watch?v=")[-1]
-        self.cookies_manager = cookies_manager
         self.cookie_path = cookie_path
 
     def yt_dlp_monitor(self, d):
@@ -43,8 +42,7 @@ class YtdlpHandler:
                 title = output.get('title', None)
                 duration = output.get('duration', None)  # Duration in seconds
         except Exception as e:
-            Logger.log(f"yt_dlp_request failed, finding a new cookie to use: {e}", PID, self.yt_id)
-            # self.cookies_manager.disable_cookie(os.path.basename(self.cookie_path))
+            Logger.log(f"yt_dlp_request failed: {e}", PID, self.yt_id)
             raise e
         
         if shouldDownload:

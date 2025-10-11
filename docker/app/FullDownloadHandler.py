@@ -28,8 +28,6 @@ APP_ENV = os.getenv("APP_ENV")
 
 FFMPEG_EXEC = "/opt/bin/ffmpeg"
 
-Logger = Logger(PID, "DEFAULT")
-
 def sanitize(title: str):
     title = re.sub(r'[^\x00-\x7f]',r'', title)
     title = title.lower()
@@ -96,9 +94,9 @@ class FullDownloadHandler(Resource):
     Logger.log(f"is_cut -> {is_cut}")
 
     cookies_manager = CookiesManager()
-    cookies_path = cookies_manager.retrieve_current_cookie_path()
+    cookies_path = cookies_manager.get_current_cookie_path()
     url = "https://youtube.com/watch?v=" + yt_id
-    yt_object = YtdlpHandler(url, cookies_manager, cookies_path)
+    yt_object = YtdlpHandler(url, cookies_path)
 
     yt_info = yt_object.yt_dlp_request(False)
 

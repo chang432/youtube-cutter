@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timezone
 from YtdlpHandler import YtdlpHandler
 from Logger import Logger
+from argparse import ArgumentParser
 
 BUCKET_NAME = "youtube-cutter-hetzner-vps"
 COOKIES_PREFIX = "yt-credentials"
@@ -15,6 +16,7 @@ class CookiesManager:
     def __init__(self, staging_path="/tmp/cookies"):
         self.cookies_staging = f"{staging_path}/cookies_staging"
         self.init_cookies_staging()
+
 
     def init_cookies_staging(self):
         """
@@ -31,7 +33,7 @@ class CookiesManager:
             cookies_status = {}
             cookies_status["current_cookie"] = {
                 "path": None,
-                "index": -1
+                "index": 0
             }
 
             cookies_info = []
@@ -56,8 +58,6 @@ class CookiesManager:
             with open(json_file_path, "w") as json_file:
                 json.dump(cookies_status, json_file, indent=4)
             
-            self.update_current_cookie()
-
 
     def get_cookies_status(self):
         cookies_status_path = os.path.join(self.cookies_staging, "cookies_status.json")
@@ -71,7 +71,7 @@ class CookiesManager:
         return cookies_status
 
     
-    def retrieve_current_cookie_path(self):
+    def get_current_cookie_path(self):
         """
         Retrieves the current valid cookie path from cookies_status.json
         """
@@ -89,6 +89,7 @@ class CookiesManager:
         """
         Sync cookies from S3 and update state of each cookie. 
         """
+        Logger.log(f"**** RESYNCING COOKIES WITH S3 ****")
         cookies_status = self.get_cookies_status()
 
         local_cookie_names = [cookie["name"] for cookie in cookies_status["cookies"]]
@@ -126,6 +127,22 @@ class CookiesManager:
                     "lastModified": str(datetime.now(timezone.utc))
                 })
 
+        # Check validity of cookies
+        Logger.log(f"**** CHECKING VALIDITY OF COOKIES ****")
+        for cookie in cookies_status["cookies"]:
+            file_name = cookie["name"]
+            local_file_path = os.path.join(self.cookies_staging, file_name)
+
+            try:
+                yt_object = YtdlpHandler("https://youtube.com/watch?v=Bu8bH2P37kY", local_file_path)
+
+                yt_object.yt_dlp_request(shouldDownload=True)
+                Logger.log(f"Testing succeeded for cookie: {file_name}")
+                cookie["valid"] = True
+            except Exception as e:
+                Logger.log(f"Testing failed with exception: {e}")
+                cookie["valid"] = False         
+
         # Update cookies_status.json
         with open(os.path.join(self.cookies_staging, "cookies_status.json"), "w") as json_file:
             json.dump(cookies_status, json_file, indent=4)
@@ -135,7 +152,7 @@ class CookiesManager:
         """
         Choose next valid cookie in the list and set it as current.
         """
-        Logger.log(f"Swapping to next valid cookie", "CookieManager")
+        Logger.log(f"**** SWAPPING COOKIES ****")
         cookies_status = self.get_cookies_status()
         cookies_len = len(cookies_status["cookies"])
 
@@ -149,15 +166,32 @@ class CookiesManager:
                 cookies_status["current_cookie"]["index"] = next_idx
                 cookies_status["current_cookie"]["path"] = os.path.join(self.cookies_staging, next_cookie["name"])
                 valid_cookie_found = True
+                break
             next_idx = (next_idx + 1) % cookies_len
 
         if not valid_cookie_found:
-            Logger.log("No valid cookies available to swap to.", "CookieManager")
+            Logger.log("No valid cookies available to swap to.","ERROR")
             raise ValueError("No valid cookies available to swap to.")
 
         with open(os.path.join(self.cookies_staging, "cookies_status.json"), "w") as json_file:
             json.dump(cookies_status, json_file, indent=4)
 
-            Logger.log(f"Swapped to cookie: {cookies_status['current_cookie']['path']}", "CookieManager")
+            Logger.log(f"Swapped to cookie: {cookies_status['current_cookie']['path']}")
             return
         
+
+if __name__ == "__main__":
+
+    parser = ArgumentParser()
+    parser.add_argument("--resync", action="store_true", help="Resync cookies only")
+    parser.add_argument("--swap", action="store_true", help="Swap cookies only")
+    args = parser.parse_args()
+
+    cm = CookiesManager()
+    if args.resync:
+        cm.resync_cookies()
+    elif args.swap:
+        cm.swap_cookie()
+    else:       
+        cm.resync_cookies()
+        cm.swap_cookie()
