@@ -6,6 +6,8 @@ from CleanupHandler import CleanupHandler
 from flask_jwt_extended import JWTManager
 import boto3
 
+from WebhookHandler import WebHookHandler
+
 app = Flask(__name__)
 # CORS(app, origins=["http://127.0.0.1:5000", "https://wav.ninja", "https://youtube-cutter-dev-1942500617.us-east-1.elb.amazonaws.com"])
 
@@ -24,3 +26,6 @@ jwt = JWTManager(app)
 api = Api(app)
 api.add_resource(FullDownloadHandler, "/handle_yt")
 api.add_resource(CleanupHandler, "/cleanup")
+
+# TEMP
+api.add_resource(WebHookHandler, "/webhook")
