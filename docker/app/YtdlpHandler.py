@@ -27,7 +27,7 @@ class YtdlpHandler:
             'progress_hooks': [self.yt_dlp_monitor],
             # 'extractor_args': {'youtube': 'player_client=web_creator;po_token=web_creator+'+self.po_token},
             # 'extractor_args': {'youtube': 'player_client=web_creator'},
-            'extractor_args': {'youtube': 'player_client=default,-tv'},
+            'extractor_args': {'youtube': 'player_client=default,web_safari;player_js_version=actual'},
             'cookiefile': self.cookie_path,
             'verbose': False,
             'cachedir': '/tmp',
