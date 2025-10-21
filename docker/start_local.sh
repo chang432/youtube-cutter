@@ -30,6 +30,6 @@ if [[ ! -f "${FFMPEG_HOST_PATH}/ffmpeg" ]]; then
     chmod +x "${FFMPEG_HOST_PATH}/ffmpeg"
 fi
 
-docker-compose down
-docker-compose build
-docker-compose up -d
+docker compose down
+docker compose build
+docker compose up -d

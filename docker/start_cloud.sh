@@ -62,9 +62,9 @@ if [[ -d "$PARTITION_PATH" && $(docker ps -q | wc -l) == 0 ]] && ip addr show de
     fi
 
     cd /opt/docker
-    docker-compose down
-    docker-compose build
-    docker-compose up -d
+    docker compose down
+    docker compose build
+    docker compose up -d
 
     echo "containers started up successfully, turning off cron..."
     crontab -l 2>/dev/null | sed '/start_cloud.sh/ s/^/#/' | crontab -

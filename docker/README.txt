@@ -18,7 +18,7 @@ To run containers on Hetzner VPS:
 
 To restart containers on an existing VPS:
 
-- cd to "/opt/docker" and run "docker-compose down"
+- cd to "/opt/docker" and run "docker compose down"
 
 - open cron ("crontab -e") and uncomment out the cron job running start_cloud.sh
 
