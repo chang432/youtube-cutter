@@ -16,9 +16,9 @@ class KofiWebhookHandler(Resource):
       print("[CUSTOM] STARTING KofiWebhookHandler.py")
 
       correct_verification_token = "c0e0c9f5-96f4-4515-80b7-4b3ab6fb46b1"
-
-      request_data = request.form.to_dict()
-
+      print(request)
+      request_data = request.get_json()
+      print(request_data)
       if "data" in request_data:
         # Actual request sent from Ko-fi
         data = json.loads(request_data["data"])
@@ -71,7 +71,7 @@ class KofiWebhookHandler(Resource):
           BODY_TEXT = "Thank you for supporting us!\nPlease use the following password to access premium features: " + password + "\n\n- Wav Ninja Team"
 
           SmtpHelper.sendEmail(destinationEmail=email, emailTitle=SUBJECT, emailBody=BODY_TEXT)
-              
+
       print("[CUSTOM] KofiWebhookHandler.py COMPLETE")
 
       return make_response(jsonify({"status": "success"}), 200)

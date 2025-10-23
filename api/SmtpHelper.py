@@ -22,14 +22,13 @@ class SmtpHelper:
         msg["From"] = SENDER_EMAIL
         msg["To"] = RECIPIENT_EMAIL
         msg["Subject"] = SUBJECT
-        body = emailBody
-        msg.attach(MIMEText(body, "plain"))
+        msg.attach(MIMEText(emailBody, "plain"))
 
         try:
             server = smtplib.SMTP(SmtpHelper.SMTP_SERVER, SmtpHelper.SMTP_PORT)
             server.starttls()  # Secure the connection
-            server.login(SmtpHelper.GMAIL_USERNAME, SmtpHelper.GMAIL_PASSWORD)  # Authenticate
-            
+        
+            server.login(SmtpHelper.GMAIL_USERNAME, SmtpHelper.GMAIL_PASSWORD.strip().replace('\xa0', ' '))  # Authenticate
             server.sendmail(SENDER_EMAIL, RECIPIENT_EMAIL, msg.as_string())
             print(f"Email sent successfully to {destinationEmail}!")
             server.quit()
