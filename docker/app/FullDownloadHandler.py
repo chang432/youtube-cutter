@@ -20,7 +20,7 @@ LOCAL_METRICS_PATH = f"/var/log/metrics/metrics_{PID}.log"   # set in docker-com
 
 HOST_ENDPOINT = os.getenv("HOST_ENDPOINT") 
 
-DOWNLOAD_LIMIT = 60  # In minutes
+DOWNLOAD_LIMIT = 180  # In minutes
 
 AUDIO_PATH="/audio"
 
@@ -100,21 +100,11 @@ class FullDownloadHandler(Resource):
 
     yt_info = yt_object.yt_dlp_request(False)
 
-    # Check for JWT token in request to determine if user is premium
-    is_premium = False
-    try:
-      verify_jwt_in_request()
-      # If a valid JWT is present, treat as premium
-      is_premium = True
-      Logger.log("JWT detected, premium user - removing download limit", PID, YT_ID)
-    except Exception as e:
-      Logger.log(f"JWT not detected: {e}, enforcing download limit", PID, YT_ID)
-
-    # set a limit on video length for cuts, unless premium
+    # set a limit on video length
     duration_minutes = yt_info["duration"] / 60
     Logger.log(f"duration in minutes -> {duration_minutes}", PID, YT_ID)
-    if not is_premium and duration_minutes > DOWNLOAD_LIMIT:
-      return {"error": "true", "message": f"This video is over the limit of {DOWNLOAD_LIMIT} minutes, please donate to remove the limit!"}
+    if duration_minutes > DOWNLOAD_LIMIT:
+      return {"error": "true", "message": f"This video is over the limit of {DOWNLOAD_LIMIT} minutes!"}
 
     yt_title = sanitize(yt_info["title"])
 
