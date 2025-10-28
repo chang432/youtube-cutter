@@ -89,67 +89,75 @@ const ProfileDialog = ({ setShowProfileDialog, premiumEnabled, setpremiumEnabled
                 { !premiumEnabled && <div>
                     <div className="mb-8 flex flex-row">
                         <p>
-                            <span className="text-red-600">Help us pay for server costs</span>
-                            {" with a monthly donation of $3 or more!"}
+                            <span className="text-red-600">Premium Services currently undergoing maintenance, new donations will not be processed temporarily</span>
                         </p>
                     </div>
-                    
-                    {/* Benefits Tab */}
-                    <button
-                        className="w-full text-left text-red-600 font-semibold mb-2 focus:outline-none border-b border-gray-300 py-2 flex items-center justify-between"
-                        onClick={() => setshowBenefits((prev) => !prev)}
-                        aria-expanded={showBenefits}
-                        aria-controls="notes-content"
-                        type="button"
-                    >
-                        <span>Premium Features</span>
-                        <span className="ml-2">{showBenefits ? "▲" : "▼"}</span>
-                    </button>
-                    {showBenefits && (
-                        <div id="notes-content" className="text-left mb-10 w-full space-y-4">
+
+                    <div className="opacity-75 line-through">
+                        <div className="mb-8 flex flex-row">
                             <p>
-                                - 1 hour download/cut limit changed to 3 hours.
-                            </p>
-                            <p>
-                                - Access to additional editing tools while cutting to modify speed, frequency, and audio reversal.
+                                <span className="text-red-600">Help us pay for server costs</span>
+                                {" with a monthly donation of $3 or more!"}
                             </p>
                         </div>
-                    )}
-                    
-                    {/* Steps Tab */}
-                    <button
-                        className="w-full text-left text-red-600 font-semibold mb-2 focus:outline-none border-b border-gray-300 py-2 flex items-center justify-between"
-                        onClick={() => setShowSteps((prev) => !prev)}
-                        aria-expanded={showSteps}
-                        aria-controls="steps-content"
-                        type="button"
-                    >
-                        <span>Instructions</span>
-                        <span className="ml-2">{showSteps ? "▲" : "▼"}</span>
-                    </button>
-                    {showSteps && (
-                        <div id="steps-content" className="text-left mb-10 w-full space-y-4">
-                            <p>
-                                1. On our{" "}
-                                <span
-                                    className="hover:cursor-pointer text-red-600 font-bold underline"
-                                    onClick={handleKofiTextClicked}
-                                >
-                                    Ko-fi page
-                                </span>
-                                , donate once or sign up for a monthly donation.
-                            </p>
-                            <p>
-                                2. Once completed, an email will be automatically sent over containing a personal access key to enable additional features.
-                            </p>
-                            <p>
-                                Premium features last for a month starting from the date of donation. If you are a monthly donor, you will keep benefits for as long as you are subscribed.
-                            </p>
-                            <p>
-                                Contact us at wavninja@gmail.com if there are any issues!
-                            </p>
-                        </div>
-                    )}
+                        
+                        {/* Benefits Tab */}
+                        <button
+                            className="w-full text-left text-red-600 font-semibold mb-2 focus:outline-none border-b border-gray-300 py-2 flex items-center justify-between"
+                            onClick={() => setshowBenefits((prev) => !prev)}
+                            aria-expanded={showBenefits}
+                            aria-controls="notes-content"
+                            type="button"
+                        >
+                            <span>Premium Features</span>
+                            <span className="ml-2">{showBenefits ? "▲" : "▼"}</span>
+                        </button>
+                        {showBenefits && (
+                            <div id="notes-content" className="text-left mb-10 w-full space-y-4">
+                                <p>
+                                    - 1 hour download/cut limit changed to 3 hours.
+                                </p>
+                                <p>
+                                    - Access to additional editing tools while cutting to modify speed, frequency, and audio reversal.
+                                </p>
+                            </div>
+                        )}
+                        
+                        {/* Steps Tab */}
+                        <button
+                            className="w-full text-left text-red-600 font-semibold mb-2 focus:outline-none border-b border-gray-300 py-2 flex items-center justify-between"
+                            onClick={() => setShowSteps((prev) => !prev)}
+                            aria-expanded={showSteps}
+                            aria-controls="steps-content"
+                            type="button"
+                        >
+                            <span>Instructions</span>
+                            <span className="ml-2">{showSteps ? "▲" : "▼"}</span>
+                        </button>
+                        {showSteps && (
+                            <div id="steps-content" className="text-left mb-10 w-full space-y-4">
+                                <p>
+                                    1. On our{" "}
+                                    <span
+                                        className="hover:cursor-pointer text-red-600 font-bold underline"
+                                        onClick={handleKofiTextClicked}
+                                    >
+                                        Ko-fi page
+                                    </span>
+                                    , donate once or sign up for a monthly donation.
+                                </p>
+                                <p>
+                                    2. Once completed, an email will be automatically sent over containing a personal access key to enable additional features.
+                                </p>
+                                <p>
+                                    Premium features last for a month starting from the date of donation. If you are a monthly donor, you will keep benefits for as long as you are subscribed.
+                                </p>
+                                <p>
+                                    Contact us at wavninja@gmail.com if there are any issues!
+                                </p>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="flex flex-row items-center justify-center mt-10">
                         <input
