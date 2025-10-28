@@ -2,16 +2,13 @@ import React, { useState, useRef } from 'react';
 import FrequencySlider from "./FrequencySlider";
 import FfmpegWasmHelper from "./FfmpegWasmHelper";
 
-const PremiumServices = ({
+const ExtraServices = ({
     audioSrc,
     setAudioSrc,
     setShowLoader,
     origAudioSrc,
     displayCutterUI,
-    setDisplayCutterUI,
-    setShowProfileDialog,
-    premiumEnabled,
-    setpremiumEnabled
+    setDisplayCutterUI
 }) => {
     // Remove collapsed state, use Tailwind's peer/hidden logic instead
     const [expanded, setExpanded] = useState(false);
@@ -62,7 +59,6 @@ const PremiumServices = ({
         try {
             setShowLoader(true);
             setDisplayCutterUI(false);
-            setpremiumEnabled(false);
 
             let reverseFilterString = reverseSelected ? "areverse," : "";
 
@@ -82,7 +78,6 @@ const PremiumServices = ({
 
             setShowLoader(false);
             setDisplayCutterUI(true);
-            setpremiumEnabled(true);
         } catch (error) {
             console.error("Caught error:", error.message);
         }
@@ -103,15 +98,6 @@ const PremiumServices = ({
             >
                 {expanded ? "▲" : "▼"}
             </button>
-
-            {/* Overlay for non-premium */}
-            {!premiumEnabled && expanded && (
-                <div className="z-[51] absolute inset-0 w-full h-full opacity-90 hover:bg-gray-300 pointer-events-auto rounded-xl border border-black">
-                    <div className="flex flex-row justify-center items-center w-full h-full opacity-0 hover:opacity-100 transition-opacity duration-200">
-                        <button className="h-6 text-red-600" onClick={() => {setShowProfileDialog(true)}}>?</button>
-                    </div>
-                </div>
-            )}
 
             {/* Expanded controls */}
             <div
@@ -166,4 +152,4 @@ const PremiumServices = ({
     );
 };
 
-export default PremiumServices;
+export default ExtraServices;
