@@ -9,6 +9,7 @@ import FfmpegWasmHelper from "./components/FfmpegWasmHelper";
 import DisclaimerDialog from "./components/DisclaimerDialog";
 // import testAudioFile from "./assets/beat.mp3";         // Used for local testing, comment out when deploying
 import { useAlert } from "./components/AlertProvider";
+import InfoDialog from "./components/InfoDialog";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -40,6 +41,7 @@ function App() {
     const [audioFormat, setAudioFormat] = useState("MP3");
     const [fileName, setFileName] = useState(null);
     const [showDisclaimerDialog, setShowDisclaimerDialog] = useState(false);
+    const [showInfoDialog, setShowInfoDialog] = useState(false);
 
     // start and end time in seconds for waveform
     const [endDuration, setEndDuration] = useState(0);
@@ -628,6 +630,14 @@ function App() {
             >
                 <FontAwesomeIcon icon={faMugHot} className="h-8 w-8" />
             </button>
+
+            <button
+                className="fixed top-5 right-6"
+                onClick={() => setShowInfoDialog(true)}
+            >
+                ?
+            </button>
+
             {/* <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1> */}
             <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
                 <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1>
@@ -641,6 +651,7 @@ function App() {
                     </button>
 
                     { showDisclaimerDialog && <DisclaimerDialog setShowDisclaimerDialog={setShowDisclaimerDialog}/> }
+                    { showInfoDialog && <InfoDialog setShowInfoDialog={setShowInfoDialog}/> }
 
                     {displaySearchUI && (
                         <div className="flex flex-col justify-center items-center xs:w-full w-11/12">
