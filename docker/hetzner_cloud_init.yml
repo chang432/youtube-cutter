@@ -46,8 +46,8 @@ runcmd:
   - (crontab -l 2>/dev/null; echo "*/1 * * * * /opt/docker/start_cloud.sh >> /var/log/start.log 2>&1") | crontab -
   - chmod +x /opt/docker/cleanup.sh
   - (crontab -l; echo "*/10 * * * * /opt/docker/cleanup.sh >> /var/log/cleanup.log 2>&1") | crontab -  
-  - chmod +x /opt/docker/hourly.sh
-  - (crontab -l; echo "*/30 * * * * /opt/docker/hourly.sh >> /var/log/hourly.log 2>&1") | crontab -  
+  - chmod +x /opt/docker/switch_cookies.sh
+  - (crontab -l; echo "*/10 * * * * /opt/docker/switch_cookies.sh >> /var/log/switch_cookies.log 2>&1") | crontab -  
   - chmod +x /opt/docker/daily.sh
   - (crontab -l; echo "50 23 * * * /opt/docker/daily.sh >> /var/log/daily.log 2>&1") | crontab -     # 11:50 PM daily
   
