@@ -109,28 +109,28 @@ class FullDownloadHandler(Resource):
     yt_title = sanitize(yt_info["title"])
 
     dst_filepath = yt_object.yt_dlp_request(True)['destfilepath']
+   
+    if download_mp3:
+      converted_file = f"{AUDIO_PATH}/{yt_id}.mp3"
+    else:
+      # Cut default to wav
+      converted_file = f"{AUDIO_PATH}/{yt_id}.wav"
 
-    if not is_cut:      
-      if download_mp3:
-        converted_file = f"{AUDIO_PATH}/{yt_id}.mp3"
-      else:
-        converted_file = f"{AUDIO_PATH}/{yt_id}.wav"
+    Logger.log(f"Converting from m4a to {converted_file}", PID, YT_ID)
+    ffmpeg_command = f'{FFMPEG_EXEC} -loglevel error -i "{dst_filepath}" -write_xing 0 -y "{converted_file}"'
 
-      Logger.log(f"Converting from mp4 to {converted_file}", PID, YT_ID)
-      ffmpeg_command = f'{FFMPEG_EXEC} -loglevel error -i "{dst_filepath}" -write_xing 0 -y "{converted_file}"'
+    try:
+      subprocess.check_output(ffmpeg_command, shell=True)
+      Logger.log(f'File successfully converted to {converted_file}', PID, YT_ID)
+    except Exception as e:
+      Logger.log(f"Error occurred while converting to {converted_file}: {e}", PID, YT_ID)
 
-      try:
-        subprocess.check_output(ffmpeg_command, shell=True)
-        Logger.log(f'File successfully converted to {converted_file}', PID, YT_ID)
-      except Exception as e:
-        Logger.log(f"Error occurred while converting to {converted_file}: {e}", PID, YT_ID)
+    os.remove(dst_filepath)
+    dst_filepath = converted_file
 
-      os.remove(dst_filepath)
-      dst_filepath = converted_file
-
-    output_file_name = f"{yt_title}.m4a"
-    if not is_cut:
-      output_file_name = f"{yt_title}.mp3" if download_mp3 else f"{yt_title}.wav"
+    output_file_name = f"{yt_title}.wav"
+    if not is_cut and download_mp3:
+      output_file_name = f"{yt_title}.mp3"
     
     os.rename(dst_filepath, f"{AUDIO_PATH}/{output_file_name}")
 

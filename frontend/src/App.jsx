@@ -291,7 +291,6 @@ function App() {
                 barRadius: 2,
                 hideScrollbar: true,
             });
-
             // Load audio source
             wavesurfer.load(audioSrc);
 
@@ -300,7 +299,6 @@ function App() {
 
             wavesurfer.on("ready", function () {
                 let end_duration = wavesurfer.getDuration();
-
                 try {
                     setStartTime(formatSeconds(0));
                     setEndTime(formatSeconds(end_duration));
@@ -358,6 +356,10 @@ function App() {
                 } catch (e) {
                     console.error(e);
                 }
+            });
+
+            wavesurfer.on("error", (e) => {
+                console.error("wavesurfer error", e);
             });
 
             setWaver(wavesurfer);
@@ -519,7 +521,6 @@ function App() {
 
         axios({
             url: backendUrl + "/handle_yt",
-            // url: "https://wav-helper.com/handle_yt",
             method: "post",
             responseType: "json",
             withCredentials: true,
@@ -632,7 +633,7 @@ function App() {
             </button>
 
             <button
-                className="fixed top-5 right-6"
+                className="fixed top-5 right-6 text-4xl"
                 onClick={() => setShowInfoDialog(true)}
             >
                 ?
