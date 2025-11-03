@@ -633,7 +633,7 @@ function App() {
             </button>
 
             <button
-                className="fixed top-5 right-6 text-4xl"
+                className="fixed top-5 right-6 text-3xl"
                 onClick={() => setShowInfoDialog(true)}
             >
                 ?
@@ -641,7 +641,7 @@ function App() {
 
             {/* <h1 className="fixed top-4 left-1/2 transform -translate-x-1/2 text text-blue-600 hidden lg:block">As of 07/11/2025, we have migrated servers! Please contact us if there are any issues.</h1> */}
             <div className={`flex flex-col justify-center ${displayCutterUI ? "h-fit py-20" : "h-screen"} items-center`}>
-                <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1>
+                {/* <h1 className="text text-red-600">We are aware of some issues, please hold while we fix</h1> */}
                 <div className="flex flex-col justify-center items-center w-full" >
                     <button onClick={goHome} className="text-8xl mb-4">
                         wav.ninja
