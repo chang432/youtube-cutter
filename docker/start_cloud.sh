@@ -68,4 +68,7 @@ if [[ -d "$PARTITION_PATH" && $(docker ps -q | wc -l) == 0 ]] && ip addr show de
 
     echo "containers started up successfully, turning off cron..."
     crontab -l 2>/dev/null | sed '/start_cloud.sh/ s/^/#/' | crontab -
+
+    # Refreshing cookies
+    /opt/docker/switch_cookies.sh
 fi
