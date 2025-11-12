@@ -32,7 +32,8 @@ class YtdlpHandler:
             'verbose': False,
             'cachedir': '/tmp',
             'nocachedir': True,
-            'ignoreerrors': True
+            'ignoreerrors': True,
+            'js_runtimes': {'deno': {'path': '/root/.deno/bin/deno'}}
         }
 
         try:
