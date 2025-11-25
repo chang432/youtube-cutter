@@ -6,6 +6,7 @@
 export APP_ENV="remote"
 export FFMPEG_HOST_PATH="/opt/bin"
 export LETSENCRYPT_HOST_PATH="./letsencrypt"
+export DENO_INSTALL_PATH="/opt/deno_install"
 
 FLOATING_IP="5.161.21.191"
 PARTITION_NAMES="HC_Volume_102861833 HC_Volume_102894653" 
@@ -59,6 +60,12 @@ if [[ -d "$PARTITION_PATH" && $(docker ps -q | wc -l) == 0 ]] && ip addr show de
 
         aws s3 cp "s3://youtube-cutter-hetzner-vps/ffmpeg-master-latest-linux64-gpl/ffmpeg" "${FFMPEG_HOST_PATH}/"
         chmod +x "${FFMPEG_HOST_PATH}/ffmpeg"
+    fi
+
+    if [[ ! -f "${DENO_INSTALL_PATH}/deno_install.sh" ]]; then
+        mkdir -p "${DENO_INSTALL_PATH}"
+        aws s3 cp "s3://youtube-cutter-hetzner-vps/deno_install.sh" "${DENO_INSTALL_PATH}/deno_install.sh"
+        chmod +x "${DENO_INSTALL_PATH}/deno_install.sh"
     fi
 
     cd /opt/docker

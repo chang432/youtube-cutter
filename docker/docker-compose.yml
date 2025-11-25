@@ -12,6 +12,7 @@ services:
       - ${COOKIES_HOST_PATH:-/tmp/cookies}:/tmp/cookies
       - ${PARTITION_PATH:-~/TEMP}/log/metrics:/var/log/metrics
       - ${PARTITION_PATH:-~/TEMP}/log/container-flask:/var/log/container-flask
+      - ${DENO_INSTALL_PATH:-/opt/deno_install}:/opt/deno_install
     environment:
       - APP_ENV=${APP_ENV}
       - HOST_ENDPOINT=${HOST_ENDPOINT:-https://wav-helper.com}
