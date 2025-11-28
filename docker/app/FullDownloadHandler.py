@@ -41,11 +41,18 @@ def sanitize(title: str):
     return title
 
 
-""" 
-is_mp3: ("MP3" or "WAV")
-is_cut: ("CUT" or "FULL")
-"""
 def processMetrics(title, is_mp3, is_cut):
+  """
+  Logs download metrics to a local file, recording type, extension, timestamp, 
+  and title. Creates the file if it doesn't exist.
+  Args:
+    title (str): YouTube video title.
+    is_mp3 (bool): True for MP3, False for WAV.
+    is_cut (bool): True for cut version, False for full version.
+  Notes:
+    - Uses `LOCAL_METRICS_PATH` for file storage.
+    - Logs via `Logger.log` with `PID` and `YT_ID`.
+  """
   # Collect metrics
   curr_time = datetime.now()
   # curr_month_year = str(curr_time.year)+"_"+str(curr_time.month)
@@ -74,6 +81,24 @@ def processMetrics(title, is_mp3, is_cut):
   Logger.log(f"{LOCAL_METRICS_PATH} updated", PID, YT_ID)
 
 
+def convertToBool(value):
+    """
+    Converts a value to a boolean.
+
+    Args:
+      value: The input value to convert. Can be of type bool, str, or other.
+
+    Returns:
+      bool: True if the value is a boolean True, a string representing truth 
+      ('true', '1', 'yes' case-insensitive), or False otherwise.
+    """
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.lower() in ('true', '1', 'yes')
+    return False
+
+
 class FullDownloadHandler(Resource):
   def post(self):
     global YT_ID
@@ -82,17 +107,15 @@ class FullDownloadHandler(Resource):
 
     data = request.get_json()
     yt_id = data.get('yt_id')
-    is_cut = data.get('is_cut')
-    download_mp3 = data.get('download_mp3')
+    is_cut = convertToBool(data.get('is_cut'))
+    download_mp3 = convertToBool(data.get('download_mp3'))
 
     YT_ID = yt_id
 
     Logger.log("========== Starting FullDownloadHandler.py ==========", PID, YT_ID)
 
-    # Logger.log("headers: " + str(dict(request.headers)))
-    # Logger.log("cookies: " + str(request.cookies))
-
-    Logger.log(f"is_cut -> {is_cut}")
+    Logger.log(f"is_cut: {is_cut}", PID, YT_ID)
+    Logger.log(f"download_mp3: {download_mp3}", PID, YT_ID)
 
     cookies_manager = CookiesManager()
     cookies_path = cookies_manager.get_current_cookie_path()
@@ -127,13 +150,13 @@ class FullDownloadHandler(Resource):
       Logger.log(f"Error occurred while converting to {converted_file}: {e}", PID, YT_ID)
 
     os.remove(dst_filepath)
-    dst_filepath = converted_file
 
     output_file_name = f"{yt_title}.wav"
+    
     if not is_cut and download_mp3:
       output_file_name = f"{yt_title}.mp3"
     
-    os.rename(dst_filepath, f"{AUDIO_PATH}/{output_file_name}")
+    os.rename(converted_file, f"{AUDIO_PATH}/{output_file_name}")
 
     Logger.log(f"Download from youtube complete -> {output_file_name}!", PID, YT_ID)
 
