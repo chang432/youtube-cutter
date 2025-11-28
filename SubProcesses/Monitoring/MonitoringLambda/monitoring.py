@@ -64,7 +64,7 @@ def check_ffmpeg_wasm_endpoints():
 def handle(event, context):
     print("========== [MONITORING] Starting Execution ==========")
     check_wav_helper()
-    # check_ffmpeg_wasm_endpoints()
+    check_ffmpeg_wasm_endpoints()
     print("========== [MONITORING] Ending Execution ==========")
 
     return {
