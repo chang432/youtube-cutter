@@ -34,10 +34,11 @@ def sanitize(title: str):
     # title = title.replace('free', '')
     title = title.strip()
     title = title.replace(' ','_')
-    toReplace = '[](){}"“.,@#*&<>:;/\\|+?$' + "'"
-    for char in toReplace:
+    title = title.replace('-','_')
+    toReplaceWithEmpty = ['\t', '\n', '[', ']', '(', ')', '{', '}', '"', '“', '.', ',', '@', '#', '*', '&', '<', '>', ':', ';', '/', '\\', '|', '+', '?', '$', "'"]
+    for char in toReplaceWithEmpty:
         title = title.replace(char, '')
-    return title.replace('\n','')
+    return title
 
 
 """ 
