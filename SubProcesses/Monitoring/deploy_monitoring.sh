@@ -37,10 +37,6 @@ upload_main() {
     # Copy the lambda code/dependencies to the staging folder
     cp "${monitoring_path}/MonitoringLambda/monitoring.py" "${monitoring_path}/MonitoringLambda/staging/monitoring.py"
 
-    cp -r "${root_path}/api" "${monitoring_path}/MonitoringLambda/staging/api"
-
-    sed -i '' "s/BUCKET_NAME/${BUCKET_NAME}/g" "${monitoring_path}/MonitoringLambda/staging/monitoring.py"
-
     find "${monitoring_path}/MonitoringLambda/staging/api" -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-static-files-dev/youtube-cutter-static-files-prod/g' {} +
     find "${monitoring_path}/MonitoringLambda/staging/api" -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-private-dev/youtube-cutter-private-prod/g' {} +
     find "${monitoring_path}/MonitoringLambda/staging/api" -type f \( -name '*.py' \) -exec sed -i '' 's/youtube-cutter-dev-po-token/youtube-cutter-prod-po-token/g' {} +

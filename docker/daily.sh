@@ -57,6 +57,8 @@ done
 echo "Uploading merged file to S3: $S3_PATH"
 aws s3 cp "$TMP_FILE" "$S3_PATH"
 
+echo "Current line count: $(wc -l < $TMP_FILE)"
+
 # Clean up
 rm -f "$TMP_FILE"
 
